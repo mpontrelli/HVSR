@@ -16,7 +16,7 @@ warning('off','all') %The warnings are from the triangular filter which is
 for eee = 1:length(stationlist)
     station = stationlist{eee};
     disp(station)
-    d = strcat('C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data\',station);
+    d = strcat('C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station);
     %go into data directory and build structure of all files in it
     cd(d)
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
@@ -41,9 +41,9 @@ for eee = 1:length(stationlist)
 
     %change directory back to codes to access functions needed 
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Codes';
-    cd 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Codes';
+    cd 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR\HVSR\Codes';
     for file = files'
-        filename = strcat('C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data\',station,'\',file.name);
+        filename = strcat('C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station,'\',file.name);
         %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
         PGANS = max(abs(xNS))/981;
