@@ -75,8 +75,7 @@ for eee = 1:length(stationlist)
 %     grid on
 %     txt = {strcat('PGA NS = ',num2str(PGANS)),strcat('PGA EW = ', num2str(PGAEW))};
 %     text(1.25,30,txt,'FontSize',16)
-%%%%%Justin
-%%%Marsh
+%
             clear newfaxhz
             clear newH_V1
             clear H_V1 
@@ -242,7 +241,7 @@ for f = 1:length(peakamp)
     [I1, I2, f1, f2, hpb] =  HalfPowerBand2(A, amploc2, newfaxhz, ahatf); 
 %     disp(f1)
 %     disp(f2)
-    taxstat(f,4) = hpb; 
+    taxstat(f,4) = hpb; git p
     a = sigma(I1:I2);
     sigmai = median(a);
     taxstat(f,5) = sigmai;
