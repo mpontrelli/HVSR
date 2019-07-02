@@ -94,33 +94,13 @@ for eee = 1:length(stationlist)
         end
     end
 newfaxhz = 0:0.001:20;
-size1 = size(HV_final_matrix);
-len = size1(1);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-% for i = 1:length(newfaxhz)
-%     q = log(HV_final_matrix(:,i));
-%     ahatf(i) = exp(nansum(q)/length(q));
-% end
 
-q = log(HV_final_matrix);
-ahatf = exp(nansum(q)/len);
+[ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
 
-%compute maximum likelihood standard deviation
-for i = 1:length(newfaxhz)
-    for ii = 1:len
-        q(ii) = (log(HV_final_matrix(ii,i))- log(ahatf(i)))^2;
-    end
-    sigma(i) = sqrt(nansum(q)/length(q));
-end
-
-%compute 95% confidence interval
-for i = 1:length(newfaxhz)
-    Xn(i) = nanmean(HV_final_matrix(:,i));
-    confinthigh(i) = exp(log(ahatf(i))+1.96*sigma(i));
-    confintlow(i) = exp(log(ahatf(i))-1.96*sigma(i));
-end
 sigma = sigma(10:length(sigma)-1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Plot ahatf and 95% confidence intervals
