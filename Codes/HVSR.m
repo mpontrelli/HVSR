@@ -75,7 +75,7 @@ for eee = 1:length(stationlist)
 %     grid on
 %     txt = {strcat('PGA NS = ',num2str(PGANS)),strcat('PGA EW = ', num2str(PGAEW))};
 %     text(1.25,30,txt,'FontSize',16)
-
+%
             clear newfaxhz
             clear newH_V1
             clear H_V1 
