@@ -9,7 +9,6 @@ for i = 1:len
 end
 sigma = sqrt(nansum(q)/len);
 
-Xn = nanmean(HV_final_matrix);
 confinthigh = exp(log(ahatf)+1.96*sigma);
 confintlow = exp(log(ahatf)-1.96*sigma);
 end

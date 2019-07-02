@@ -91,28 +91,7 @@ newfaxhz = 0:0.001:20;
 
 [ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
 
-sigma = sigma(10:length(sigma)-1);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Plot ahatf and 95% confidence intervals
-
-figure
-hold on
-set(gca, 'YScale', 'log')
-newfaxhz=newfaxhz(10:length(newfaxhz)-1);
-confinthigh=confinthigh(10:length(confinthigh)-1);
-confintlow=confintlow(10:length(confintlow)-1);
-confidenceinterval=shadedplot(newfaxhz, confinthigh, confintlow,[.9,.9,.9],'k');
-hold on
-% set(gca, 'YScale', 'log')
-ahatf=ahatf(10:length(ahatf)-1);
-%ETF = plot(newfaxhz, ahatf, 'Color', [0 .30196 .6588] , 'Linewidth', 1.5);
-title(strcat(station), 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-ylim([0.1 100])
-xlim([0 10])
-set(gca,'FontSize',40)
-grid on    
+HVSRplot(ahatf, newfaxhz, sigma, confinthigh, confintlow, station);
 
 %Call nrattle and plot TTF
 %cd 'C:\Users\mpontr01\Box Sync\Box Sync\tFall_2018\Research\Mexico_City\Data\CE32_data';
@@ -198,7 +177,7 @@ q = ceil((N/20)*width); %width for triangle moving average filter in samples
 % eei = smooth(eeh,q);
 % eej = smooth(eei,q);
 % eek = smooth(eej,q);
-ETF = plot(newfaxhz, ahatf, 'Color', [0 0.30196 .6588] , 'Linewidth', 3);
+% ETF = plot(newfaxhz, ahatf, 'Color', [0 0.30196 .6588] , 'Linewidth', 3);
 %plot(newfaxhz,e, 'LineWidth', 2, 'Color', 'r')
 %plot(newfaxhz,ee, 'LineWidth', 2, 'Color', 'g')
 %plot(newfaxhz,eek, 'LineWidth', 2, 'Color', 'k')

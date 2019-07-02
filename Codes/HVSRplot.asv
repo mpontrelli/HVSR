@@ -1,0 +1,23 @@
+function HVSRplot(ahatf, newfaxhz, sigma, confinthigh, confintlow, station)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Plot ahatf and 95% confidence intervals
+ahatf=ahatf(10:length(ahatf)-1);
+newfaxhz=newfaxhz(10:length(newfaxhz)-1);
+sigma = sigma(10:length(sigma)-1);
+confinthigh=confinthigh(10:length(confinthigh)-1);
+confintlow=confintlow(10:length(confintlow)-1);
+
+figure
+hold on
+
+shadedplot(newfaxhz, confinthigh, confintlow,[.9,.9,.9],'k');
+plot(newfaxhz, ahatf, 'Color', [0 0.30196 .6588] , 'Linewidth', 3);
+title(strcat(station), 'FontSize', 20)
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Amplification','FontSize', 18)
+ylim([0.1 100])
+xlim([0 10])
+set(gca, )
+set(gca,'FontSize',40)
+grid on  
+end
