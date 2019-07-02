@@ -65,7 +65,7 @@ for eee = 1:length(stationlist)
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
-
+%
 %     figure
 %     plot(newfaxhz, newH_V1, 'Color', [0 .30196 .6588], 'LineWidth', 1.5)
 %     title(file.name)
