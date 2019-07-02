@@ -70,9 +70,7 @@ for eee = 1:length(stationlist)
             [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
     
             %perform H/V
-            for iii = 1:length(XH_magfilt)
-                H_V1(iii) = XH_magfilt(iii)/XV_magfilt(iii);
-            end
+            [H_V1] = HV(XH_magfilt,XV_magfilt);
    
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
