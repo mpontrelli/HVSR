@@ -40,9 +40,7 @@ for eee = 1:length(stationlist)
         filename = strcat('C:\Users\Marshall\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station,'\',file.name);
         %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
-        PGANS = max(abs(xNS))/981;
-        PGAV = max(abs(xV))/981;
-        PGAEW = max(abs(xEW)/981);
+        [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
         if PGANS < 0.1 && PGAV < 0.1 && PGAEW < 0.1
             counter = counter + 1;
             %fs = station.fs; %sampling frequency in hz
