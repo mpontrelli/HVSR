@@ -16,7 +16,7 @@ warning('off','all') %The warnings are from the triangular filter which is
 for eee = 1:length(stationlist)
     station = stationlist{eee};
     disp(station)
-    d = strcat('C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station);
+    d = strcat('C:\Users\Marshall\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station);
     %go into data directory and build structure of all files in it
     cd(d)
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
@@ -41,9 +41,9 @@ for eee = 1:length(stationlist)
 
     %change directory back to codes to access functions needed 
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Codes';
-    cd 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR\HVSR\Codes';
+    cd 'C:\Users\Marshall\Box\2019_2_summer\Projects\HVSR\HVSR\Codes';
     for file = files'
-        filename = strcat('C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station,'\',file.name);
+        filename = strcat('C:\Users\Marshall\Box\2019_2_summer\Projects\HVSR\HVSR\Data\',station,'\',file.name);
         %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
         PGANS = max(abs(xNS))/981;
@@ -99,10 +99,13 @@ len = size1(1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-for i = 1:length(newfaxhz)
-    q = log(HV_final_matrix(:,i));
-    ahatf(i) = exp(nansum(q)/length(q));
-end
+% for i = 1:length(newfaxhz)
+%     q = log(HV_final_matrix(:,i));
+%     ahatf(i) = exp(nansum(q)/length(q));
+% end
+
+q = log(HV_final_matrix);
+ahatf = exp(nansum(q)/len);
 
 %compute maximum likelihood standard deviation
 for i = 1:length(newfaxhz)
@@ -217,7 +220,7 @@ grid on
 N = length(ahatf); %length North_South_Component
 width = .1; %width for triangle moving average filter in hz
 q = ceil((N/20)*width); %width for triangle moving average filter in samples
-e = smoothdata(ahatf, 'gaussian', q);
+%e = smoothdata(ahatf, 'gaussian', q);
 % ee = smooth(e,q);
 % eef = smooth(ee,q);
 % eeg = smooth(eef,q);
