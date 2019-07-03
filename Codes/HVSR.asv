@@ -1,4 +1,4 @@
-function HVSR(path, datapath)
+function HVSR(path)
 %close all
 %close all
 warning('off','all') %The warnings are from the triangular filter which is 
@@ -17,7 +17,7 @@ warning('off','all') %The warnings are from the triangular filter which is
 for eee = 1:length(stationlist)
     station = stationlist{eee};
     disp(station)
-    d = strcat(datapath,'\',station);
+    d = strcat(path ,station);
     %go into data directory and build structure of all files in it
     cd(d)
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
@@ -39,7 +39,7 @@ for eee = 1:length(stationlist)
     d = strcat(path, '\HVSR\Codes');
     cd(d)
     for file = files'
-        filename = strcat(datapath,'\', station,'\',file.name);
+        filename = strcat(path, '\HVSR\Data\',station,'\',file.name);
         %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
         [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
