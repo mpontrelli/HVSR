@@ -2,7 +2,7 @@ function [N_2, fax_HzN, XH_magfilt, XV_magfilt]=  Magresp(xNS, xV, xEW, fs)
 
 %Triangular filter
 N = length(xNS); %length North_South_Component
-width = .01; %width for triangle moving average filter in hz
+width = .15; %width for triangle moving average filter in hz
 q = ceil((N/fs)*width); %width for triangle moving average filter in samples
 
 w = hamming(q);

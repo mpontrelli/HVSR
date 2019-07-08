@@ -95,8 +95,7 @@ width = .1; %width for triangle moving average filter in hz
 q = ceil((N/20)*width); %width for triangle moving average filter in samples
 e = smooth(ahatf, q, 'moving');
 
-%%
-% Determine if peak is a peak
+%% Determine if peak is a peak
 count = 0;
 [amps,amplocs] = findpeaks(e);
 for hh = 1:length(amps)

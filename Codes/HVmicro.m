@@ -6,7 +6,7 @@
 % Set the data time window and station
 time1={'2011-11-23 17:00:00'}; %Start time of the event
 time2={'2011-11-23 17:10:25'}; %End time of the event
-Station='FFD'; %Stations and networks will be added
+Station='WES'; %Stations and networks will be added
 Network='NE';
 Component={'BHZ','BHN','BHE'};
 
