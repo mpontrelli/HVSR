@@ -1,0 +1,11 @@
+function individplot(nHV_, newfaxhz, station)
+for K = 1: length(HV_final_matrix)
+ETF = plot(newfaxhz, newH_V1, 'Color', [0.149 0.45098 0] , 'Linewidth', 1.5);
+title(strcat(station), 'FontSize', 20)
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Amplification','FontSize', 18)
+set(gca,'FontSize',20,'YScale', 'log')
+xlim([0 5])
+ylim([0.1 100])
+grid on    
+end
