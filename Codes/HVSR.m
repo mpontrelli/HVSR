@@ -1,8 +1,8 @@
-%function HVSR(path, datapath)
-close all
-clear all
-path = 'C:\Users\Marshall\Box\2019_2_summer\Projects\HVSR';
-datapath = 'C:\Users\Marshall\Box\2019_2_summer\Projects\Mexico City\Data';
+function HVSR(path, datapath, individ)
+%close all
+%path = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR';
+%datapath = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data';
+%individ = 'yes';
 warning('off','all') %The warnings are from the triangular filter which is 
 %still a piece of the code, though it can be removed. 
 
@@ -75,6 +75,11 @@ for eee = 1:length(stationlist)
         end
     end
 newfaxhz = 0:0.001:20;
+
+if strcmp(individ, 'yes') == 1
+    individplot(HV_final_matrix, newfaxhz, station)
+end
+    
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
 
