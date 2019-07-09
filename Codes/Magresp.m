@@ -7,19 +7,14 @@ q = ceil((N/fs)*width); %width for triangle moving average filter in samples
 
 w = hamming(q);
 a=5; %second filter coefficient
-
 xH = xNS + 1i*xEW; %complex time
-
 XH = fft(xH); %fft North_South_Component x
 XV = fft(xV); %fft Vertical_Component x
-
-
 XH_mag = abs(XH)/N; %normalized magnitude spectra North_South_Component x
 XV_mag = abs(XV)/N; %normalized magnitude spectra Vertical_Component x
 %YNS_mag = abs(YNS); %magnitude spectra North_South_Component y
 %YV_mag = abs(YV); %magnitude spectra Vertical_Component y
 %YEW_mag = abs(YEW); %magnitude spectra East_West_Component y
-
 XV_magfilt1=filtfilt(w,a,XV_mag); %filtered magnitude spectra North_South_Component x 
 XH_magfilt1=filtfilt(w,a,XH_mag); %filtered magnitude spectra North_South_Component x 
 
