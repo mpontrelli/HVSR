@@ -1,4 +1,4 @@
-function HVSR(path, datapath, individ, varargin)
+%function HVSR(path, datapath, individ, varargin)
 disp(nargin)
 %function HVSR(path, datapath, individ)
 %close all
