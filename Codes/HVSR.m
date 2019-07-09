@@ -151,4 +151,4 @@ elseif strcmp(individ, 'yes') == 1
 end
 fclose('all')
 end
-%end
+end
