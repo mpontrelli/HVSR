@@ -1,7 +1,7 @@
-function individplot(HV_final_matrix, newfaxhz, station)
+function individplot(HV_final_matrix, newfaxhz, statname)
 figure
 plot(newfaxhz, HV_final_matrix, 'Color',  'k' , 'Linewidth', .5);
-title(strcat(station), 'FontSize', 20)
+title(strcat(statname), 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')

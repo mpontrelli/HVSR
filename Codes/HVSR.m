@@ -1,29 +1,16 @@
 function HVSR(path, datapath, individ, varargin)
-disp(nargin)
-%function HVSR(path, datapath, individ)
-%close all
-%path = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR';
-%datapath = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data';
-%individ = 'yes';
 warning('off','all') %The warnings are from the triangular filter which is 
 %still a piece of the code, though it can be removed. 
-
-%% AU11
- stationlist = {'AU11'};%,'AL01', 'AO24', 'AP68', 'AR14', 'AU11', 'AU46', 'BA49',...
-%     'BL45', 'BO39', 'CA20', 'CA59', 'CB43', 'CC55',...
-%     'CE18', 'CE23', 'CE32', 'CH84', 'CI05', 'CJ03', 'CJ04', 'CO47', 'CO56',...
-%     'CP28', 'CS78', 'CT64', 'CU80', 'DM12', 'DR16', 'DX37',...
-%     'EO30', 'ES57', 'EX08', 'EX09', 'EX12', 'FJ74', 'GA62', 'GC38', 'GR27',...
-%     'HA41', 'HJ72', 'IB22', 'IM40', 'JA43', 'JC54', 'LI33', 'LI58', 'LV17',...
-%     'ME52', 'MI15', 'MY19', 'NZ20', 'NZ31', 'PA34', 'PD42', 'PE10', 'RI76',...
-%     'RM48', 'SI53', 'SP51', 'TE07', 'TH35', 'TL08',...
-%     'TL55', 'UC44', 'VG09', 'VM29', 'XP06'};
+cd(datapath)
+stationlist = dir;
+stationlist = stationlist(3:length(stationlist));
 for eee = 1:length(stationlist)
-    station = stationlist{eee};
-    disp(station)
-    d = strcat(datapath,'\',station);
+    station = stationlist(eee);
+    statname = station.name;
+    station = strcat(station.folder, '\', statname);
+    
     %go into data directory and build structure of all files in it
-    cd(d)
+    cd(station)
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
     files = dir;
     files = files(3:length(files));
@@ -43,7 +30,7 @@ for eee = 1:length(stationlist)
     d = strcat(path, '\HVSR\Codes');
     cd(d)
     for file = files'
-        filename = strcat(datapath,'\', station,'\',file.name);
+        filename = strcat(station,'\',file.name);
         %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
         [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
@@ -81,7 +68,7 @@ newfaxhz = 0:0.001:20;
 %compute maximum likelihood estimator of median
 
 [ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
-HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, station);
+HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
 
 N = length(ahatf); %length North_South_Component
 width = .1; %width for triangle moving average filter in hz
@@ -147,7 +134,7 @@ newfaxhz = 0:0.001:20;
 if nargin == 2
     continue
 elseif strcmp(individ, 'yes') == 1
-    individplot(HV_final_matrix, newfaxhz, station)
+    individplot(HV_final_matrix, newfaxhz, statname)
 end
 fclose('all')
 end
