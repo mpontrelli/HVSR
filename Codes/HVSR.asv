@@ -1,5 +1,4 @@
 function HVSR(path, datapath, individ, varargin)
-disp(nargin)
 %close all
 %path = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR';
 %datapath = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data';
@@ -75,7 +74,13 @@ for eee = 1:length(stationlist)
             clear H_V1 
         end
     end
-newfaxhz = 0:0.001:20;  
+newfaxhz = 0:0.001:20;
+
+if strcmp(individ, 'yes') == 1
+    individplot(HV_final_matrix, newfaxhz, station)
+else 
+end
+    
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
 
@@ -144,14 +149,8 @@ for f = 1:length(peakamp)
     sigmai = median(a);
     taxstat(f,5) = sigmai;
 end
+hold off
 
-
-newfaxhz = 0:0.001:20;
-if nargin == 2
-    continue
-elseif strcmp(individ, 'yes') == 1
-    individplot(HV_final_matrix, newfaxhz, station)
-end
 fclose('all')
 end
 %end
