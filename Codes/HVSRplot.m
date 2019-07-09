@@ -1,5 +1,4 @@
 function HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname)
-
 figure
 hold on
 confidenceinterval=shadedplot(newfaxhz, confinthigh, confintlow,[.9,.9,.9],'k');
