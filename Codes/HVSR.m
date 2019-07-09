@@ -1,6 +1,5 @@
 function HVSR(path, datapath, individ, varargin)
 warning('off','all') %The warnings are from the triangular filter which is 
-%still a piece of the code, though it can be removed. 
 cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
@@ -8,30 +7,23 @@ for eee = 1:length(stationlist)
     station = stationlist(eee);
     statname = station.name;
     station = strcat(station.folder, '\', statname);
-    
     %go into data directory and build structure of all files in it
     cd(station)
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
     files = dir;
     files = files(3:length(files));
-    
     %create empty matrix that gets filled with all H/V values, counter is used
     %to index this matrix
     HV_final_matrix = [];
     peakfreq = [];
     peakamp = [];
     counter = 0;
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %function
-
     %change directory back to codes to access functions needed 
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Codes';
     d = strcat(path, '\HVSR\Codes');
     cd(d)
     for file = files'
         filename = strcat(station,'\',file.name);
-        %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
         [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
         if PGANS < 0.1 && PGAV < 0.1 && PGAEW < 0.1
@@ -39,10 +31,8 @@ for eee = 1:length(stationlist)
             %fs = station.fs; %sampling frequency in hz
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
             [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
-    
             %perform H/V
             [H_V1] = HV(XH_magfilt,XV_magfilt);
-
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
@@ -51,10 +41,8 @@ for eee = 1:length(stationlist)
             else
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
             [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
-    
             %perform H/V
             [H_V1] = HV(XH_magfilt,XV_magfilt);
-   
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
@@ -66,15 +54,14 @@ for eee = 1:length(stationlist)
 newfaxhz = 0:0.001:20;  
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-
 [ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
+%plot
 HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
 
 N = length(ahatf); %length North_South_Component
 width = .1; %width for triangle moving average filter in hz
 q = ceil((N/20)*width); %width for triangle moving average filter in samples
 e = smooth(ahatf, q, 'moving');
-
 %% Determine if peak is a peak
 count = 0;
 [amps,amplocs] = findpeaks(e);
@@ -91,7 +78,6 @@ if freqtrough(1) > freqpeak(1)
     trough = horzcat(Y,trough);
     troughloc = horzcat(X,troughloc);
 end
-
 if freqpeak(length(freqpeak)) > freqtrough(length(freqtrough))
     Y = -1;
     X = 19991;
@@ -114,7 +100,6 @@ for k = 1:length(amps)
 end
 %points = plot(peakfreq,peakamp,'o','MarkerSize',15,'MarkerEdgeColor','g','MarkerFaceColor','g');
 %% Compute desired statistics
-
 Taxstat = [];
 for f = 1:length(peakamp)
     taxstat(f,1) = f; 
@@ -128,8 +113,6 @@ for f = 1:length(peakamp)
     sigmai = median(a);
     taxstat(f,5) = sigmai;
 end
-
-
 newfaxhz = 0:0.001:20;
 if nargin == 2
     continue
