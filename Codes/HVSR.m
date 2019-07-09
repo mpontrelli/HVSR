@@ -1,5 +1,6 @@
 function HVSR(path, datapath, individ, varargin)
 disp(nargin)
+%function HVSR(path, datapath, individ)
 %close all
 %path = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR';
 %datapath = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data';
@@ -80,10 +81,6 @@ newfaxhz = 0:0.001:20;
 %compute maximum likelihood estimator of median
 
 [ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
-ahatf = ahatf(10:length(ahatf)-1);
-newfaxhz=newfaxhz(10:length(newfaxhz)-1);
-confinthigh=confinthigh(10:length(confinthigh)-1);
-confintlow=confintlow(10:length(confintlow)-1);
 HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, station);
 
 N = length(ahatf); %length North_South_Component
