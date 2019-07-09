@@ -1,5 +1,5 @@
 function individplot(HV_final_matrix, newfaxhz, station)
-plot(newfaxhz, HV_final_matrix, 'Color',  'k' , 'Linewidth', .5);
+plot(newfaxhz(10:length(newfaxhz)-1), HV_final_matrix(10:length(HV_final_matrix)-1), 'Color',  'k' , 'Linewidth', .5);
 title(strcat(station), 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
