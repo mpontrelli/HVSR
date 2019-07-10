@@ -1,71 +1,55 @@
-function HVSR(path, datapath, individ, varargin)
-%close all
-%path = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR';
-%datapath = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data';
-%individ = 'yes';
+function HVSR(path, datapath, individ, magxbounds, magybounds, magresps, varargin)
 warning('off','all') %The warnings are from the triangular filter which is 
-%still a piece of the code, though it can be removed. 
-
-%% AU11
- stationlist = {'AU11'};%,'AL01', 'AO24', 'AP68', 'AR14', 'AU11', 'AU46', 'BA49',...
-%     'BL45', 'BO39', 'CA20', 'CA59', 'CB43', 'CC55',...
-%     'CE18', 'CE23', 'CE32', 'CH84', 'CI05', 'CJ03', 'CJ04', 'CO47', 'CO56',...
-%     'CP28', 'CS78', 'CT64', 'CU80', 'DM12', 'DR16', 'DX37',...
-%     'EO30', 'ES57', 'EX08', 'EX09', 'EX12', 'FJ74', 'GA62', 'GC38', 'GR27',...
-%     'HA41', 'HJ72', 'IB22', 'IM40', 'JA43', 'JC54', 'LI33', 'LI58', 'LV17',...
-%     'ME52', 'MI15', 'MY19', 'NZ20', 'NZ31', 'PA34', 'PD42', 'PE10', 'RI76',...
-%     'RM48', 'SI53', 'SP51', 'TE07', 'TH35', 'TL08',...
-%     'TL55', 'UC44', 'VG09', 'VM29', 'XP06'};
+cd(datapath)
+stationlist = dir;
+stationlist = stationlist(3:length(stationlist));
 for eee = 1:length(stationlist)
-    station = stationlist{eee};
-    disp(station)
-    d = strcat(datapath,'\',station);
+    station = stationlist(eee);
+    statname = station.name;
+    station = strcat(station.folder, '\', statname);
     %go into data directory and build structure of all files in it
-    cd(d)
+    cd(station)
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
     files = dir;
     files = files(3:length(files));
-    
     %create empty matrix that gets filled with all H/V values, counter is used
     %to index this matrix
     HV_final_matrix = [];
+    XH_final_matrix = [];
+    XV_final_matrix = [];
     peakfreq = [];
     peakamp = [];
     counter = 0;
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %function
-
     %change directory back to codes to access functions needed 
     %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Codes';
     d = strcat(path, '\HVSR\Codes');
     cd(d)
     for file = files'
-        filename = strcat(datapath,'\', station,'\',file.name);
-        %filename = strcat('C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02\',file.name);
+        filename = strcat(station,'\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
         [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
         if PGANS < 0.1 && PGAV < 0.1 && PGAEW < 0.1
             counter = counter + 1;
             %fs = station.fs; %sampling frequency in hz
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-            [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
-    
+            [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
             %perform H/V
-            [H_V1] = HV(XH_magfilt,XV_magfilt);
-
+            [H_V1] = HV(XH_magfilt, XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
+            %mag resp matrix build
+            newXH_mag = interp1(fax_HzN, XH_mag, newfaxhz);
+            XH_final_matrix(counter, :) = newXH_mag; 
+            newXV_mag = interp1(fax_HzN, XV_mag, newfaxhz);
+            XV_final_matrix(counter, :) = newXV_mag; 
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
             HV_final_matrix(counter, :) = newH_V1; 
             clear H_V1
             else
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
             [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
-    
             %perform H/V
             [H_V1] = HV(XH_magfilt,XV_magfilt);
-   
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
@@ -74,28 +58,21 @@ for eee = 1:length(stationlist)
             clear H_V1 
         end
     end
-newfaxhz = 0:0.001:20;
-
-if strcmp(individ, 'yes') == 1
-    individplot(HV_final_matrix, newfaxhz, station)
-else 
-end
-    
+newfaxhz = 0:0.001:20;  
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-
-[ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
-ahatf = ahatf(10:length(ahatf)-1);
-newfaxhz=newfaxhz(10:length(newfaxhz)-1);
-confinthigh=confinthigh(10:length(confinthigh)-1);
-confintlow=confintlow(10:length(confintlow)-1);
-HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, station);
+[ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
+[ahatfXH, sigmaXH, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
+[ahatfXV, sigmaXV, confinthighXV, confintlowXV] = wavav(XV_final_matrix);
+%plot
+HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
+magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
+magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
 
 N = length(ahatf); %length North_South_Component
 width = .1; %width for triangle moving average filter in hz
 q = ceil((N/20)*width); %width for triangle moving average filter in samples
 e = smooth(ahatf, q, 'moving');
-
 %% Determine if peak is a peak
 count = 0;
 [amps,amplocs] = findpeaks(e);
@@ -112,7 +89,6 @@ if freqtrough(1) > freqpeak(1)
     trough = horzcat(Y,trough);
     troughloc = horzcat(X,troughloc);
 end
-
 if freqpeak(length(freqpeak)) > freqtrough(length(freqtrough))
     Y = -1;
     X = 19991;
@@ -133,9 +109,7 @@ for k = 1:length(amps)
         amplocs2(count) = amplocs(k);
     end
 end
-%points = plot(peakfreq,peakamp,'o','MarkerSize',15,'MarkerEdgeColor','g','MarkerFaceColor','g');
 %% Compute desired statistics
-
 Taxstat = [];
 for f = 1:length(peakamp)
     taxstat(f,1) = f; 
@@ -149,8 +123,14 @@ for f = 1:length(peakamp)
     sigmai = median(a);
     taxstat(f,5) = sigmai;
 end
-hold off
-
+newfaxhz = 0:0.001:20;
+if nargin == 2
+    continue
+elseif strcmp(individ, 'yes') == 1
+    individplot(HV_final_matrix, newfaxhz, statname)
+elseif strcmp(magresps, 'yes') == 1
+    
+end
 fclose('all')
 end
-%end
+end
