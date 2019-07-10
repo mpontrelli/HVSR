@@ -1,5 +1,28 @@
-function HVSR(path, datapath, individ, magxbounds, magybounds, magresps, varargin)
-warning('off','all') %The warnings are from the triangular filter which is 
+function HVSR(path, datapath, varargin)
+%create Input Parser object
+p = inputParser;
+%add inputs to the scheme
+defaultxbound = ([0, 20]);
+defaultybound = ([0.0001, 100]);
+addRequired(p,'path',@ischar);
+addRequired(p,'datapath',@ischar);
+addParameter(p, 'HVSR', 'No', @ischar);
+addParameter(p, 'individHVSR', 'No', @ischar);
+addParameter(p, 'magresps', 'No', @ischar);
+addParameter(p, 'magxbounds', defaultxbound, @isnumeric);
+addParameter(p, 'magybounds', defaultybound, @isnumeric);
+%parse the inputs
+parse(p, path, datapath, varargin{:})
+%set varibales from the parse
+HVSR = p.Results.HVSR;
+individHVSR = p.Results.individHVSR;
+magresps = p.Results.magresps;
+magxbounds = p.Results.magxbounds;
+magybounds = p.Results.magybounds;
+
+
+%start function
+disp(HVSR)
 cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
@@ -9,7 +32,6 @@ for eee = 1:length(stationlist)
     station = strcat(station.folder, '\', statname);
     %go into data directory and build structure of all files in it
     cd(station)
-    %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Data\AE02';
     files = dir;
     files = files(3:length(files));
     %create empty matrix that gets filled with all H/V values, counter is used
@@ -21,7 +43,6 @@ for eee = 1:length(stationlist)
     peakamp = [];
     counter = 0;
     %change directory back to codes to access functions needed 
-    %cd 'C:\Users\Marshall\Box Sync\tFall_2018\Research\Mexico_City\Codes';
     d = strcat(path, '\HVSR\Codes');
     cd(d)
     for file = files'
@@ -61,14 +82,25 @@ for eee = 1:length(stationlist)
 newfaxhz = 0:0.001:20;  
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-[ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
-[ahatfXH, sigmaXH, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
-[ahatfXV, sigmaXV, confinthighXV, confintlowXV] = wavav(XV_final_matrix);
-%plot
-HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
-magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
-magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
 
+%HVSR
+if strcmp(HVSR, 'yes') == 1   
+    [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
+    HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
+end
+
+if strcmp(individHVSR, 'yes') == 1   
+    [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
+    individplot(ahatf, sigma, newfaxhz, confinthigh, confintlow, statname);
+end
+
+%Mag responses
+if strcmp(magresps, 'yes') == 1     
+    [ahatfXH, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
+    [ahatfXV, confinthighXV, confintlowXV] = wavav(XV_final_matrix);
+    magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
+    magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
+end
 N = length(ahatf); %length North_South_Component
 width = .1; %width for triangle moving average filter in hz
 q = ceil((N/20)*width); %width for triangle moving average filter in samples
@@ -122,14 +154,6 @@ for f = 1:length(peakamp)
     a = sigma(I1:I2);
     sigmai = median(a);
     taxstat(f,5) = sigmai;
-end
-newfaxhz = 0:0.001:20;
-if nargin == 2
-    continue
-elseif strcmp(individ, 'yes') == 1
-    individplot(HV_final_matrix, newfaxhz, statname)
-elseif strcmp(magresps, 'yes') == 1
-    
 end
 fclose('all')
 end
