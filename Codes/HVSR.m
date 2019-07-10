@@ -1,4 +1,8 @@
-function HVSR(path, datapath, individ, varargin)
+%function HVSR(path, datapath, individ, varargin)
+close all
+clear all
+path = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\HVSR';
+datapath = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Mexico City\Data';
 warning('off','all') %The warnings are from the triangular filter which is 
 cd(datapath)
 stationlist = dir;
@@ -14,7 +18,8 @@ for eee = 1:length(stationlist)
     files = files(3:length(files));
     %create empty matrix that gets filled with all H/V values, counter is used
     %to index this matrix
-    HV_final_matrix = [];
+    XH_final_matrix = [];
+    XV_final_matrix = [];
     peakfreq = [];
     peakamp = [];
     counter = 0;
@@ -31,13 +36,15 @@ for eee = 1:length(stationlist)
             %fs = station.fs; %sampling frequency in hz
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
             [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
+            
             %perform H/V
-            [H_V1] = HV(XH_magfilt,XV_magfilt);
+            %[H_V1] = HV(XH_magfilt,XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
-            newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
-            HV_final_matrix(counter, :) = newH_V1; 
-            clear H_V1
+            newXH = interp1(fax_HzN, XH_magfilt, newfaxhz);
+            newXV = interp1(fax_HzN, XV_magfilt, newfaxhz);
+            XH_final_matrix(counter, :) = newXH; 
+            XV_final_matrix(counter, :) = newXV; 
             else
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
             [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
@@ -54,7 +61,12 @@ for eee = 1:length(stationlist)
 newfaxhz = 0:0.001:20;  
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-[ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
+[magH, sigmaH, confinthighH, confintlowH] = HVSRavg(XH_final_matrix);
+[magV, sigmaV, confinthighV, confintlowV] = HVSRavg(XV_final_matrix);
+ahatf = HV(magH, magV);
+confinthigh = HV(confinthighH,confinthighV);
+confintlow = HV(confintlowH, confintlowV);
+
 %plot
 HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
 
@@ -121,4 +133,4 @@ elseif strcmp(individ, 'yes') == 1
 end
 fclose('all')
 end
-end
+%end
