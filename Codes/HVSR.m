@@ -1,4 +1,4 @@
-function HVSR(path, datapath, individ, varargin)
+function HVSR(path, datapath, individ, magxbounds, magybounds, magresps, varargin)
 warning('off','all') %The warnings are from the triangular filter which is 
 cd(datapath)
 stationlist = dir;
@@ -15,6 +15,8 @@ for eee = 1:length(stationlist)
     %create empty matrix that gets filled with all H/V values, counter is used
     %to index this matrix
     HV_final_matrix = [];
+    XH_final_matrix = [];
+    XV_final_matrix = [];
     peakfreq = [];
     peakamp = [];
     counter = 0;
@@ -30,11 +32,16 @@ for eee = 1:length(stationlist)
             counter = counter + 1;
             %fs = station.fs; %sampling frequency in hz
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-            [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
+            [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
             %perform H/V
-            [H_V1] = HV(XH_magfilt,XV_magfilt);
+            [H_V1] = HV(XH_magfilt, XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
+            %mag resp matrix build
+            newXH_mag = interp1(fax_HzN, XH_mag, newfaxhz);
+            XH_final_matrix(counter, :) = newXH_mag; 
+            newXV_mag = interp1(fax_HzN, XV_mag, newfaxhz);
+            XV_final_matrix(counter, :) = newXV_mag; 
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
             HV_final_matrix(counter, :) = newH_V1; 
             clear H_V1
@@ -54,9 +61,13 @@ for eee = 1:length(stationlist)
 newfaxhz = 0:0.001:20;  
 %statistics per Thompson et al 2012 page 34
 %compute maximum likelihood estimator of median
-[ahatf, sigma, confinthigh, confintlow] = HVSRavg(HV_final_matrix);
+[ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
+[ahatfXH, sigmaXH, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
+[ahatfXV, sigmaXV, confinthighXV, confintlowXV] = wavav(XV_final_matrix);
 %plot
 HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
+magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
+magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
 
 N = length(ahatf); %length North_South_Component
 width = .1; %width for triangle moving average filter in hz
@@ -98,7 +109,6 @@ for k = 1:length(amps)
         amplocs2(count) = amplocs(k);
     end
 end
-%points = plot(peakfreq,peakamp,'o','MarkerSize',15,'MarkerEdgeColor','g','MarkerFaceColor','g');
 %% Compute desired statistics
 Taxstat = [];
 for f = 1:length(peakamp)
@@ -118,6 +128,8 @@ if nargin == 2
     continue
 elseif strcmp(individ, 'yes') == 1
     individplot(HV_final_matrix, newfaxhz, statname)
+elseif strcmp(magresps, 'yes') == 1
+    
 end
 fclose('all')
 end
