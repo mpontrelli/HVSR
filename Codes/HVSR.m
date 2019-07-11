@@ -1,4 +1,4 @@
-function HVSR(path, datapath, varargin)
+function [taxstat, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -19,10 +19,7 @@ individHVSR = p.Results.individHVSR;
 magresps = p.Results.magresps;
 magxbounds = p.Results.magxbounds;
 magybounds = p.Results.magybounds;
-
-
 %start function
-disp(HVSR)
 cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
@@ -84,7 +81,9 @@ newfaxhz = 0:0.001:20;
 %HVSR
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
-    HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);
+    HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);  
+    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz);
+    [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma);
 end
 
 if strcmp(individHVSR, 'yes') == 1   
@@ -98,60 +97,7 @@ if strcmp(magresps, 'yes') == 1
     magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
     magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
 end
-N = length(ahatf); %length North_South_Component
-width = .1; %width for triangle moving average filter in hz
-q = ceil((N/20)*width); %width for triangle moving average filter in samples
-e = smooth(ahatf, q, 'moving');
-%% Determine if peak is a peak
-count = 0;
-[amps,amplocs] = findpeaks(e);
-for hh = 1:length(amps)
-    freqpeak(hh) = newfaxhz(amplocs(hh));
-end
-[trough,troughloc] = findpeaks(-1*e);
-for hh = 1:length(trough)
-    freqtrough(hh) = newfaxhz(troughloc(hh));
-end
-if freqtrough(1) > freqpeak(1)
-    Y = 1;
-    X = 1;
-    trough = horzcat(Y,trough);
-    troughloc = horzcat(X,troughloc);
-end
-if freqpeak(length(freqpeak)) > freqtrough(length(freqtrough))
-    Y = -1;
-    X = 19991;
-    trough = horzcat(trough', Y);
-    troughloc = horzcat(troughloc',X);
-end
-for hh = 1:length(trough)
-    freqtrough(hh) = newfaxhz(troughloc(hh));
-end
-for k = 1:length(amps)
-    height = amps(k)/sqrt(2);
-    lefttrough = -1 * trough(k);
-    righttrough = -1 * trough(k + 1);
-    if lefttrough < height && righttrough < height
-        count  = count + 1;
-        peakfreq(count) = newfaxhz(amplocs(k));
-        peakamp(count) = amps(k); 
-        amplocs2(count) = amplocs(k);
-    end
-end
-%% Compute desired statistics
-Taxstat = [];
-for f = 1:length(peakamp)
-    taxstat(f,1) = f; 
-    taxstat(f,2) = peakfreq(f); 
-    A = peakamp(f);
-    taxstat(f,3) = A;
-    amploc2 = amplocs2(f);
-    [I1, I2, f1, f2, hpb] =  HalfPowerBand2(A, amploc2, newfaxhz, ahatf); 
-    taxstat(f,4) = hpb;
-    a = sigma(I1:I2);
-    sigmai = median(a);
-    taxstat(f,5) = sigmai;
-end
+
 fclose('all')
 end
 end
