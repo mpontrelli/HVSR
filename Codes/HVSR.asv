@@ -1,4 +1,4 @@
-function [taxsnargout] = HVSR(path, datapath, varargin)
+function [statsfinal, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -19,13 +19,11 @@ individHVSR = p.Results.individHVSR;
 magresps = p.Results.magresps;
 magxbounds = p.Results.magxbounds;
 magybounds = p.Results.magybounds;
-
-
 %start function
-disp(HVSR)
 cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
+statsfinal = [];
 for eee = 1:length(stationlist)
     station = stationlist(eee);
     statname = station.name;
@@ -39,8 +37,6 @@ for eee = 1:length(stationlist)
     HV_final_matrix = [];
     XH_final_matrix = [];
     XV_final_matrix = [];
-    peakfreq = [];
-    peakamp = [];
     counter = 0;
     %change directory back to codes to access functions needed 
     d = strcat(path, '\HVSR\Codes');
@@ -53,7 +49,7 @@ for eee = 1:length(stationlist)
             counter = counter + 1;
             %fs = station.fs; %sampling frequency in hz
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-            [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
+            [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
             %perform H/V
             [H_V1] = HV(XH_magfilt, XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
@@ -80,19 +76,18 @@ for eee = 1:length(stationlist)
         end
     end
 newfaxhz = 0:0.001:20;  
-
 %HVSR
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);  
-    [peakamp, peakfreq, amplocs2] = peakiden(ahatf);
-    [taxstat] = specratstat(peakamp, peakfreq, amplocs2);
+    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz);
+    [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
+    statsfinal = vertcat(statsfinal, taxstat);
 end
 
 if strcmp(individHVSR, 'yes') == 1   
     individplot(HV_final_matrix, newfaxhz, statname);
 end
-
 %Mag responses
 if strcmp(magresps, 'yes') == 1     
     [ahatfXH, sigma, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
@@ -100,7 +95,6 @@ if strcmp(magresps, 'yes') == 1
     magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
     magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
 end
-
 fclose('all')
 end
 end
