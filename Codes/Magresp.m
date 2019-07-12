@@ -1,4 +1,4 @@
-function [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound]=  Magresp(xNS, xV, xEW, fs)
+function [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound]=  Magresp(xNS, xV, xEW, fs, fsmin)
 
 %Filter design
 N = length(xNS); %length North_South_Component
@@ -16,14 +16,11 @@ XH_magfilt1=filtfilt(w,a,XH_mag); %filtered magnitude spectra North_South_Compon
 
 fax_binsN = [0 : N-1]; %samples in NS component
 fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
-
-if fs == 100
-    ff = 5;
+ff = 2;
+if fs > fsmin
+    ff = ff * (fs / fsmin);
 end
-if fs == 200
-    ff = 10;
-end
-N_2 = ceil(N/ff); %half magnitude spectrum
+N_2 = ceil(N/ff) - fs; %half magnitude spectrum - 1 hz
 fax_HzN = fax_HzN1(1 : N_2);
 % XH_magfilt1 = kohmachi(XH_mag,fax_HzN1,30);
 % XV_magfilt1 = kohmachi(XV_mag,fax_HzN1,30);
