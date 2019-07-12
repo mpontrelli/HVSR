@@ -7,7 +7,7 @@ title(strcat(statname, ' HVSR'), 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-%xlim([0 5])
+xlim([newfaxhz(lowbound) 49])
 %ylim([0.1 100])
 grid on    
 end
