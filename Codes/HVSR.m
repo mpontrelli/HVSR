@@ -1,5 +1,4 @@
-function [statsfinal, varargout] = HVSR(path, datapath, varargin)
-%testing github Yay!
+function [statsfinal, ahatf, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -56,6 +55,8 @@ for eee = 1:length(stationlist)
             [H_V1] = HV(XH_magfilt, XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0:0.001:20;
+            [~, lowindex] = min(abs(newfaxhz - lowbound));
+            lowbound_matrix(counter, :) = lowindex;
             %mag resp matrix build
             newXH_mag = interp1(fax_HzN, XH_mag, newfaxhz);
             XH_final_matrix(counter, :) = newXH_mag; 
@@ -78,11 +79,15 @@ for eee = 1:length(stationlist)
         end
     end
 newfaxhz = 0:0.001:20;  
+% lowbound comes from lowbound _matrix and corresponds to the lowest
+% frequency that can be resolved at the shortest time series record in the
+% station database
+lowbound = max(lowbound_matrix);
 
 %HVSR
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
-    HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, statname);  
+    HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
     [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz);
     [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
     statsfinal = vertcat(statsfinal, taxstat);
