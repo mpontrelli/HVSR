@@ -1,4 +1,4 @@
-function [statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -94,9 +94,9 @@ lowbound = max(lowbound_matrix);
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz);
+    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound);
     [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
-    statsfinal = vertcat(statsfinal, taxstat);
+    %statsfinal = vertcat(statsfinal, taxstat);
 end
 
 if strcmp(individHVSR, 'yes') == 1   
