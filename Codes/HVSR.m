@@ -38,7 +38,6 @@ for eee = 1:length(stationlist)
     XH_final_matrix = [];
     XV_final_matrix = [];
     lowbound_matrix = [];
-    counter1 = 0;
     counter = 0;
     %change directory back to codes to access functions needed 
     d = strcat(path, '\HVSR\Codes');
@@ -48,17 +47,7 @@ for eee = 1:length(stationlist)
     %of each record. The number of samples value will be the
     %sample number of the record with the maximum number of samples. The
     %sampling freqeuncy is required for the freqeuncy axis high bound
-    lengthvec = [];
-    fsvec = [];
-    for file = files'
-        counter1 = counter1 + 1;
-        filename = strcat(station,'\',file.name);
-        [xNS,xV,xEW, fs] = readfile1(filename);
-        lengthvec(counter1, :) = length(xNS);
-        fsvec(counter1, :) = fs;
-    end
-    fsmin = min(fsvec);
-    recmax = max(lengthvec);
+    [fsmin, recmax] = statrecinfo(files, station);
     for file = files'
         filename = strcat(station,'\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
