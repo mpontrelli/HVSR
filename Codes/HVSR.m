@@ -89,7 +89,6 @@ newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1) : (fsmin/2 - 1);
 % frequency that can be resolved at the shortest time series record in the
 % station database
 lowbound = max(lowbound_matrix);
-
 %HVSR
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
