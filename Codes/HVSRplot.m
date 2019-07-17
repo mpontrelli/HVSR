@@ -1,4 +1,5 @@
 function HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname)
+figure
 hold on
 confidenceinterval=shadedplot(newfaxhz(lowbound:length(newfaxhz)), confinthigh(lowbound:length(confinthigh)), confintlow(lowbound:length(confintlow)),[.9,.9,.9],'k');
 hold on
@@ -10,4 +11,5 @@ set(gca,'FontSize',20,'YScale', 'log')
 xlim([newfaxhz(lowbound) 49])
 %ylim([0.1 100])
 grid on    
+hold off
 end
