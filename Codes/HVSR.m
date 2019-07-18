@@ -27,7 +27,8 @@ statsfinal = [];
 for eee = 1:length(stationlist)
     station = stationlist(eee);
     statname = station.name;
-    station = strcat(station.folder, '\', statname);
+    disp(statname)
+    station = strcat(datapath, '\', statname);
     %go into data directory and build structure of all files in it
     cd(station)
     files = dir;
