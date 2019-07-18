@@ -1,7 +1,7 @@
-function [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound)
+function [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound, fsmin)
 N = length(ahatf)-lowbound; %length North_South_Component
-width = .4; %width for triangle moving average filter in hz
-q = ceil((N/20)*width); %width for triangle moving average filter in samples
+width = 2; %width for triangle moving average filter in hz
+q = ceil((fsmin/2-1)*width); %width for triangle moving average filter in samples
 e = smooth(ahatf, q, 'moving');
 e = e(lowbound: length(e));
 newfaxhz1 = newfaxhz(lowbound: length(newfaxhz));
@@ -45,4 +45,9 @@ for k = 1:length(amps)
         amplocs2(count) = amplocs(k);
     end
 end
+figure 
+plot(newfaxhz1,e)
+hold on
+plot(newfaxhz1(amplocs),amps,'go')
+
 end

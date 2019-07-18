@@ -1,4 +1,4 @@
-function [newfaxhz, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [newfaxhz, ahatf, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -27,8 +27,8 @@ statsfinal = [];
 for eee = 1:length(stationlist)
     station = stationlist(eee);
     statname = station.name;
-    disp(statname)
     station = strcat(datapath, '\', statname);
+    disp(station)
     %go into data directory and build structure of all files in it
     cd(station)
     files = dir;
@@ -95,7 +95,7 @@ lowbound = max(lowbound_matrix);
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound);
+    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound,fsmin);
     [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
     statsfinal = vertcat(statsfinal, taxstat);
 end
