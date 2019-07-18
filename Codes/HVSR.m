@@ -1,4 +1,4 @@
-function [taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [newfaxhz, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -73,12 +73,13 @@ for eee = 1:length(stationlist)
             clear H_V1
             else
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-            [N_2, fax_HzN, XH_magfilt,XV_magfilt] =  Magresp(xNS, xV, xEW, fs); %Compute mag responses and run through triangular filter
+            [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound] =  Magresp(xNS, xV, xEW, fs, fsmin); %Compute mag responses and run through triangular filter
             %perform H/V
             [H_V1] = HV(XH_magfilt,XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
-            newfaxhz = 0:0.001:20;
-            newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
+            newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1): (fsmin/2 - 1);
+            [~, lowindex] = min(abs(newfaxhz - lowbound));
+            newH_V1 = interp1(fax_HzN, H_V1, newfaxhz); 
             clear newfaxhz
             clear newH_V1
             clear H_V1 
@@ -89,14 +90,13 @@ newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1) : (fsmin/2 - 1);
 % frequency that can be resolved at the shortest time series record in the
 % station database
 lowbound = max(lowbound_matrix);
-
 %HVSR
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
     [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound);
     [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
-    %statsfinal = vertcat(statsfinal, taxstat);
+    statsfinal = vertcat(statsfinal, taxstat);
 end
 
 if strcmp(individHVSR, 'yes') == 1   
