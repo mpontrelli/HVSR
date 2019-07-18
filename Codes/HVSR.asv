@@ -1,4 +1,4 @@
-function [taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -38,6 +38,7 @@ for eee = 1:length(stationlist)
     XH_final_matrix = [];
     XV_final_matrix = [];
     lowbound_matrix = [];
+    counter1 = 0;
     counter = 0;
     %change directory back to codes to access functions needed 
     d = strcat(path, '\HVSR\Codes');
@@ -47,7 +48,17 @@ for eee = 1:length(stationlist)
     %of each record. The number of samples value will be the
     %sample number of the record with the maximum number of samples. The
     %sampling freqeuncy is required for the freqeuncy axis high bound
-    [fsmin, recmax] = statrecinfo(files, station);
+    lengthvec = [];
+    fsvec = [];
+    for file = files'
+        counter1 = counter1 + 1;
+        filename = strcat(station,'\',file.name);
+        [xNS,xV,xEW, fs] = readfile1(filename);
+        lengthvec(counter1, :) = length(xNS);
+        fsvec(counter1, :) = fs;
+    end
+    fsmin = min(fsvec);
+    recmax = max(lengthvec);
     for file = files'
         filename = strcat(station,'\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
@@ -60,7 +71,7 @@ for eee = 1:length(stationlist)
             %perform H/V
             [H_V1] = HV(XH_magfilt, XV_magfilt);
             %make Hz vector and linear interpolate all H/V ETFs to this vector
-            newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1): (fsmin/2 - 1);
+            newfaxhz = 0:1 / recmax:(fsmin/2 - 1);
             [~, lowindex] = min(abs(newfaxhz - lowbound));
             lowbound_matrix(counter, :) = lowindex;
             %mag resp matrix build
@@ -84,7 +95,7 @@ for eee = 1:length(stationlist)
             clear H_V1 
         end
     end
-newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1) : (fsmin/2 - 1);  
+newfaxhz = 0:0.001:(fsmin/2 - 1);  
 % lowbound comes from lowbound _matrix and corresponds to the lowest
 % frequency that can be resolved at the shortest time series record in the
 % station database
@@ -94,9 +105,9 @@ lowbound = max(lowbound_matrix);
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound);
+    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz);
     [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
-    %statsfinal = vertcat(statsfinal, taxstat);
+    statsfinal = vertcat(statsfinal, taxstat);
 end
 
 if strcmp(individHVSR, 'yes') == 1   
