@@ -95,8 +95,8 @@ lowbound = max(lowbound_matrix);
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-    [peakamp, peakfreq, amplocs2] = peakiden(ahatf, newfaxhz, lowbound,fsmin);
-    [taxstat] = specratstat(peakamp, peakfreq, amplocs2, ahatf, newfaxhz, sigma, statname);
+    [matrix,peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin);
+    [taxstat] = specratstat(peakind,matrix, ahatf1, newfaxhz1, sigma, statname,lowbound);
     statsfinal = vertcat(statsfinal, taxstat);
 end
 

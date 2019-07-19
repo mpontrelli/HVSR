@@ -1,25 +1,25 @@
-function [I1, I2, f1, f2, hpb]=  HalfPowerBand2(A, amploc2, newfaxhz, ahatf)
+function [I1, I2, f1, f2, hpb]=  HalfPowerBand2(A, amploc2, newfaxhz1, ahatf1)
     %Half power bandwidth
     
-    amp = A/sqrt(2);
+    amp = A/1.5;
     
     %move down signal to the right
-    for i = 1:length(newfaxhz)
+    for i = 1:length(newfaxhz1)
         ii = amploc2 + i;
-        k = ahatf(ii);
+        k = ahatf1(ii);
         if k < amp
             I2 = ii;
-            f2 = newfaxhz(I2);
+            f2 = newfaxhz1(I2);
             break
         end
     end
     %move down signal to the left
-    for i = 1:length(newfaxhz)
+    for i = 1:length(newfaxhz1)
         ii = amploc2 - i;
-        k = ahatf(ii);
+        k = ahatf1(ii);
         if k < amp
             I1 = ii;
-            f1 = newfaxhz(I1);
+            f1 = newfaxhz1(I1);
             break
         end
     end
