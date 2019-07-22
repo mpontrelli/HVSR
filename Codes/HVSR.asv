@@ -1,4 +1,4 @@
-function [newfaxhz, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [newfaxhz, ahatf, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -65,9 +65,10 @@ for eee = 1:length(stationlist)
                 [H_V1] = HV(XH_magfilt, XV_magfilt);
                 XH_final_matrix(counter, :) = XH_mag;
                 XV_final_matrix(counter, :) = XV_mag; 
-                HV_final_matrix(counter, :) = H_V1; 
+                HV_final_matrix(counter, :) = newH_V1; 
                 clear H_V1
-            else
+            end
+        else
             counter = counter + 1;
             %fs = station.fs; %sampling frequency in hz
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
@@ -86,7 +87,6 @@ for eee = 1:length(stationlist)
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
             HV_final_matrix(counter, :) = newH_V1; 
             clear H_V1
-            end
             
 %             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
 %             [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound] =  Magresp(xNS, xV, xEW, fs, fsmin); %Compute mag responses and run through triangular filter
@@ -101,16 +101,12 @@ for eee = 1:length(stationlist)
 %             clear H_V1 
         end
     end
-if strcmp(wavecut, 'yes') == 1  
-    newfaxhz = fax_HzN;
-    [~, lowbound] = min(abs(newfaxhz - lowbound));
-else
-    newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1) : (fsmin/2 - 1);
-    lowbound = max(lowbound_matrix);
-end
+
+newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1) : (fsmin/2 - 1);  
 % lowbound comes from lowbound _matrix and corresponds to the lowest
 % frequency that can be resolved at the shortest time series record in the
 % station database
+lowbound = max(lowbound_matrix);
 %HVSR
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
