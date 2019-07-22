@@ -1,4 +1,4 @@
-function [fsmin, recmax] = statrecinfo(files, station)
+function [fsmin, recmax, recmin] = statrecinfo(files, station)
 counter1 = 0;
 lengthvec = [];
 fsvec = [];
@@ -11,4 +11,5 @@ for file = files'
 end
 fsmin = min(fsvec);
 recmax = max(lengthvec);
+recmin = min(lengthvec);
 end

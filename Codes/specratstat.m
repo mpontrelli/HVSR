@@ -4,9 +4,7 @@ sigma1 = sigma(lowbound:length(sigma));
 sigvec = []; 
 for f = 1:m
     loc = peakind(f);
-    disp(loc)
     A = matrix(f,2);
-    disp(A)
     [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
     taxstat{f,1} = statname;
     taxstat{f,2} = num2str(hpb);
