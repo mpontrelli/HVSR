@@ -1,7 +1,7 @@
 function [I1, I2, f1, f2, hpb]=  HalfPowerBand2(A, amploc2, newfaxhz1, ahatf1)
     %Half power bandwidth
     
-    amp = A/1.5;
+    amp = A/sqrt(2);
     
     %move down signal to the right
     for i = 1:length(newfaxhz1)

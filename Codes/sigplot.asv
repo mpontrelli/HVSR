@@ -1,0 +1,10 @@
+
+figure
+sigma1 = smooth(sigma, length(sigma)/ 
+plot(newfaxhz(lowbound:length(newfaxhz)), sigma(lowbound:length(sigma)), 'linewidth',2, 'color', [0.5176, 0, 0.6588])
+title('AO24 sigma')
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Sigma','FontSize', 18)
+set(gca,'FontSize',20)
+xlim([0 10])
+grid on

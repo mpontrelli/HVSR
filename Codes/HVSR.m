@@ -1,4 +1,4 @@
-function [newfaxhz, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
 %add inputs to the scheme
@@ -115,8 +115,8 @@ end
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-    [matrix,peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin);
-    [taxstat] = specratstat(peakind,matrix, ahatf1, newfaxhz1, sigma, statname,lowbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin);
+    [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound);
     statsfinal = vertcat(statsfinal, taxstat);
 end
 
@@ -127,8 +127,8 @@ end
 if strcmp(magresps, 'yes') == 1     
     [ahatfXH, sigma, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
     [ahatfXV, sigma, confinthighXV, confintlowXV] = wavav(XV_final_matrix);
-    magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
-    magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
+    magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal', taxstat);
+    magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical', taxstat);
 end
 fclose('all')
 end

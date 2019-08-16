@@ -3,12 +3,12 @@ figure
 hold on
 confidenceinterval=shadedplot(newfaxhz(lowbound:length(newfaxhz)), confinthigh(lowbound:length(confinthigh)), confintlow(lowbound:length(confintlow)),[.9,.9,.9],'k');
 hold on
-ETF = plot(newfaxhz(lowbound:length(newfaxhz)), ahatf(lowbound:length(ahatf)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+ETF = plot(newfaxhz(lowbound:length(newfaxhz)), ahatf(lowbound:length(ahatf)), 'Color', [0, 0.30196 0.6588] , 'Linewidth', 1.5);
+title(strcat(statname, ' HVSR'), 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log', 'XScale', 'log')
+set(gca,'FontSize',20,'YScale', 'log')
 xlim([newfaxhz(lowbound) 20])
 ylim([0.1 100])
-grid on 
-box on
+grid on    
 end

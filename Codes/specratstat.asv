@@ -1,4 +1,4 @@
-function [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound)
+function [taxstat] = specratstat(peakind,matrix, ahatf1, newfaxhz1, sigma, statname,lowbound)
 [m] = length(peakind);
 sigma1 = sigma(lowbound:length(sigma));  
 for f = 1:m
@@ -12,7 +12,6 @@ for f = 1:m
     taxstat1(f,2) = sigmai;
 end
 matrix = num2cell(matrix);
-matrix1 = num2cell(matrix1);
-taxstat1 = num2cell(taxstat1);
-taxstat=[taxstat, matrix, taxstat1, matrix1];
+taxstat1 = num2cell(matrix);
+taxstat=[taxstat,taxstat1, matrix];
 end

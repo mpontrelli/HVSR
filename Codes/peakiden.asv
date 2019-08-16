@@ -7,24 +7,35 @@ function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz,
 newfaxhz1 = newfaxhz(lowbound: length(newfaxhz));
 ahatf1 = ahatf(lowbound:length(ahatf));
 
+peakfreq = [];
+peakamp = []; 
+amplocs2 = [];
 %% Determine if peak is a peak
+count = 0;
 [peaks,locs,w,p] = findpeaks(ahatf1,newfaxhz1);
 counter = 0;
 for ii = 1:length(p)
-    if peaks(ii) - p(ii) < peaks(ii)/sqrt(2)
+    if peaks(locs(ii)) - p(ii) > peaks(locs(ii))/sqrt(2)
         counter = counter+1;
         o(counter) = ii; %this peak is not a sig peak, so minus 1 to get rid of it
+        break
     end 
 end 
-topprom = p(o)';
-topwidth = w(o)';
-A = peaks(o)'; fn = locs(o)';
+p = B(1:o);
+w = w(I);
+topprom = B;
+topwidth = w(1:o);
+ind = I(1:o);
+A = peaks(ind); fn = locs(ind);
+[fn,I2] = sort(fn);
+A = A(I2); topprom = topprom(I2); topwidth = topwidth(I2);
+A=A'; topprom = topprom'; topwidth = topwidth';fn = fn';
 matrix = [fn,A];
 matrix1 = [topprom, topwidth];
-for i = 1:length(fn)
-    peakind(i) = find(newfaxhz1==fn(i));
+for j = 1:length(fn)
+    peakind(j)=find(newfaxhz1==fn(j));
 end
-%plot(fn, A, 'o', 'markeredgecolor', 'g', 'markerfacecolor', 'g')
+plot(fn, A, 'o', 'markeredgecolor', 'g', 'markerfacecolor', 'g')
 % for hh = 1:length(amps)
 %     freqpeak(hh) = newfaxhz1(amplocs(hh));
 % end
