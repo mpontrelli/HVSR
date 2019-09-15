@@ -1,33 +1,35 @@
-
+record = 'C:\Users\justi\Box\Justin Summer 2019\Preliminary Work\Figures\HVmicroCompar';
+path = 'C:\Users\justi\Desktop\HVSR\HVSR\Codes';
+datapath = 'C:\Users\justi\Box\Justin Summer 2019\Preliminary Work\Station List';
+database = 'Useable_Stations_NE.xls';
 %Path indicates the directory on a personal machine to where the codes have
 %been placed.
 %The code will process microtremor data on a specified station using the
 %guidelines from Yilar et al. 2017
 
 %Extract the Station names with the network assocaited 
-%cd(datapath)
-%Table = readtable('Useable_Stations_NE.xls','Sheet','All_Stations');
-%Network = Table(:,1); Station = Table(:,2); Station = table2array(Station);
-%Network = table2array(Network);
-%cd(path)
+cd(datapath)
+Table = readtable(database);
+Network = Table(:,1); Station = Table(:,2); Station = table2array(Station);
+Network = table2array(Network);
+cd(path)
 
 % Set the data time window and station
 %time1={'2011-11-23 17:00:00'}; %Start time of the event
 %time2={'2011-11-23 17:10:25'}; %End time of the event
-time1={'2012-06-15 08:00:00'}; %Start time of the event
-time2={'2012-06-15 08:10:25'}; %End time of the event
-Station='FFD'; %Stations and networks will be added
-Network='NE';
+time1={'2011-04-15 08:00:00'}; %Start time of the event
+time2={'2011-04-15 08:10:25'}; %End time of the event
+%Station = {'BRYW', 'EMMW', 'FFD', 'HNH', 'PQI', 'QUA2', 'WES', 'WVL', 'TRY'};
 Component={'BHZ','BHN','BHE'};
 
 %Extracting data from the IRIS Network and performing analysis on each of
 %the data
-for vi = 1:1
+for iv = 1:length(Station)
     for ii = 1:length(time1)
       %Get data from IRIS
-      [~,trace1UD,xUD] = getDMCData(char(time1{ii}),char(time2{ii}),Station,Network,Component{1});
-      [~,~,xNS] = getDMCData(char(time1{ii}),char(time2{ii}),Station,Network,Component{2});
-      [~,~,xEW] = getDMCData(char(time1{ii}),char(time2{ii}),Station,Network,Component{3});
+      [~,trace1UD,xUD] = getDMCData(char(time1{ii}),char(time2{ii}),Station{iv},Network,Component{1});
+      [~,~,xNS] = getDMCData(char(time1{ii}),char(time2{ii}),Station{iv},Network,Component{2});
+      [~,~,xEW] = getDMCData(char(time1{ii}),char(time2{ii}),Station{iv},Network,Component{3}); 
       %Conditional Statements to skip stations that do not have a record of
       %certian time requested
       if xUD(1) == 0 && xNS(1) == 0 && xEW(1) == 0
@@ -41,11 +43,11 @@ for vi = 1:1
 
       %Window the data with a non-overlapping window of 40 secs and 25 secs
       %apart, so collecting 625 secs of data in total
-      k = [1,40];
+      k = [1,fs];
       for iii = 1:10
-         xUDmatrix(iii,:) = xUD((k(1)):(k(2)*40+k(1))-1);
-         xNSmatrix(iii,:) = xNS((k(1)):(k(2)*40+k(1))-1);
-         xEWmatrix(iii,:) = xEW((k(1)):(k(2)*40+k(1))-1);
+         xUDmatrix(iii,:) = xUD((k(1)):(k(2)*fs+k(1))-1);
+         xNSmatrix(iii,:) = xNS((k(1)):(k(2)*fs+k(1))-1);
+         xEWmatrix(iii,:) = xEW((k(1)):(k(2)*fs+k(1))-1);
          k(1) = k(1)+2600;
       end
 
@@ -66,9 +68,7 @@ for vi = 1:1
       N = n;
       fax_binsN = (0 : N-1); %samples in NS component
       fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
-      if fs == 40
-          ff=2;
-      end
+      ff = fs/20;
       N_2 = ceil(N/ff); %half magnitude spectrum
       fax_HzN = fax_HzN1(1 : N_2);
 
@@ -103,72 +103,31 @@ for vi = 1:1
       [ahatfH, sigmaH, confinthighH, confintlowH] =  HVSRavg(XH_VH);
       
       %Plot the data & save the plots
-      title1 = strcat('EW Component',{' '},Station); 
-      title2 = strcat('NS Component',{' '},Station);
-      title3 = strcat('Complex Time Series',{' '},Station);
-      HVSRplot(ahatfEW, fax_HzN, confinthighEW, confintlowEW, title1)
-      [maxEW,positionEW] = max(ahatfEW); HzEW = fax_HzN(positionEW);
+      lowbound = 1; Nyquist = fs/4;
+      title1 = strcat('EWComponent',Station{iv}); 
+      title2 = strcat('NSComponent',Station{iv});
+      title3 = strcat(Station{iv});
+      %HVSRplot(ahatfEW, fax_HzN, confinthighEW, confintlowEW, lowbound, title1,Nyquist)
       %cd(record)
       %d = strcat(title1,'.pdf');
       %saveas(gcf,d);
       %cd(path)
-      HVSRplot(ahatfNS, fax_HzN, confinthighNS, confintlowNS, title2)
-      [maxNS,positionNS] = max(ahatfNS); HzNS = fax_HzN(positionNS);
+      %HVSRplot(ahatfNS, fax_HzN, confinthighNS, confintlowNS, lowbound, title2,Nyquist)
       %cd(record)
       %d = strcat(title2,'.pdf');
       %saveas(gcf,d);
       %cd(path)
-      HVSRplot(ahatfH, fax_HzN, confinthighH, confintlowH, title3)
-      [maxH,positionH] = max(ahatfH); HzH = fax_HzN(positionH);
-      %cd(record)
-      %d = strcat(title3,'.pdf');
-      %saveas(gcf,d);
-      %cd(path)
+      HVSRplot(ahatfH, fax_HzN, confinthighH, confintlowH, lowbound, title3,Nyquist)
+      cd(record)
+      title3 = strcat(Station{iv},'HVSR');
+      d = strcat(title3,'.jpg');
+      saveas(gcf,d);
+      cd(path)
       
       % Determine if peak is a peak
-      count = 0;
-      width = .5; %width for triangle moving average filter in hz
-      window = ceil((N/20)*width);
-      e = smooth(ahatfH,window);
-      [amps,amplocs] = findpeaks(e);
-      for hh = 1:length(amps)
-            freqpeak(hh) = fax_HzN(amplocs(hh));
-      end
-      [trough,troughloc] = findpeaks(-1*ahatfH);
-      for hh = 1:length(trough)
-          freqtrough(hh) = fax_HzN(troughloc(hh));
-      end
-      if freqtrough(1) > freqpeak(1)
-         Y = 1;
-         X = 1;
-         trough = horzcat(Y,trough);
-         troughloc = horzcat(X,troughloc);
-      end
-
-      if freqpeak(length(freqpeak)) > freqtrough(length(freqtrough))
-         Y = -1;
-         X = 19991;
-         trough = horzcat(trough, Y);
-         troughloc = horzcat(troughloc,X);
-      end
-      for hh = 1:length(troughloc)-1
-          freqtrough(hh) = fax_HzN(troughloc(hh));
-      end
-      for k = 1:length(amps)
-          height = amps(k)/sqrt(2);
-          lefttrough = -1 * trough(k);
-          righttrough = -1 * trough(k + 1);
-          if lefttrough < height && righttrough < height
-             count  = count + 1;
-             peakfreq(count) = fax_HzN(amplocs(k));
-             peakamp(count) = amps(k); 
-             amplocs2(count) = amplocs(k);
-          end
-      end
-      figure
-      plot(fax_HzN, ahatfH)
-      hold on
-      plot(fax_HzN(amplocs2),peakamp,'go')
-
+      [matrixH,peakind,~,~] = peakiden(ahatfH, fax_HzN, lowbound);
+      [taxstat] = specratstat(peakind, matrixH, ahatfH, fax_HzN, sigmaH, Station{iv}, lowbound);
+      
+      
     end
 end 
