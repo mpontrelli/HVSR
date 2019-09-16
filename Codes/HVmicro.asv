@@ -1,4 +1,4 @@
-record = 'C:\Users\justi\Desktop\Research\Record\USarrayHV';
+record = 'C:\Users\justi\Box\Justin Summer 2019\Preliminary Work\Figures\HVmicroCompar';
 path = 'C:\Users\justi\Desktop\Research\HVSR\Codes';
 datapath = 'C:\Users\justi\Box\Justin Summer 2019\Preliminary Work\Station List';
 database = 'Useable_Stations_NE.xls';
@@ -15,10 +15,10 @@ Network = table2array(Network);
 cd(path)
 
 % Set the data time window and station
-%time1={'2011-11-23 17:00:00'}; %Start time of the event
-%time2={'2011-11-23 17:10:25'}; %End time of the event
-time1={'2011-04-15 08:00:00'}; %Start time of the event
-time2={'2011-04-15 08:10:25'}; %End time of the event
+time1={'2011-11-23 17:00:00'}; %Start time of the event
+time2={'2011-11-23 17:10:25'}; %End time of the event
+%time1={'2011-04-15 08:00:00'}; %Start time of the event
+%time2={'2011-04-15 08:10:25'}; %End time of the event
 %Station = {'BRYW', 'EMMW', 'FFD', 'HNH', 'PQI', 'QUA2', 'WES', 'WVL', 'TRY'};
 Component={'BHZ','BHN','BHE'};
 
@@ -44,20 +44,18 @@ for iv = 1:length(Station)
       %Window the data with a non-overlapping window of 40 secs and 25 secs
       %apart, so collecting 625 secs of data in total
       k = [1,fs];
-      xUDmatrix = []; xNSmatrix = []; xEWmatrix = [];
       for iii = 1:10
          xUDmatrix(iii,:) = xUD((k(1)):(k(2)*fs+k(1))-1);
          xNSmatrix(iii,:) = xNS((k(1)):(k(2)*fs+k(1))-1);
          xEWmatrix(iii,:) = xEW((k(1)):(k(2)*fs+k(1))-1);
-         k(1) = k(1)+25*fs;
+         k(1) = k(1)+2600;
       end
 
       %Compute the complex time series
       xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
 
       %Compute the fft for each 40 sec data window
-      windowlen = 10; XUDmatrix = []; XEWmatrix = []; XNSmatrix = []; 
-      XHmatrix = [];
+      windowlen = 10;
       for iii = 1:windowlen
           XUDmatrix(iii,:) = abs(fft(xUDmatrix(iii,:)))/1600;
           XNSmatrix(iii,:) = abs(fft(xNSmatrix(iii,:)))/1600;
@@ -86,7 +84,6 @@ for iv = 1:length(Station)
       end
 
       %Compute the HVSR
-      H_VEW = []; H_VNS = []; H_VH = []; 
       for iii = 1:10
           [H_VEW(iii,:)] = HV(XEWmatrix(iii,:),XUDmatrix(iii,:));
           [H_VNS(iii,:)] = HV(XNSmatrix(iii,:),XUDmatrix(iii,:));
@@ -94,7 +91,6 @@ for iv = 1:length(Station)
       end
 
       %Half magnitude spectrum
-      XH_VEW = []; XH_VNS = []; XH_VH = [];
       for iii = 1:windowlen
         XH_VEW(iii,:) = H_VEW(iii,1:N_2);
         XH_VNS(iii,:) = H_VNS(iii,1:N_2);
@@ -110,27 +106,15 @@ for iv = 1:length(Station)
       lowbound = 1; %Nyquist = fs/4;
       titleH = [Station{iv},' Complex'];
       HVSRplot(ahatfH, fax_HzN, confinthighH, confintlowH, lowbound, Station{iv})
-      title(titleH)
-      cd(record)
-      saveas(gcf,titleH)
-      cd(path)
-      
       titleEW = [Station{iv},' East-West'];
       HVSRplot(ahatfEW, fax_HzN, confinthighEW, confintlowEW, lowbound, Station{iv})
-      title(titleEW)
-      cd(record)
-      saveas(gcf,titleEW)
-      cd(path)
-      
-      titleNS= [Station{iv},' North-South'];
+      Station{iv} = [Station{iv},' North-South'];
       HVSRplot(ahatfEW, fax_HzN, confinthighEW, confintlowEW, lowbound, Station{iv})
-      title(titleNS)
-      cd(record)
-      saveas(gcf,titleNS)
-      cd(path)
       
       % Determine if peak is a peak
       [matrixH,peakind,~,~] = peakiden(ahatfH, fax_HzN, lowbound);
-      %[taxstat] = specratstat(peakind, matrixH, ahatfH, fax_HzN, sigmaH, Station{iv}, lowbound);     
+      %[taxstat] = specratstat(peakind, matrixH, ahatfH, fax_HzN, sigmaH, Station{iv}, lowbound);
+      
+      
     end
 end 

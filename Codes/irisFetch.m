@@ -481,8 +481,7 @@ classdef irisFetch
                else
                   dbPrint('traces = tracedata.fetchTraces("%s", "%s", "%s", "%s", "%s", "%s", ''%s'', %d)\n',...
                         N, S, L, C, startDateStr, endDateStr, opts.quality, opts.getsacpz);
-                  traces = tracedata.fetchTraces(N, S, L, C, ...
-                     startDateStr, endDateStr, opts.quality, opts.getsacpz); %db removed (;)
+                  traces = tracedata.fetchTraces(N, S, L, C,startDateStr, endDateStr, opts.quality, opts.getsacpz); %db removed (;)
                end
                dbPrint('tracedata.fetchTraces successfully completed, resulting in %d traces before converting\n', numel(traces));
             catch je
