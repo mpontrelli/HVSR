@@ -70,22 +70,21 @@ EWfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radi
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
 
-
 %% read files and convert into vectors
 %.sacBinary
 [xV] = ReadSacBinaryFile(Vfname); %vertical
 [xNS] = ReadSacBinaryFile(NSfname); %North-south
 [xEW] = ReadSacBinaryFile(EWfname); %East-West
 %rdsac
-% [xV] = rdsac('C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Data\Boston\921ACM\V.sac');
+% [xV] = rdsac('Vfname');
 % [xV] = xV.d;
-% [xNS] = rdsac('C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Data\Boston\921ACM\NS.sac');
+% [xNS] = rdsac('NSfname');
 % [xNS] = xNS.d;
-% [xEW] = rdsac('C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Data\Boston\921ACM\EW.sac');
+% [xEW] = rdsac('EWfname');
 % [xEW] = xEW.d;
 
 %miniseed
-%A = rdmseed('C:\Users\mpontr01\Box\2019_2_summer\Projects\Boston\Data\bd\Tufts University\bd_data_A00L_1559606400\bd_mseed_A00L_1559606400');
+%A = rdmseed('fname');
 %% Filter
 [xV] = Butter2(xV);
 [xNS] = Butter2(xNS);
@@ -199,10 +198,11 @@ yticklabels({'0.1','1','10', '100', '1000'})
 grid on 
 box on
 
-%cd C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Codes\HVSR\Codes
+%% Average the un-smoothed magnitude responses
 [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix2);
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix2);
 
+%% Plot averaged unfiltered magnitude responses (OUTPUT 3)
 figure
 subplot(1,2,1)
 hold on
@@ -215,10 +215,10 @@ title('Horizontal','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 1000])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100 1000])
-% yticklabels({'0.1','1','10', '100', '1000'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100 1000])
+yticklabels({'0.1','1','10', '100', '1000'})
 grid on 
 box on
 
@@ -234,14 +234,14 @@ title('Vertical','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 1000])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100 1000])
-% yticklabels({'0.1','1','10', '100', '1000'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100 1000])
+yticklabels({'0.1','1','10', '100', '1000'})
 grid on 
 box on
 
-%Smooth the magnitude Response
+%% compute smoothed magnitude responses
 width = .1; %width for triangle moving average filter in hz
 window = ceil((N/20)*width); %width for triangle moving average filter in samples where 20 is the number of Hz on your x-axis
 for iii = 1:numwin
@@ -249,6 +249,7 @@ for iii = 1:numwin
     XHmatrix3(iii,:) = smooth(XHmatrix2(iii,:),window);
 end
 
+%% Plot individual, smoothed magnitude responses (OUTPUT 4)
 figure
 subplot(1,2,1)
 plot(fax_HzN, XHmatrix3, 'Color',  'k' , 'Linewidth', .5);
@@ -258,10 +259,10 @@ ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 1000])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100 1000])
-% yticklabels({'0.1','1','10', '100', '1000'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100 1000])
+yticklabels({'0.1','1','10', '100', '1000'})
 grid on 
 box on
 
@@ -273,17 +274,18 @@ ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 1000])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100 1000])
-% yticklabels({'0.1','1','10', '100', '1000'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100 1000])
+yticklabels({'0.1','1','10', '100', '1000'})
 grid on 
 box on
 
-%cd C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Codes\HVSR\Codes
+%% Average the smoothed magnitude responses
 [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix3);
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix3);
 
+%% Plot averaged, smoothed magnitude responses (OUTPUT 5)
 figure
 subplot(1,2,1)
 hold on
@@ -296,15 +298,14 @@ title('Horizontal','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log','XScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 1000])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100 1000])
-% yticklabels({'0.1','1','10', '100', '1000'})
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100 1000])
+yticklabels({'0.1','1','10', '100', '1000'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
 grid on 
 box on
-
 
 subplot(1,2,2)
 hold on
@@ -317,21 +318,24 @@ title('Vertical','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log', 'XScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 1000])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100 1000])
-% yticklabels({'0.1','1','10', '100', '1000'})
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100 1000])
+yticklabels({'0.1','1','10', '100', '1000'})
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
 grid on 
 box on
 
-%Compute the HVSR
+%% Compute the HVSR
 for iii = 1:numwin
     [H_V(iii,:)] = HV(XHmatrix3(iii,:),XVmatrix3(iii,:));
 end
 
+%% average the HVSR
 [ahatf, sigma, confinthigh, confintlow] =  wavav(H_V);
+
+%% Plot the HVSR (OUTPUT 6)
 figure
 hold on
 confidenceinterval=shadedplot(fax_HzN(10:length(fax_HzN)), confinthigh(10:length(fax_HzN)), confintlow(10:length(fax_HzN)),[.9,.9,.9],'k');
@@ -343,22 +347,16 @@ title(strcat(statname), 'FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
 xlim([fax_HzN(10) 40])
 ylim([0.1 100])
-% xticks([0.1 1 10])
-% xticklabels({'0.1','1','10'})
-% yticks([0.1 1 10 100])
-% yticklabels({'0.1','1','10', '100'})
-
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100])
+yticklabels({'0.1','1','10', '100'})
 grid on 
 box on
 hold on
 
+%% compute statistics on HVSR
 [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, fsmin);
-[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound);
+[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
 
-% filename = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\921ACM\Data.xlsx';
-% sheet = 1;
-% xlRange = 'D3:H2002';
-% TTF = xlsread(filename,1,'H3: H2002');
-% TTFplot = plot(fax_HzN(10 :length(fax_HzN)), TTF(10:length(fax_HzN)), 'Color', 'k' , 'Linewidth', 2);
-% 
-% legend([ETF TTFplot],{'HVSR', 'TTF'}, 'location', 'northeast')
+%% End

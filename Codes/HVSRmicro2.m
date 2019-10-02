@@ -70,22 +70,21 @@ EWfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radi
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
 
-
 %% read files and convert into vectors
 %.sacBinary
 [xV] = ReadSacBinaryFile(Vfname); %vertical
 [xNS] = ReadSacBinaryFile(NSfname); %North-south
 [xEW] = ReadSacBinaryFile(EWfname); %East-West
 %rdsac
-% [xV] = rdsac('C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Data\Boston\921ACM\V.sac');
+% [xV] = rdsac('Vfname');
 % [xV] = xV.d;
-% [xNS] = rdsac('C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Data\Boston\921ACM\NS.sac');
+% [xNS] = rdsac('NSfname');
 % [xNS] = xNS.d;
-% [xEW] = rdsac('C:\Users\Marshall\Box\People\Marshall_and_Ashkan\Inversion_project\Data\Boston\921ACM\EW.sac');
+% [xEW] = rdsac('EWfname');
 % [xEW] = xEW.d;
 
 %miniseed
-%A = rdmseed('C:\Users\mpontr01\Box\2019_2_summer\Projects\Boston\Data\bd\Tufts University\bd_data_A00L_1559606400\bd_mseed_A00L_1559606400');
+%A = rdmseed('fname');
 %% Filter
 [xV] = Butter2(xV);
 [xNS] = Butter2(xNS);
