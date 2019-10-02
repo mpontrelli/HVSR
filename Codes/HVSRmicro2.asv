@@ -76,7 +76,7 @@ NSfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radi
 EWfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_3.sac';
 TTF = 'yes';
 outpath = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\figures';
-sav = 'no';
+sav = 'yes';
 
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
@@ -289,7 +289,7 @@ for iii = 1:numwin
 end
 
 %% Plot individual, smoothed magnitude responses (OUTPUT 4)
-individualfiltered = figure;
+figure
 subplot(1,2,1)
 plot(fax_HzN, XHmatrix3, 'Color',  'k' , 'Linewidth', .5);
 title('Horizontal', 'FontSize', 20)
@@ -334,7 +334,7 @@ end
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix3);
 
 %% Plot averaged, smoothed magnitude responses (OUTPUT 5)
-averagefiltered = figure;
+figure
 subplot(1,2,1)
 hold on
 confidenceinterval=shadedplot(fax_HzN, confinthighhorz, confintlowhorz,[.9,.9,.9],'k');
@@ -375,15 +375,6 @@ xticklabels({'0.1','1','10'})
 grid on 
 box on
 
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(averagefiltered, strcat(outpath, '\', 'averagefiltered.jpg'));
-    saveas(averagefiltered, strcat(outpath, '\', 'averagefiltered.fig'));
-end
-
 %% Compute the HVSR
 for iii = 1:numwin
     [H_V(iii,:)] = HV(XHmatrix3(iii,:),XVmatrix3(iii,:));
@@ -393,7 +384,7 @@ end
 [ahatf, sigma, confinthigh, confintlow] =  wavav(H_V);
 
 %% Plot the HVSR (OUTPUT 6)
-HVSR = figure;
+figure
 hold on
 confidenceinterval=shadedplot(fax_HzN(10:length(fax_HzN)), confinthigh(10:length(fax_HzN)), confintlow(10:length(fax_HzN)),[.9,.9,.9],'k');
 hold on
@@ -412,22 +403,11 @@ grid on
 box on
 hold on
 
-
-
 %% if you want to plot TTF from NRATTLE
 if strcmp(TTF, 'yes') == 1
     Read_amps_4_plot
     TTF = plot(fax_HzN(10 :length(fax_HzN)), amps(10:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
     legend([ETF, TTF], {'HVSR', 'TTF'})
-end
-
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(HVSR, strcat(outpath, '\', 'HVSR.jpg'));
-    saveas(HVSR, strcat(outpath, '\', 'HVSR.fig'));
 end
 
 %% compute statistics on HVSR
