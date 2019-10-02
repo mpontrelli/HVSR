@@ -71,11 +71,11 @@ fsmin = fs;
 windowlen = 100;
 numwin = 20;
 windis = 10;
-Vfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_1.sac';
-NSfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_2.sac';
-EWfname = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_3.sac';
+Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_1.sac';
+NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_2.sac';
+EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_3.sac';
 TTF = 'yes';
-outpath = 'C:\Users\mpontr01\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\figures';
+outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\figures';
 sav = 'no';
 
 %turn windows into samples for windowing calculations
