@@ -76,7 +76,7 @@ NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radi
 EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\data\2000046141241005_Kraft_1_3.sac';
 TTF = 'yes';
 outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\DS26-60\Site_response\figures';
-sav = 'no';
+sav = 'yes';
 
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
