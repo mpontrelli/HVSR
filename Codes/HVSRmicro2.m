@@ -71,11 +71,11 @@ fsmin = fs;
 windowlen = 50;
 numwin = 10;
 windis = 10;
-Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_1.sac';
-NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_2.sac';
-EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_3.sac';
+Vfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_1.sac';
+NSfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_2.sac';
+EWfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_3.sac';
 TTF = 'no';
-outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Figures';
+outpath = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Figures';
 sav = 'no';
 
 %turn windows into samples for windowing calculations
