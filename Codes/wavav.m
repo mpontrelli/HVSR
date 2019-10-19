@@ -1,3 +1,5 @@
+%Thompson et al. 2012
+
 function [ahatf, sigma, confinthigh, confintlow] =  wavav(HV_final_matrix)
 size1 = size(HV_final_matrix);
 len = size1(1);

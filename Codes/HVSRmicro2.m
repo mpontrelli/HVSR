@@ -64,18 +64,18 @@ close all
 clear all
 %% INPUTS
 
-statname = '';
+statname = '7a';
 lowbound = 10;
 fs = 100;
 fsmin = fs;
 windowlen = 50;
-numwin = 15;
+numwin = 10;
 windis = 10;
-Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
-NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
-EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
+Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_1.sac';
+NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_2.sac';
+EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_3.sac';
 TTF = 'no';
-outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
+outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Figures';
 sav = 'no';
 
 %turn windows into samples for windowing calculations
@@ -166,6 +166,7 @@ for iii = 1:numwin
 end
 
 %% Compute the complex time series
+%Steidl et al. 1994
 xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
 
 %% Compute unfiltered magnitude responses
