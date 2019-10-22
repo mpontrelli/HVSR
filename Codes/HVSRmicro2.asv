@@ -64,18 +64,18 @@ close all
 clear all
 %% INPUTS
 
-statname = 'Kraft_2';
-lowbound = 1;
+statname = '8a';
+lowbound = 10;
 fs = 100;
 fsmin = fs;
 windowlen = 50;
 numwin = 10;
 windis = 10;
-Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
-NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
-EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
+Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\';
+NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\8a\Data\2019292114326005_09B27_1_2.sac';
+EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\8a\Data\2019292114326005_09B27_1_3.sac';
 TTF = 'no';
-outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
+outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_A\8a\Figures';
 sav = 'yes';
 
 %turn windows into samples for windowing calculations
@@ -403,7 +403,7 @@ xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title(strcat(statname), 'FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 40])
+xlim([fax_HzN(10) 40])
 ylim([0.1 100])
 xticks([1 10 40])
 xticklabels({'1','10', '40'})
