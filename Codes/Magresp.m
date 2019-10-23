@@ -2,7 +2,7 @@ function [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound]=  Magr
 
 %Filter design
 N = length(xNS); %length North_South_Component
-width = .15; %width for triangle moving average filter in hz
+width = .1; %width for triangle moving average filter in hz
 q = ceil((N/fs)*width); %width for triangle moving average filter in samples
 w = (q);
 a=5; %second filter coefficient
@@ -11,8 +11,8 @@ XH = fft(xH); %fft North_South_Component x
 XV = fft(xV); %fft Vertical_Component x
 XH_mag = abs(XH)/N; %normalized magnitude spectra North_South_Component x
 XV_mag = abs(XV)/N; %normalized magnitude spectra Vertical_Component x
-XV_magfilt1=filtfilt(w,a,XV_mag); %filtered magnitude spectra North_South_Component x 
-XH_magfilt1=filtfilt(w,a,XH_mag); %filtered magnitude spectra North_South_Component x 
+XV_magfilt1=smooth(XV_mag,q); %filtered magnitude spectra North_South_Component x 
+XH_magfilt1=smooth(XH_mag,q); %filtered magnitude spectra North_South_Component x 
 
 fax_binsN = [0 : N-1]; %samples in NS component
 fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)

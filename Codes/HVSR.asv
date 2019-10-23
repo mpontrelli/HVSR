@@ -1,3 +1,24 @@
+%% HVSR
+% HVSR is designed to process many earthquake ground motion records at one
+% site and process them using Nakamura's HVSR technique. There are several
+% potential output plots including the site averaged HVSR, the HVSRs at a
+% site all on one plot before averaging) and the magnitude responses. 
+
+    %INPUTS
+    
+    % path - File directory to accompanying HVSR software folder
+    % datapath - path where the data are stored. This is a master folder
+    % containing individual fol
+    
+    % OUTPUTS
+    
+    %PDF - PDF approximation of vector x using bins # of bins
+    %CDF - CDF approximation of vector x using bins # of bins
+    %bincents - vector of center values of bins
+    
+%Author: Marshall Pontrelli
+%Date: 10/23/2019
+
 function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
@@ -79,9 +100,9 @@ for eee = 1:length(stationlist)
             [~, lowindex] = min(abs(newfaxhz - lowbound));
             lowbound_matrix(counter, :) = lowindex;
             %mag resp matrix build
-            newXH_mag = interp1(fax_HzN, XH_mag, newfaxhz);
+            newXH_mag = interp1(fax_HzN, XH_magfilt, newfaxhz);
             XH_final_matrix(counter, :) = newXH_mag; 
-            newXV_mag = interp1(fax_HzN, XV_mag, newfaxhz);
+            newXV_mag = interp1(fax_HzN, XV_magfilt, newfaxhz);
             XV_final_matrix(counter, :) = newXV_mag; 
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
             HV_final_matrix(counter, :) = newH_V1; 
@@ -127,10 +148,8 @@ end
 if strcmp(magresps, 'yes') == 1     
     [ahatfXH, sigma, confinthighXH, confintlowXH] = wavav(XH_final_matrix);
     [ahatfXV, sigma, confinthighXV, confintlowXV] = wavav(XV_final_matrix);
-    magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal');
-    magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical');
-    freq = taxstat{1,2};
-    num = find(newfaxhz == freq);
+    magrespplot(ahatfXH, newfaxhz, confinthighXH, confintlowXH, statname, magxbounds, magybounds, ' horizontal', taxstat);
+    magrespplot(ahatfXV, newfaxhz, confinthighXV, confintlowXV, statname, magxbounds, magybounds, ' vertical', taxstat);
 end
 fclose('all')
 end

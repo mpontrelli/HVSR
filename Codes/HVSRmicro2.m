@@ -64,19 +64,19 @@ close all
 clear all
 %% INPUTS
 
-statname = '7a';
+statname = '908DP';
 lowbound = 10;
 fs = 100;
 fsmin = fs;
 windowlen = 50;
-numwin = 10;
+numwin = 19;
 windis = 10;
-Vfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_1.sac';
-NSfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_2.sac';
-EWfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Data\2019292111241005_09B27_1_3.sac';
+Vfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_1.sac';
+NSfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_2.sac';
+EWfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_3.sac';
 TTF = 'no';
-outpath = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\7a\Figures';
-sav = 'no';
+outpath = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Figures';
+sav = 'yes';
 
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
@@ -402,13 +402,14 @@ ETF = plot(fax_HzN(10 :length(fax_HzN)), ahatf(10:length(fax_HzN)), 'Color', [0 
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title(strcat(statname), 'FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 40])
+set(gca,'FontSize',20,'YScale', 'log', 'XScale','log')
+xlim([fax_HzN(10) 10])
 ylim([0.1 100])
-xticks([1 10 40])
-xticklabels({'1','10', '40'})
+xticks([1 10])
+xticklabels({'1','10'})
 yticks([0.1 1 10 100])
 yticklabels({'0.1','1','10', '100'})
+
 grid on 
 box on
 hold on
@@ -423,7 +424,7 @@ if strcmp(TTF, 'yes') == 1
 end
 
 %makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+%set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 
 %save
 if strcmp(sav, 'yes') == 1

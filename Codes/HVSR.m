@@ -1,3 +1,30 @@
+%% HVSR
+% HVSR is designed to process many earthquake ground motion records at one
+% site and process them using Nakamura's HVSR technique. There are several
+% potential output plots including the site averaged HVSR, the HVSRs at a
+% site all on one plot before averaging) and the magnitude responses. 
+
+    %INPUTS
+    
+    % path - File directory to accompanying HVSR software folder
+    % datapath - path where the data are stored. This is a master folder
+    % containing folders of stations containing ground motions at that
+    % station
+    
+    % OUTPUTS
+    
+    % newfaxhz - 
+    % ahatf - 
+    % sigma - 
+    % lowbound - 
+    % taxstat - 
+    % statsfinal - 
+    % fsmin - 
+    % recmax - 
+   
+%Author: Marshall Pontrelli
+%Date: developed between September, 2017 and August, 2019
+
 function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %create Input Parser object
 p = inputParser;
@@ -79,26 +106,14 @@ for eee = 1:length(stationlist)
             [~, lowindex] = min(abs(newfaxhz - lowbound));
             lowbound_matrix(counter, :) = lowindex;
             %mag resp matrix build
-            newXH_mag = interp1(fax_HzN, XH_mag, newfaxhz);
+            newXH_mag = interp1(fax_HzN, XH_magfilt, newfaxhz);
             XH_final_matrix(counter, :) = newXH_mag; 
-            newXV_mag = interp1(fax_HzN, XV_mag, newfaxhz);
+            newXV_mag = interp1(fax_HzN, XV_magfilt, newfaxhz);
             XV_final_matrix(counter, :) = newXV_mag; 
             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz);
             HV_final_matrix(counter, :) = newH_V1; 
             clear H_V1
             end
-            
-%             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-%             [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound] =  Magresp(xNS, xV, xEW, fs, fsmin); %Compute mag responses and run through triangular filter
-%             %perform H/V
-%             [H_V1] = HV(XH_magfilt,XV_magfilt);
-%             %make Hz vector and linear interpolate all H/V ETFs to this vector
-%             newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1): (fsmin/2 - 1);
-%             [~, lowindex] = min(abs(newfaxhz - lowbound));
-%             newH_V1 = interp1(fax_HzN, H_V1, newfaxhz); 
-%             clear newfaxhz
-%             clear newH_V1
-%             clear H_V1 
         end
     end
 if strcmp(wavecut, 'yes') == 1  
