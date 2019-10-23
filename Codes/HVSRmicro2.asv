@@ -64,25 +64,31 @@ close all
 clear all
 %% INPUTS
 
+<<<<<<< HEAD
 statname = '908DP';
 lowbound = 10;
+=======
 statname = 'Kraft_2';
 lowbound = 1;
+>>>>>>> 445e091104a0e6e592051b344a1b292ab6520b1e
 fs = 100;
 fsmin = fs;
 windowlen = 50;
 numwin = 19;
 windis = 10;
+<<<<<<< HEAD
 Vfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_1.sac';
 NSfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_2.sac';
 EWfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_3.sac';
 TTF = 'no';
 outpath = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Figures';
+=======
 Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
 NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
 EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
 TTF = 'no';
 outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
+>>>>>>> 445e091104a0e6e592051b344a1b292ab6520b1e
 sav = 'yes';
 
 %turn windows into samples for windowing calculations
