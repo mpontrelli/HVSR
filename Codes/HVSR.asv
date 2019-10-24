@@ -62,14 +62,14 @@
     
     % recmax - maximum record length in the station dataset
    
-%% Author: Marshall Pontrelli
-% Date: developed between September, 2017 and August, 2019
+%% %Author: Marshall Pontrelli
+%Date: developed between September, 2017 and August, 2019
 %% Start
 function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
 %% parse inputs
 % create Input Parser object
 p = inputParser;
-% add inputs to the scheme
+%add inputs to the scheme
 defaultxbound = ([0, 20]);
 defaultybound = ([0.0001, 100]);
 addRequired(p,'path',@ischar);
@@ -80,9 +80,9 @@ addParameter(p, 'individHVSR', 'No', @ischar);
 addParameter(p, 'magresps', 'No', @ischar);
 addParameter(p, 'magxbounds', defaultxbound, @isnumeric);
 addParameter(p, 'magybounds', defaultybound, @isnumeric);
-% parse the inputs
+%parse the inputs
 parse(p, path, datapath, varargin{:})
-% set varibales from the parse
+%set varibales from the parse
 wavecut = p.Results.wavecut;
 HVSR = p.Results.HVSR;
 individHVSR = p.Results.individHVSR;
@@ -90,8 +90,7 @@ magresps = p.Results.magresps;
 magxbounds = p.Results.magxbounds;
 magybounds = p.Results.magybounds;
 %% start function
-
-% ACCESSING THE DATA
+%% Accessing the data
 % go into the data folder and get a list of stations
 cd(datapath)
 stationlist = dir;
@@ -99,34 +98,30 @@ stationlist = stationlist(3:length(stationlist));
 statsfinal = [];
 % start the for loop that goes through all the station folders
 for eee = 1:length(stationlist)
-    station = stationlist(eee); % read the folder info
-    statname = station.name; % extract the station name (this is the name of folder)
-    station = strcat(datapath, '\', statname); % create the path name of the station folder
-    % disp(station % you can uncheck this if you want to double check that the paths are working
-    % go into data directory and build structure of all files in it
+    station = stationlist(eee); %read the folder info
+    statname = station.name; %extract the station name
+    station = strcat(datapath, '\', statname);
+    disp(station)
+    %go into data directory and build structure of all files in it
     cd(station)
     files = dir;
     files = files(3:length(files));
-    % now you're just looking at the waveform files of the station
-    % create empty matrix that gets filled with all H/V values, counter is used
-    % to index this matrix
+    %create empty matrix that gets filled with all H/V values, counter is used
+    %to index this matrix
     HV_final_matrix = [];
     XH_final_matrix = [];
     XV_final_matrix = [];
     lowbound_matrix = [];
     counter = 0;
-    % change directory back to codes to access functions needed 
+    %change directory back to codes to access functions needed 
     d = strcat(path, '\HVSR\Codes');
     cd(d)
-    % Loop through the records once to get the number of samples in each
-    % record for the x-axis linear interpolation and the sampling freqeuncy 
-    % of each record. The number of samples value will be the
-    % sample number of the record with the maximum number of samples. The
-    % lowest sampling freqeuncy (fsmin) is required for the frequency axis
-    % high bond and is used as the nyquist frequency for the whole analysis
+    %Loop through the records once to get the number of samples in each
+    %record for the x-axis linear interpolation and the sampling freqeuncy 
+    %of each record. The number of samples value will be the
+    %sample number of the record with the maximum number of samples. The
+    %sampling freqeuncy is required for the freqeuncy axis high bound
     [fsmin, recmax, recmin] = statrecinfo(files, station);
-    
-    % Loop through all the records
     for file = files'
         filename = strcat(station,'\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
