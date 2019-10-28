@@ -1,9 +1,26 @@
-%Rosetta reads and extracts stations and event info from the Mexico City 
-%RACM event textfile. She goes into the textfile and reads the sampling 
-%frequency and finds and translates the soil type to be plotted on the 
-%final plot that Charlotte outputs. 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Rosetta
 
+% Rosetta reads and extracts stations and event info metadata from the Mexico City 
+% RACM event textfile. It goes into the textfile and reads the sampling 
+% frequency and finds and translates the soil type to be plotted on the 
+% final plot that HVSR outputs. If the user wishes to use HVSR for another
+% dataset, Rosetta must be written such that readfile1 outputs the
+% necessary information.
+
+    % INPUTS
+    
+    % filename - path of the file containing the ground motion info and
+    % metadata
+    
+    %OUTPUTS 
+    
+    % fs - sampling frequency
+    
+    % soil - soil type on which the station sits
+
+%% Author: Marshall Pontrelli
+% Date: developed between September, 2017 and August, 2019
+%% 
 function [fs, soil] = Rosetta(filename)
 [fid3,~] = fopen(filename,'r');
 
@@ -18,9 +35,9 @@ for jjj = 1:26
 end
 
 b = length(line);
-%Soil reads the first three letters of the line 
+% Soil reads the first three letters of the line 
 soil = line(42:44);
-%soil1 reads the first letter of the second word so in the instance of
+% soil1 reads the first letter of the second word so in the instance of
 %"terrano", which occurs for both Lake Zone and Compact, Rosetta can use
 %the first letter of the second word to determine what soil type the
 %station is in. 

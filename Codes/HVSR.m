@@ -126,11 +126,11 @@ for eee = 1:length(stationlist)
     % high bond and is used as the nyquist frequency for the whole analysis
     [fsmin, recmax, recmin] = statrecinfo(files, station);
     
-    % Loop through all the records
+    % Loop through all the ground motion records
     for file = files'
-        filename = strcat(station,'\',file.name);
-        [xNS,xV,xEW, fs] = readfile1(filename);
-        [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
+        filename = strcat(station,'\',file.name); % pull out entire file name
+        [xNS,xV,xEW, fs] = readfile1(filename); % read NS, V, EW and fs
+        [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW); %extract PGA from the record
         if PGANS < 0.1 && PGAV < 0.1 && PGAEW < 0.1
             if strcmp(wavecut, 'yes') == 1   
                 [xNS,xV,xEW] = waveformcut(xNS,xV,xEW, recmin);
