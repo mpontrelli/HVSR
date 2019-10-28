@@ -1,3 +1,27 @@
+%% HVSRplot
+% plot the HVSR lognormal average with upper and lower confidence intervals
+
+    % INPUTS
+    
+    % ahatf - lognormal average spectral ratio
+    
+    % newfaxhz - frequency vector
+    
+    % confinthigh - upper 95% confidence interval
+    
+    % confintlow - lower 95% confidence interval
+    
+    % lowbound - low resolvable frequency
+    
+    % statname - station name (title of plot)
+    
+    % OUTPUTS
+    
+    % A plot of the HVSR
+    
+%% Author: Marshall Pontrelli
+% Date: developed between September, 2017 and August, 2019
+%% Start  
 function HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname)
 figure
 hold on

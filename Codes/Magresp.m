@@ -1,39 +1,36 @@
-function [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound]=  Magresp(xNS, xV, xEW, fs, fsmin)
+%% Magresp
+% Compute the magnitude response of a time series and the corresponding
+% frequency vector. Only outputs half the magnitude response below the
+% frequency vector and multiplies by 2 to account for cos(x) = 1/2 (e^jw +
+% e^0jw) so we recover the amplitude of the sinusoid at a single frequency
+% instead of 2.
 
-%Filter design
-N = length(xNS); %length North_South_Component
-width = .1; %width for triangle moving average filter in hz
-q = ceil((N/fs)*width); %width for triangle moving average filter in samples
-w = (q);
-a=5; %second filter coefficient
-xH = xNS + 1i*xEW; %complex time
-XH = fft(xH); %fft North_South_Component x
-XV = fft(xV); %fft Vertical_Component x
-XH_mag = abs(XH)/N; %normalized magnitude spectra North_South_Component x
-XV_mag = abs(XV)/N; %normalized magnitude spectra Vertical_Component x
-XV_magfilt1=smooth(XV_mag,q); %filtered magnitude spectra North_South_Component x 
-XH_magfilt1=smooth(XH_mag,q); %filtered magnitude spectra North_South_Component x 
+    % INPUTS
+    
+    % x - times series input
+    
+    % fs - sampling frequency of the record
+    
+    % ff - positive value, one over which is the percent of the magnitude
+    % response you want out.
+    
+    % OUTPUTS
+    
+    % X - magnitude response
+    
+    % fax_HzN - frequency vector of X
+    
 
-fax_binsN = [0 : N-1]; %samples in NS component
+%% Author: Marshall Pontrelli
+% Date: developed between September, 2017 and August, 2019
+%% Start   
+function [X_mag, fax_HzN]=  Magresp(x, fs, ff)
+N = length(x); %length of signal
+X = fft(x); %fft of signal
+X_mag = abs(X)/(2*N); %normalized magnitude spectra
+fax_binsN = [0 : N-1]; % number of frequency samples in the record
 fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
-ff = 2;
-if fs > fsmin
-    ff = ff * (fs / fsmin);
-end
 N_2 = ceil(N/ff) - fs; %half magnitude spectrum - 1 hz
 fax_HzN = fax_HzN1(1 : N_2);
-% XH_magfilt1 = kohmachi(XH_mag,fax_HzN1,30);
-% XV_magfilt1 = kohmachi(XV_mag,fax_HzN1,30);
-XH_magfilt = XH_magfilt1(1: N_2);
-XV_magfilt = XV_magfilt1(1: N_2);
-XH_mag = XH_mag(1: N_2);
-XV_mag = XV_mag(1: N_2);
-
-%Low bound calculation
-lowbound = 1/(N/fs); % this is the lowest frequency that we can image
-
-% XH_magfilt = XH_mag(1: N_2);
-% XV_magfilt = XV_mag(1: N_2);
-% XH_magfilt = kohmachi(XH_magfilt,fax_HzN,30);
-% XV_magfilt = kohmachi(XV_magfilt,fax_HzN,30);
+X_mag = X_mag(1: N_2);
 end

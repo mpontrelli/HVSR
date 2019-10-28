@@ -130,26 +130,77 @@ for eee = 1:length(stationlist)
     for file = files'
         filename = strcat(station,'\',file.name);
         [xNS,xV,xEW, fs] = readfile1(filename);
+        N = length(xNS); % length of the signal
+        %Low bound calculation
+        lowbound = 1/(N/fs); % this is the lowest frequency that we can image
         [PGANS,PGAV,PGAEW] = PGA(xNS,xV,xEW);
         if PGANS < 0.1 && PGAV < 0.1 && PGAEW < 0.1
             if strcmp(wavecut, 'yes') == 1   
                 [xNS,xV,xEW] = waveformcut(xNS,xV,xEW, recmin);
                 counter = counter + 1;
-                %fs = station.fs; %sampling frequency in hz
-                [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-                [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound] =  Magresp(xNS, xV, xEW, fs, fsmin); %Compute mag responses and run through triangular filter
+                
+                % filter the data
+                [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs);
+                
+                % compute the complex time series
+                [xH] =  complex_time(xNS, xEW);
+                
+                %compute magnitude responses
+                ff = 2; % half magnitude spectra
+                % if you have a sampling frequency greater than your lowest
+                % sampling frequency, dived by more (for example, in Mexico
+                % City RACM dataset, there are records with both 100 and
+                % 200 Hz. If a record has 200 Hz fs, split response spectra
+                % up by 4, not 2, then all the averaged outputs will be 0
+                % to 50 Hz)
+                if fs > fsmin 
+                    ff = ff * (fs / fsmin);
+                end
+                [XH_mag, fax_HzN] =  Magresp(xH, fs, ff);
+                [XV_mag] =  Magresp(xV, fs, ff);
+                
+                % smooth the magnitude response
+                width = .1; % width for smoothing filter in hz
+                q = ceil((N/fs)*width); % width for smoothing filter in samples
+                XV_magfilt=smooth(XV_mag,q); 
+                XH_magfilt=smooth(XH_mag,q);  
                 [H_V1] = HV(XH_magfilt, XV_magfilt);
-                XH_final_matrix(counter, :) = XH_mag;
-                XV_final_matrix(counter, :) = XV_mag; 
+                XH_final_matrix(counter, :) = XH_magfilt;
+                XV_final_matrix(counter, :) = XV_magfilt; 
                 HV_final_matrix(counter, :) = H_V1; 
                 clear H_V1
             else
             counter = counter + 1;
-            %fs = station.fs; %sampling frequency in hz
+            
+            % filter the data
             [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
-            [N_2, fax_HzN, XH_magfilt, XV_magfilt, XH_mag, XV_mag, lowbound] =  Magresp(xNS, xV, xEW, fs, fsmin); %Compute mag responses and run through triangular filter
+            
+            % compute the complex time series
+            [xH] =  complex_time(xNS, xEW);
+            
+            %compute magnitude responses
+            ff = 2; % half magnitude spectra
+            % if you have a sampling frequency greater than your lowest
+            % sampling frequency, dived by more (for example, in Mexico
+            % City RACM dataset, there are records with both 100 and
+            % 200 Hz. If a record has 200 Hz fs, split response spectra
+            % up by 4, not 2, then all the averaged outputs will be 0
+            % to 50 Hz)
+            if fs > fsmin 
+                ff = ff * (fs / fsmin);
+            end
+            [XH_mag, fax_HzN] =  Magresp(xH, fs, ff);
+            [XV_mag] =  Magresp(xV, fs, ff);
+                
+            % smooth the magnitude response
+            width = .1; % width for smoothing filter in hz
+            q = ceil((N/fs)*width); % width for smoothing filter in samples
+            XV_magfilt=smooth(XV_mag,q); 
+            XH_magfilt=smooth(XH_mag,q);  
+ 
             %perform H/V
             [H_V1] = HV(XH_magfilt, XV_magfilt);
+            
             %make Hz vector and linear interpolate all H/V ETFs to this vector
             newfaxhz = 0: (1/ (ceil(recmax/2) - fsmin))*(fsmin/2 - 1): (fsmin/2 - 1);
             [~, lowindex] = min(abs(newfaxhz - lowbound));
