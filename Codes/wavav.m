@@ -25,13 +25,13 @@
 
 %% Start
 function [ahatf, sigma, confinthigh, confintlow] =  wavav(SR_matrix)
-size1 = size(SR_final_matrix);
+size1 = size(SR_matrix);
 len = size1(1);
-q = log(SR_final_matrix);
+q = log(SR_matrix);
 ahatf = exp(nansum(q)/len);
 
 for i = 1:len
-    q(i,:) = (log(HV_final_matrix(i,:))- log(ahatf)).^2;
+    q(i,:) = (log(SR_matrix(i,:))- log(ahatf)).^2;
 end
 sigma = sqrt(nansum(q)/len);
 

@@ -65,14 +65,14 @@
 %% Author: Marshall Pontrelli
 % Date: developed between September, 2017 and August, 2019
 %% Start
-function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(path, datapath, varargin)
+function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(datapath, varargin)
 %% parse inputs
 % create Input Parser object
 p = inputParser;
 % add inputs to the scheme
 defaultxbound = ([0, 20]);
 defaultybound = ([0.0001, 100]);
-addRequired(p,'path',@ischar);
+%addRequired(p,'path',@ischar);
 addRequired(p,'datapath',@ischar);
 addParameter(p, 'wavecut', 'No', @ischar);
 addParameter(p, 'HVSR', 'No', @ischar);
@@ -81,7 +81,7 @@ addParameter(p, 'magresps', 'No', @ischar);
 addParameter(p, 'magxbounds', defaultxbound, @isnumeric);
 addParameter(p, 'magybounds', defaultybound, @isnumeric);
 % parse the inputs
-parse(p, path, datapath, varargin{:})
+parse(p, datapath, varargin{:})
 % set varibales from the parse
 wavecut = p.Results.wavecut;
 HVSR = p.Results.HVSR;
@@ -93,6 +93,7 @@ magybounds = p.Results.magybounds;
 
 % ACCESSING THE DATA
 % go into the data folder and get a list of stations
+path = pwd;
 cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
@@ -116,7 +117,7 @@ for eee = 1:length(stationlist)
     lowbound_matrix = [];
     counter = 0;
     % change directory back to codes to access functions needed 
-    d = strcat(path, '\HVSR\Codes');
+    d = strcat(path);
     cd(d)
     % Loop through the records once to get the number of samples in each
     % record for the x-axis linear interpolation and the sampling freqeuncy 
