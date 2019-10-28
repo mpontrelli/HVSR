@@ -1,4 +1,5 @@
 %% statrecinfo
+
 % statrec info is designed specifically for the Mexico City RACM dataset.
 % It loops through all the records at a station and pulls out the longest
 % record, shortest record and lowest sampling frequency used to record any
@@ -15,7 +16,7 @@
     
     % station - folder path that contains the waveform files
     
-    %OUTPUTS
+    % OUTPUTS
     
     % fsmin - lowest sampling frequency used to record any of the data
     
