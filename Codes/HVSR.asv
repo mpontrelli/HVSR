@@ -173,7 +173,7 @@ for eee = 1:length(stationlist)
                 XV_final_matrix(counter, :) = XV_magfilt; 
                 HV_final_matrix(counter, :) = H_V1; 
                 clear H_V1
-            else % if we're not doing waveform cut
+            else % if we're not doing waveform cu
             counter = counter + 1;
             
             % filter the data
