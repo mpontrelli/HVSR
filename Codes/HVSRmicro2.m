@@ -70,20 +70,15 @@ statname = 'Kraft_2';
 lowbound = 1;
 fs = 100;
 fsmin = fs;
-windowlen = 50;
-numwin = 19;
-windis = 10;
-Vfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_1.sac';
-NSfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_2.sac';
-EWfname = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Data\2000004171152005_908DP_1_3.sac';
-TTF = 'no';
-outpath = 'C:\Users\mpontr01\Box\People\Marshall_and_Ashkan\Inversion_project\Data\908DP\Microtremor\Figures';
+windowlen = 40;
+numwin = 10;
+windis = 25;
 Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
 NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
 EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
 TTF = 'no';
 outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
-sav = 'yes';
+sav = 'no';
 
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
@@ -289,8 +284,8 @@ if strcmp(sav, 'yes') == 1
 end
 
 %% compute smoothed magnitude responses
-width = .1; %width for triangle moving average filter in hz
-window = ceil((N/20)*width); %width for triangle moving average filter in samples where 20 is the number of Hz on your x-axis
+width = .3; %width for triangle moving average filter in hz
+window = ceil((N/fs)*width); %width for triangle moving average filter in samples where 20 is the number of Hz on your x-axis
 for iii = 1:numwin
     XVmatrix3(iii,:) = smooth(XVmatrix2(iii,:),window);
     XHmatrix3(iii,:) = smooth(XHmatrix2(iii,:),window);
@@ -410,9 +405,9 @@ xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title(strcat(statname), 'FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log', 'XScale','log')
-xlim([fax_HzN(10) 10])
+xlim([fax_HzN(10) 20])
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 40])
+%xlim([fax_HzN(1) 40])
 ylim([0.1 100])
 xticks([1 10])
 xticklabels({'1','10'})
