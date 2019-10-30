@@ -94,7 +94,7 @@ windis = p.Results.windis;
 TTF = p.Results.TTF;
 outpath = p.Results.outpath;
 sav = p.Results.sav;
-lowbound = p.Results.sav;
+lowbound = p.Results.lowbound;
 
 
 
