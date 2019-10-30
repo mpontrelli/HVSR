@@ -61,7 +61,43 @@
   %Summer 2019
   
 %% Start
-function [taxstat, ahatf, varargout] = HVSRmicro2(Vfname, NSfname, EWfname, fs, windowlen, numwin, windis, statname, lowbound, TTF, outpath, sav)
+function [taxstat, ahatf, varargout] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
+%% parse inputs
+% create Input Parser object
+p = inputParser;
+% add inputs to the scheme
+defaultwindowlen = 40;
+defaultnumwin = 10;
+defaultwindis = 25;
+defaultlowbound = 10;
+% Required inputs
+addRequired(p,'Vfname',@ischar);
+addRequired(p,'NSfname',@ischar);
+addRequired(p,'EWfname',@ischar);
+addRequired(p,'fs', @isnumeric);
+addRequired(p,'statname', @ischar);
+
+% Optional inputs
+addParameter(p, 'lowbound', defaultlowbound, @isnumeric);
+addParameter(p, 'TTF', 'no', @ischar);
+addParameter(p, 'outpath', 'no', @ischar);
+addParameter(p, 'sav', 'no', @ischar);
+addParameter(p, 'windowlen', defaultwindowlen, @isnumeric);
+addParameter(p, 'numwin', defaultnumwin, @isnumeric);
+addParameter(p, 'windis', defaultwindis, @isnumeric);
+% parse the inputs
+parse(p, Vfname, NSfname, EWfname,fs, statname, varargin{:})
+% set varibales from the parse
+windowlen = p.Results.windowlen;
+numwin = p.Results.numwin;
+windis = p.Results.windis;
+TTF = p.Results.TTF;
+outpath = p.Results.outpath;
+sav = p.Results.sav;
+lowbound = p.Results.sav;
+
+
+
 % statname = 'Kraft_2';
 % lowbound = 1;
 % fs = 100;
@@ -69,9 +105,9 @@ fsmin = fs;
 % windowlen = 40;
 % numwin = 10;
 % windis = 25;
-% Vfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
-% NSfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
-% EWfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
+% Vfname = 'C:\Users\Marshall\Desktop\2019303113000005_1a____1_1.sac';
+% NSfname = 'C:\Users\Marshall\Desktop\2019303113000005_1a____1_2.sac';
+% EWfname = 'C:\Users\Marshall\Desktop\2019303113000005_1a____1_3.sac';
 % TTF = 'no';
 % outpath = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
 % sav = 'no';
