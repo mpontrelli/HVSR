@@ -8,9 +8,9 @@
 
 function [y] = Butter2(x)
 % Here are the filter parameters
-LowCorner=.1;
+LowCorner=0.5;
 %HighCorner=9;
-HighCorner=49;
+HighCorner=40;
 Npoles=4;  % Corner for 1 pass of the two-pass filter
 
 fN=100/2;

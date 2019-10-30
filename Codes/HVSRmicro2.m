@@ -152,7 +152,7 @@ end
 
 %% Compute the complex time series
 %Steidl et al. 1994
-xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
+xHmatrix = xNSmatrix;% + 1i.*xEWmatrix; 
 
 %% Compute unfiltered magnitude responses
 % Compute the fft for each data window
@@ -181,7 +181,7 @@ title('Horizontal', 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -196,7 +196,7 @@ title('Vertical', 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 41])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([ 1 10 40])
 xticklabels({'1','10', '40'})
@@ -229,7 +229,7 @@ xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title('Horizontal','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -248,7 +248,7 @@ xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title('Vertical','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -282,7 +282,7 @@ title('Horizontal', 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -297,7 +297,7 @@ title('Vertical', 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -330,7 +330,7 @@ xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title('Horizontal','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log','XScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -350,7 +350,7 @@ xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title('Vertical','FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log', 'XScale', 'log')
-xlim([fax_HzN(10) 40])
+xlim([fax_HzN(1) 49])
 ylim([0.1 1000])
 xticks([0.1 1 10])
 xticklabels({'0.1','1','10'})
@@ -381,14 +381,14 @@ end
 %% Plot the HVSR (OUTPUT 6)
 HVSR = figure;
 hold on
-confidenceinterval=shadedplot(fax_HzN(10:length(fax_HzN)), confinthigh(10:length(fax_HzN)), confintlow(10:length(fax_HzN)),[.9,.9,.9],'k');
+confidenceinterval=shadedplot(fax_HzN(1:length(fax_HzN)), confinthigh(1:length(fax_HzN)), confintlow(1:length(fax_HzN)),[.9,.9,.9],'k');
 hold on
-ETF = plot(fax_HzN(10 :length(fax_HzN)), ahatf(10:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+ETF = plot(fax_HzN(1 :length(fax_HzN)), ahatf(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title(strcat(statname), 'FontSize', 18)
 set(gca,'FontSize',20,'YScale', 'log', 'XScale','log')
-xlim([fax_HzN(10) 20])
+xlim([fax_HzN(1) 49])
 set(gca,'FontSize',20,'YScale', 'log')
 %xlim([fax_HzN(1) 40])
 ylim([0.1 100])
@@ -406,7 +406,7 @@ hold on
 %% if you want to plot TTF from NRATTLE
 if strcmp(TTF, 'yes') == 1
     Read_amps_4_plot
-    TTF = plot(fax_HzN(10 :length(fax_HzN)), amps(10:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
+    TTF = plot(fax_HzN(1 :length(fax_HzN)), amps(1:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
     legend([ETF, TTF], {'HVSR', 'TTF'})
 end
 
