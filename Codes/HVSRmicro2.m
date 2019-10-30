@@ -73,11 +73,11 @@ fsmin = fs;
 windowlen = 40;
 numwin = 10;
 windis = 25;
-Vfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
-NSfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
-EWfname = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
+Vfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft21_1_1.sac';
+NSfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft22_1_2.sac';
+EWfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\data\2000049134427006_kraft23_1_3.sac';
 TTF = 'no';
-outpath = 'C:\Users\Marshall\Desktop\boston-site-response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
+outpath = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
 sav = 'no';
 
 %turn windows into samples for windowing calculations
@@ -104,57 +104,8 @@ windisnum = windis*fs;
 [xNS] = Butter2(xNS);
 [xEW] = Butter2(xEW);
 
-%% find the maximum value in the microtremor to make bounds for plotting
-a = max(abs(xV));
-a(2) = max(abs(xNS));
-a(3) = max(abs(xEW));
-d = max(a);
-
-%% create a time vector and plot time series (OUTPUT 1)
-time = (1:length(xV))/fs;
-timeseries = figure;
-subplot(3,1,1)
-plot(time,xV)
-title('V')
-xlabel('Time (secs)')
-ylabel('counts')
-xlim([0 length(xV)/fs])
-ylim([-d d])
-set(gca,'FontSize',20)
-grid on 
-box on
-
-subplot(3,1,2)
-plot(time,xEW)
-title('EW')
-xlabel('Time (secs)')
-ylabel('counts')
-xlim([0 length(xV)/fs])
-ylim([-d d])
-set(gca,'FontSize',20)
-grid on 
-box on
-
-
-subplot(3,1,3)
-plot(time,xNS);
-title('NS')
-xlabel('Time (secs)')
-ylabel('counts')
-xlim([0 length(xV)/fs])
-ylim([-d d])
-set(gca,'FontSize',20)
-grid on 
-box on
-
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(timeseries, strcat(outpath, '\', 'timeseries.jpg'), 'jpg');
-    saveas(timeseries, strcat(outpath, '\', 'timeseries.fig'), 'fig');
-end
+%% Create a time series plot (Output 1)]
+timeseriesplot(xNS,xV,xEW, fs, sav, outpath)
 
 %% Window data
 %Window the data with 'numwin' non-overlapping windows of 'windowlen' secs and 
