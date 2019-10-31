@@ -17,6 +17,6 @@ fN=100/2;
 Lowcut=LowCorner/fN;
 Highcut=HighCorner/fN;
 [bb1 aa1]=butter(Npoles,[Lowcut Highcut]);
-freqz(bb1,aa1)
+%freqz(bb1,aa1)
 y=filtfilt(bb1,aa1,(x-mean(x)));
 end

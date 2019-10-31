@@ -32,7 +32,7 @@ hold on
 %% if you want to plot TTF from NRATTLE
 if strcmp(TTF, 'yes') == 1
     Read_amps_4_plot
-    TTF = plot(fax_HzN(1 :length(fax_HzN)), amps(1:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
+    TTF = plot(freq, amps, 'Color', 'k', 'linewidth', 2);
     legend([ETF, TTF], {'HVSR', 'TTF'})
 end
 

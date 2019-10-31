@@ -100,23 +100,7 @@ sav = p.Results.sav;
 lowbound = p.Results.lowbound;
 upbound = p.Results.upbound;
 plots = p.Results.plots;
-
-
-
-% statname = 'Kraft_2';
-% lowbound = 1;
-% fs = 100;
 fsmin = fs;
-% windowlen = 40;
-% numwin = 10;
-% windis = 25;
-% Vfname = 'C:\Users\Marshall\Desktop\2019303113000005_1a____1_1.sac';
-% NSfname = 'C:\Users\Marshall\Desktop\2019303113000005_1a____1_2.sac';
-% EWfname = 'C:\Users\Marshall\Desktop\2019303113000005_1a____1_3.sac';
-% TTF = 'no';
-% outpath = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\radian_demo_deployment\potential_boreholes\Kraft2-borehole-11\Site_response\figures';
-% sav = 'no';
-
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
@@ -160,7 +144,7 @@ end
 
 %% Compute the complex time series
 %Steidl et al. 1994
-xHmatrix = xNSmatrix; %+ 1i.*xEWmatrix; 
+xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
 
 %% Compute unfiltered magnitude responses
 % Compute the fft for each data window
