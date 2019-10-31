@@ -61,7 +61,7 @@
   %Summer 2019
   
 %% Start
-function [taxstat, ahatf, varargout] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
+function [taxstat, ahatf, fax_HzN, varargout] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
 %% parse inputs
 % create Input Parser object
 p = inputParser;
@@ -70,7 +70,7 @@ defaultwindowlen = 40;
 defaultnumwin = 10;
 defaultwindis = 25;
 defaultlowbound = 1/defaultwindowlen;
-defaultupbound = fs/2;
+defaultupbound = ceil(fs/2)-1;
 % Required inputs
 addRequired(p,'Vfname',@ischar);
 addRequired(p,'NSfname',@ischar);
@@ -87,6 +87,7 @@ addParameter(p, 'sav', 'no', @ischar);
 addParameter(p, 'windowlen', defaultwindowlen, @isnumeric);
 addParameter(p, 'numwin', defaultnumwin, @isnumeric);
 addParameter(p, 'windis', defaultwindis, @isnumeric);
+addParameter(p, 'plots', 'no', @ischar);
 % parse the inputs
 parse(p, Vfname, NSfname, EWfname,fs, statname, varargin{:})
 % set varibales from the parse
@@ -98,6 +99,7 @@ outpath = p.Results.outpath;
 sav = p.Results.sav;
 lowbound = p.Results.lowbound;
 upbound = p.Results.upbound;
+plots = p.Results.plots;
 
 
 
@@ -140,7 +142,10 @@ windisnum = windis*fs;
 [xEW] = Butter2(xEW);
 
 %% Create a time series plot (Output 1)]
-timeseriesplot(xNS,xV,xEW, fs, sav, outpath)
+if strcmp(plots, 'yes') == 1
+    timeseriesplot(xNS,xV,xEW, fs, sav, outpath)
+end
+
 
 %% Window data
 %Window the data with 'numwin' non-overlapping windows of 'windowlen' secs and 
@@ -155,7 +160,7 @@ end
 
 %% Compute the complex time series
 %Steidl et al. 1994
-xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
+xHmatrix = xNSmatrix; %+ 1i.*xEWmatrix; 
 
 %% Compute unfiltered magnitude responses
 % Compute the fft for each data window
@@ -177,14 +182,20 @@ for iii = 1:numwin
     XHmatrix2(iii,:) = XHmat(1 : N_2);
 end
 %% plot individual unfiltered magnitude responses (OUTPUT 2)
-individmagrespplot(fax_HzN, XHmatrix2, XVmatrix2, fs, lowbound, outpath, sav)
+if strcmp(plots, 'yes') == 1
+    individmagrespplot(fax_HzN, XHmatrix2, XVmatrix2, fs, lowbound, outpath, sav)
+end
+
 
 %% Average the un-smoothed magnitude responses
 [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix2);
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix2);
 
 %% Plot averaged unfiltered magnitude responses (OUTPUT 3)
-averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
+if strcmp(plots, 'yes') == 1
+    averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
+end
+
 
 %% compute smoothed magnitude responses
 width = .5; %width for triangle moving average filter in hz
@@ -195,14 +206,20 @@ for iii = 1:numwin
 end
 
 %% Plot individual, smoothed magnitude responses (OUTPUT 4)
-individmagrespplot(fax_HzN, XHmatrix3, XVmatrix3, fs, lowbound, outpath, sav)
+if strcmp(plots, 'yes') == 1
+    individmagrespplot(fax_HzN, XHmatrix3, XVmatrix3, fs, lowbound, outpath, sav)
+end
+
 
 %% Average the smoothed magnitude responses
 [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix3);
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix3);
 
 %% Plot averaged, smoothed magnitude responses (OUTPUT 5)
-averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
+if strcmp(plots, 'yes') == 1
+    averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
+end
+
 
 %% Compute the HVSR
 for iii = 1:numwin
@@ -213,47 +230,9 @@ end
 [ahatf, sigma, confinthigh, confintlow] =  wavav(H_V);
 
 %% Plot the HVSR (OUTPUT 6)
-HVSRmicroplot(fax_HzN, ahatf, fs, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
-% HVSR = figure;
-% hold on
-% confidenceinterval=shadedplot(fax_HzN(1:length(fax_HzN)), confinthigh(1:length(fax_HzN)), confintlow(1:length(fax_HzN)),[.9,.9,.9],'k');
-% hold on
-% ETF = plot(fax_HzN(1 :length(fax_HzN)), ahatf(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-% xlabel('Frequency (Hz)','FontSize', 18)
-% ylabel('Amplification','FontSize', 18)
-% title(strcat(statname), 'FontSize', 18)
-% set(gca,'FontSize',20,'YScale', 'log', 'XScale','log')
-% xlim([fax_HzN(1) 49])
-% set(gca,'FontSize',20,'YScale', 'log')
-% %xlim([fax_HzN(1) 40])
-% ylim([0.1 100])
-% xticks([1 10])
-% xticklabels({'1','10'})
-% yticks([0.1 1 10 100])
-% yticklabels({'0.1','1','10', '100'})
-% 
-% grid on 
-% box on
-% hold on
-% 
-% 
-% 
-% %% if you want to plot TTF from NRATTLE
-% if strcmp(TTF, 'yes') == 1
-%     Read_amps_4_plot
-%     TTF = plot(fax_HzN(1 :length(fax_HzN)), amps(1:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
-%     legend([ETF, TTF], {'HVSR', 'TTF'})
-% end
-% 
-% %makes figure full screen
-% %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
-% 
-% %save
-% if strcmp(sav, 'yes') == 1
-%     saveas(HVSR, strcat(outpath, '\', 'HVSR.jpg'));
-%     saveas(HVSR, strcat(outpath, '\', 'HVSR.fig'));
-% end
-
+if strcmp(plots, 'yes') == 1
+    HVSRmicroplot(fax_HzN, ahatf, fs, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
+end
 %% compute statistics on HVSR
 [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound, fsmin);
 [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
