@@ -69,7 +69,8 @@ p = inputParser;
 defaultwindowlen = 40;
 defaultnumwin = 10;
 defaultwindis = 25;
-defaultlowbound = 10;
+defaultlowbound = 1/defaultwindowlen;
+defaultupbound = fs/2;
 % Required inputs
 addRequired(p,'Vfname',@ischar);
 addRequired(p,'NSfname',@ischar);
@@ -79,6 +80,7 @@ addRequired(p,'statname', @ischar);
 
 % Optional inputs
 addParameter(p, 'lowbound', defaultlowbound, @isnumeric);
+addParameter(p, 'upbound', defaultupbound, @isnumeric);
 addParameter(p, 'TTF', 'no', @ischar);
 addParameter(p, 'outpath', 'no', @ischar);
 addParameter(p, 'sav', 'no', @ischar);
@@ -95,6 +97,7 @@ TTF = p.Results.TTF;
 outpath = p.Results.outpath;
 sav = p.Results.sav;
 lowbound = p.Results.lowbound;
+upbound = p.Results.upbound;
 
 
 
@@ -152,7 +155,7 @@ end
 
 %% Compute the complex time series
 %Steidl et al. 1994
-xHmatrix = xNSmatrix;% + 1i.*xEWmatrix; 
+xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
 
 %% Compute unfiltered magnitude responses
 % Compute the fft for each data window
@@ -174,100 +177,17 @@ for iii = 1:numwin
     XHmatrix2(iii,:) = XHmat(1 : N_2);
 end
 %% plot individual unfiltered magnitude responses (OUTPUT 2)
-individualunfiltered = figure;
-subplot(1,2,1)
-plot(fax_HzN, XHmatrix2, 'Color',  'k' , 'Linewidth', .5);
-title('Horizontal', 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-grid on 
-box on
-
-subplot(1,2,2)
-plot(fax_HzN, XVmatrix2, 'Color',  'k' , 'Linewidth', .5);
-title('Vertical', 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([ 1 10 40])
-xticklabels({'1','10', '40'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-grid on 
-box on
-
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(individualunfiltered, strcat(outpath, '\', 'individualunfiltered.jpg'));
-    saveas(individualunfiltered, strcat(outpath, '\', 'individualunfiltered.fig'));
-end
+individmagrespplot(fax_HzN, XHmatrix2, XVmatrix2, fs, lowbound, outpath, sav)
 
 %% Average the un-smoothed magnitude responses
 [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix2);
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix2);
 
 %% Plot averaged unfiltered magnitude responses (OUTPUT 3)
-averageunfiltered = figure;
-subplot(1,2,1)
-hold on
-confidenceinterval=shadedplot(fax_HzN, confinthighhorz, confintlowhorz,[.9,.9,.9],'k');
-hold on
-plot(fax_HzN, ahatfhorz, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-title('Horizontal','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-grid on 
-box on
-
-
-subplot(1,2,2)
-hold on
-confidenceinterval=shadedplot(fax_HzN, confinthighvert, confintlowvert,[.9,.9,.9],'k');
-hold on
-plot(fax_HzN, ahatfvert, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-title('Vertical','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-grid on 
-box on
-
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(averageunfiltered, strcat(outpath, '\', 'averageunfiltered.jpg'));
-    saveas(averageunfiltered, strcat(outpath, '\', 'averageunfiltered.fig'));
-end
+averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
 
 %% compute smoothed magnitude responses
-width = .3; %width for triangle moving average filter in hz
+width = .5; %width for triangle moving average filter in hz
 window = ceil((N/fs)*width); %width for triangle moving average filter in samples where 20 is the number of Hz on your x-axis
 for iii = 1:numwin
     XVmatrix3(iii,:) = smooth(XVmatrix2(iii,:),window);
@@ -275,100 +195,14 @@ for iii = 1:numwin
 end
 
 %% Plot individual, smoothed magnitude responses (OUTPUT 4)
-individualfiltered = figure;
-subplot(1,2,1)
-plot(fax_HzN, XHmatrix3, 'Color',  'k' , 'Linewidth', .5);
-title('Horizontal', 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-grid on 
-box on
-
-subplot(1,2,2)
-plot(fax_HzN, XVmatrix3, 'Color',  'k' , 'Linewidth', .5);
-title('Vertical', 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-grid on 
-box on
-
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(individualfiltered, strcat(outpath, '\', 'individualfiltered.jpg'));
-    saveas(individualfiltered, strcat(outpath, '\', 'individualfiltered.fig'));
-end
+individmagrespplot(fax_HzN, XHmatrix3, XVmatrix3, fs, lowbound, outpath, sav)
 
 %% Average the smoothed magnitude responses
 [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix3);
 [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix3);
 
 %% Plot averaged, smoothed magnitude responses (OUTPUT 5)
-averagefiltered = figure;
-subplot(1,2,1)
-hold on
-confidenceinterval=shadedplot(fax_HzN, confinthighhorz, confintlowhorz,[.9,.9,.9],'k');
-hold on
-plot(fax_HzN, ahatfhorz, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-title('Horizontal','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log','XScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-grid on 
-box on
-
-subplot(1,2,2)
-hold on
-confidenceinterval=shadedplot(fax_HzN, confinthighvert, confintlowvert,[.9,.9,.9],'k');
-hold on
-plot(fax_HzN, ahatfvert, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-title('Vertical','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log', 'XScale', 'log')
-xlim([fax_HzN(1) 49])
-ylim([0.1 1000])
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.1 1 10 100 1000])
-yticklabels({'0.1','1','10', '100', '1000'})
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-grid on 
-box on
-
-%makes figure full screen
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(averagefiltered, strcat(outpath, '\', 'averagefiltered.jpg'));
-    saveas(averagefiltered, strcat(outpath, '\', 'averagefiltered.fig'));
-end
+averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
 
 %% Compute the HVSR
 for iii = 1:numwin
@@ -379,50 +213,57 @@ end
 [ahatf, sigma, confinthigh, confintlow] =  wavav(H_V);
 
 %% Plot the HVSR (OUTPUT 6)
-HVSR = figure;
-hold on
-confidenceinterval=shadedplot(fax_HzN(1:length(fax_HzN)), confinthigh(1:length(fax_HzN)), confintlow(1:length(fax_HzN)),[.9,.9,.9],'k');
-hold on
-ETF = plot(fax_HzN(1 :length(fax_HzN)), ahatf(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-title(strcat(statname), 'FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log', 'XScale','log')
-xlim([fax_HzN(1) 49])
-set(gca,'FontSize',20,'YScale', 'log')
-%xlim([fax_HzN(1) 40])
-ylim([0.1 100])
-xticks([1 10])
-xticklabels({'1','10'})
-yticks([0.1 1 10 100])
-yticklabels({'0.1','1','10', '100'})
-
-grid on 
-box on
-hold on
-
-
-
-%% if you want to plot TTF from NRATTLE
-if strcmp(TTF, 'yes') == 1
-    Read_amps_4_plot
-    TTF = plot(fax_HzN(1 :length(fax_HzN)), amps(1:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
-    legend([ETF, TTF], {'HVSR', 'TTF'})
-end
-
-%makes figure full screen
-%set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
-
-%save
-if strcmp(sav, 'yes') == 1
-    saveas(HVSR, strcat(outpath, '\', 'HVSR.jpg'));
-    saveas(HVSR, strcat(outpath, '\', 'HVSR.fig'));
-end
+HVSRmicroplot(fax_HzN, ahatf, fs, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
+% HVSR = figure;
+% hold on
+% confidenceinterval=shadedplot(fax_HzN(1:length(fax_HzN)), confinthigh(1:length(fax_HzN)), confintlow(1:length(fax_HzN)),[.9,.9,.9],'k');
+% hold on
+% ETF = plot(fax_HzN(1 :length(fax_HzN)), ahatf(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+% xlabel('Frequency (Hz)','FontSize', 18)
+% ylabel('Amplification','FontSize', 18)
+% title(strcat(statname), 'FontSize', 18)
+% set(gca,'FontSize',20,'YScale', 'log', 'XScale','log')
+% xlim([fax_HzN(1) 49])
+% set(gca,'FontSize',20,'YScale', 'log')
+% %xlim([fax_HzN(1) 40])
+% ylim([0.1 100])
+% xticks([1 10])
+% xticklabels({'1','10'})
+% yticks([0.1 1 10 100])
+% yticklabels({'0.1','1','10', '100'})
+% 
+% grid on 
+% box on
+% hold on
+% 
+% 
+% 
+% %% if you want to plot TTF from NRATTLE
+% if strcmp(TTF, 'yes') == 1
+%     Read_amps_4_plot
+%     TTF = plot(fax_HzN(1 :length(fax_HzN)), amps(1:length(fax_HzN)), 'Color', 'k', 'linewidth', 2);
+%     legend([ETF, TTF], {'HVSR', 'TTF'})
+% end
+% 
+% %makes figure full screen
+% %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+% 
+% %save
+% if strcmp(sav, 'yes') == 1
+%     saveas(HVSR, strcat(outpath, '\', 'HVSR.jpg'));
+%     saveas(HVSR, strcat(outpath, '\', 'HVSR.fig'));
+% end
 
 %% compute statistics on HVSR
-[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, fsmin);
+[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound, fsmin);
 [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
+% save
+if strcmp(sav, 'yes') == 1
+    taxstat2 = cell2table(taxstat);
+    writetable(taxstat2, strcat(outpath, '\', 'statistics.txt'));
+ end
 
+end
 
 
 %% End

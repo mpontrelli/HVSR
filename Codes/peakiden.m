@@ -1,11 +1,11 @@
-function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin)
+function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, upbound, fsmin)
 % N = length(ahatf)-lowbound; %length North_South_Component
 % width = 2; %width for triangle moving average filter in hz
 % q = ceil((fsmin/2-1)*width); %width for triangle moving average filter in samples
 % e = smooth(ahatf, q, 'moving');
 % e = e(lowbound: length(e));
-newfaxhz1 = newfaxhz(lowbound: length(newfaxhz));
-ahatf1 = ahatf(lowbound:length(ahatf));
+newfaxhz1 = newfaxhz((find(newfaxhz == lowbound)): (find(newfaxhz == upbound)));
+ahatf1 = ahatf(find(newfaxhz == lowbound):(find(newfaxhz == upbound)));
 
 %% Determine if peak is a peak
 [peaks,locs,w,p] = findpeaks(ahatf1,newfaxhz1);
