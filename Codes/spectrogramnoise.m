@@ -38,6 +38,7 @@ EWfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tuft
 [xEW] = ReadSacBinaryFile(EWfname); %East-West
 % CE32
 %load('C:\Users\mpontr01\Box\People\Marshall and Jeremy\HVSR_info\CE32.mat');
+
 %rdsac
 % [xV] = rdsac('Vfname');
 % [xV] = xV.d;
@@ -52,7 +53,9 @@ EWfname = 'C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tuft
 [xV] = Butter2(xV);
 [xNS] = Butter2(xNS);
 [xEW] = Butter2(xEW);
-
+[xH] =  complex_time(xNS, xEW);
+soundsc(xV/2, 4000)
+audiowrite('C:\Users\mpontr01\Desktop\7a.wav',xV,4000);
 
 fs = 100;
 
@@ -76,7 +79,7 @@ subplot(5,1,5)
 t = (1:length(sig))./fs;
 plot(t,sig)
 xlim([0 t(end)])  % try to get time axes of two plots to match...
-saveas(vert, strcat(outpath, '\', '7avertspectro.jpg'));
+%saveas(vert, strcat(outpath, '\', '7avertspectro.jpg'));
 %% North south
 sig = xNS;
 NS = figure;
@@ -90,7 +93,7 @@ subplot(5,1,5)
 t = (1:length(sig))./fs;
 plot(t,sig)
 xlim([0 t(end)])  % try to get time axes of two plots to match...
-saveas(NS, strcat(outpath, '\', '7aNSspectro.jpg'));
+%saveas(NS, strcat(outpath, '\', '7aNSspectro.jpg'));
 %% East west
 sig = xEW;
 EW = figure;
@@ -105,4 +108,18 @@ t = (1:length(sig))./fs;
 plot(t,sig)
 xlim([0 t(end)])  % try to get time axes of two plots to match...
 
-saveas(EW, strcat(outpath, '\', '7aEWspectro.jpg'));
+%saveas(EW, strcat(outpath, '\', '7aEWspectro.jpg'));
+
+%% complex
+sig = xH;
+xomp = figure;
+subplot(5,1,1:4)
+spectrogram(sig,win,noverlap,nfft,fs,'yaxis');
+colorbar('horiz')
+%caxis(cax)
+title('East west')
+
+subplot(5,1,5)
+t = (1:length(sig))./fs;
+plot(t,sig)
+xlim([0 t(end)])  % try to get time axes of two plots to match...
