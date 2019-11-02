@@ -1,1 +1,1 @@
-pas2sac C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\2a\Data\2019303\9B27\1\124614006_C27103A8 C:\Users\mpontr01\Desktop\boston_site_response\field_deployments\Tufts_Campus\Stations\Line_A\2a\Data\2019303\9B27\1\ 
+pas2sac C:\Users\Marshall\Desktop\boston-site-response\field_deployments\Tufts_Campus\Stations\Line_C\1c\Data\093019005_001226EB   
