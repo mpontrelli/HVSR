@@ -148,7 +148,9 @@ for eee = 1:length(stationlist)
                 
                 % compute the complex time series
                 [xH] =  complex_time(xNS, xEW);
-                
+                win = hann(length(xV));
+                xV = xV*win;
+                xH = xH*win;
                 %compute magnitude responses
                 ff = 2; % half magnitude spectra
                 % if you have a sampling frequency greater than your lowest
@@ -173,7 +175,7 @@ for eee = 1:length(stationlist)
                 XV_final_matrix(counter, :) = XV_magfilt; 
                 HV_final_matrix(counter, :) = H_V1; 
                 clear H_V1
-            else % if we're not doing waveform cu
+            else % if we're not doing waveform cut
             counter = counter + 1;
             
             % filter the data

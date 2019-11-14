@@ -68,14 +68,17 @@
 function [newfaxhz, ahatf, sigma, lowbound, taxstat, statsfinal, fsmin, recmax, varargout] = HVSR(datapath, varargin)
 %% parse inputs
 % create Input Parser object
+fs = 100;
 p = inputParser;
 % add inputs to the scheme
 defaultxbound = ([0, 20]);
 defaultybound = ([0.0001, 100]);
+defaultupbound = ceil(fs/2)-1;
 %addRequired(p,'path',@ischar);
 addRequired(p,'datapath',@ischar);
 addParameter(p, 'wavecut', 'No', @ischar);
 addParameter(p, 'HVSR', 'No', @ischar);
+addParameter(p, 'upbound', defaultupbound, @isnumeric);
 addParameter(p, 'individHVSR', 'No', @ischar);
 addParameter(p, 'magresps', 'No', @ischar);
 addParameter(p, 'magxbounds', defaultxbound, @isnumeric);
@@ -89,6 +92,7 @@ individHVSR = p.Results.individHVSR;
 magresps = p.Results.magresps;
 magxbounds = p.Results.magxbounds;
 magybounds = p.Results.magybounds;
+upbound = p.Results.upbound;
 %% start function
 
 % ACCESSING THE DATA
@@ -148,7 +152,9 @@ for eee = 1:length(stationlist)
                 
                 % compute the complex time series
                 [xH] =  complex_time(xNS, xEW);
-                
+                win = hann(length(xV));
+                xV = xV*win;
+                xH = xH*win;
                 %compute magnitude responses
                 ff = 2; % half magnitude spectra
                 % if you have a sampling frequency greater than your lowest
@@ -234,9 +240,9 @@ end
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin);
-    [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound);
-    statsfinal = vertcat(statsfinal, taxstat);
+%     [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin, upbound);
+%     [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound);
+%     statsfinal = vertcat(statsfinal, taxstat);
 end
 
 if strcmp(individHVSR, 'yes') == 1   

@@ -27,7 +27,7 @@
 function [X_mag, fax_HzN]=  Magresp(x, fs, ff)
 N = length(x); %length of signal
 X = fft(x); %fft of signal
-X_mag = abs(X)/(2*N); %normalized magnitude spectra
+X_mag = 4*abs(X)/(N); %normalized magnitude spectra
 fax_binsN = [0 : N-1]; % number of frequency samples in the record
 fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
 N_2 = ceil(N/ff) - fs; %half magnitude spectrum - 1 hz
