@@ -1,5 +1,5 @@
 %% spectrogram
-% based off Brian Traceys code shown in class 10/31/2019
+% based off Brian Tracey's code shown in class 10/31/2019
 
 %fnm = 'ghost01.wav';  cax = [-120 -30];
 %close all
