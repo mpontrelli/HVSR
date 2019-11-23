@@ -22,12 +22,12 @@
 %% Author: Marshall Pontrelli
 % Date: developed between September, 2017 and August, 2019
 %% Start  
-function HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname)
+function HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname, plotcolor)
 figure
 hold on
 confidenceinterval=shadedplot(newfaxhz(lowbound:length(newfaxhz)), confinthigh(lowbound:length(confinthigh)), confintlow(lowbound:length(confintlow)),[.9,.9,.9],'k');
 hold on
-ETF = plot(newfaxhz(lowbound:length(newfaxhz)), ahatf(lowbound:length(ahatf)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+ETF = plot(newfaxhz(lowbound:length(newfaxhz)), ahatf(lowbound:length(ahatf)), 'Color', plotcolor , 'Linewidth', 1.5);
 title(statname)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)

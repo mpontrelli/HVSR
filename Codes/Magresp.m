@@ -24,13 +24,10 @@
 %% Author: Marshall Pontrelli
 % Date: developed between September, 2017 and August, 2019
 %% Start   
-function [X_mag, fax_HzN]=  Magresp(x, fs, ff)
+function [X_mag, fax_HzN]=  Magresp(x, fs)
 N = length(x); %length of signal
 X = fft(x); %fft of signal
 X_mag = 4*abs(X)/(N); %normalized magnitude spectra (multiply by 4 is to account for hanning window and one-sided response
 fax_binsN = [0 : N-1]; % number of frequency samples in the record
-fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
-N_2 = ceil(N/ff) - fs; %half magnitude spectrum - 1 hz
-fax_HzN = fax_HzN1(1 : N_2);
-X_mag = X_mag(1: N_2);
+fax_HzN = fax_binsN*fs/N; %frequency axis NS (Hz)
 end

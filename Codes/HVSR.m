@@ -187,7 +187,9 @@ for eee = 1:length(stationlist)
             
             % compute the complex time series
             [xH] =  complex_time(xNS, xEW);
-            
+             win = hann(length(xV));
+             xV = xV.*win;
+             xH = xH.*win;
             %compute magnitude responses
             ff = 2; % half magnitude spectra
             % if you have a sampling frequency greater than your lowest
@@ -240,9 +242,9 @@ end
 if strcmp(HVSR, 'yes') == 1   
     [ahatf, sigma, confinthigh, confintlow] = wavav(HV_final_matrix);
     HVSRplot(ahatf, newfaxhz, confinthigh, confintlow, lowbound, statname);  
-%     [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, fsmin, upbound);
-%     [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound);
-%     statsfinal = vertcat(statsfinal, taxstat);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, upbound, fsmin);
+    [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound);
+    statsfinal = vertcat(statsfinal, taxstat);
 end
 
 if strcmp(individHVSR, 'yes') == 1   

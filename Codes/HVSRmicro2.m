@@ -146,6 +146,12 @@ end
 %Steidl et al. 1994
 xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
 
+%% window the data
+win = hann(sampnum)';
+for i = 1:numwin
+    xVmatrix(i,:) = xVmatrix(i,:).*win;
+    xHmatrix(i,:) = xHmatrix(i,:).*win;
+end
 %% Compute unfiltered magnitude responses
 % Compute the fft for each data window
 for iii = 1:numwin
