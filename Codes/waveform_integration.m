@@ -10,12 +10,15 @@ alpha = 0.25; %coefficients for Newmark-beta method
 beta = 0.5;
 width = 0.1; % width of smoothing filter in Hz
 bracketcut = 0.05*9.8; %This is the cutoff for the bolt bracketed duration in units of acceleration (not gs)
+statname = 'CO56';
 %output = 'C:\Users\mpontr01\Box Sync\Box Sync\tspring_2019\Earthquake Engineering\Assignments\Assignment 2\Figures';
 
 %% Read the data and make time vector
 
-[xNS,xV,xEW, fs] = readfile1('C:\Users\Marshall\Box\Data\Ground motion\Mexico CIty\Data\CE32\CE3220170919181440');
+[xNS,xV,xEW, fs] = readfile1(strcat('C:\Users\mpontr01\Box\2020_1_spring\SSA\Time domain\Puebla_data\', statname));
 [xNS, xV, xEW] = Butter(xNS, xV, xEW, fs); %filter the data
+% xNS = xNS - mean(xNS);
+% [xNS] = Butter2(xNS);
 n = length(xNS);
 win = hann(n);
 dt = 1/fs;
@@ -28,11 +31,12 @@ a = max([PGANS PGAV PGAEW]);
 %% Plot North-south component acceleration
 %acceleration
 figure
-sgtitle('North-South','FontName', 'Times New Roman', 'FontSize', 18, 'FontWeight', 'bold', 'color','k');
+%sgtitle('North-South','FontName', 'Times New Roman', 'FontSize', 18, 'FontWeight', 'bold', 'color','k');
 subplot(3,2,1)
 plot(time, xNS);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14, 'XColor', 'k');
 ylabel('(cm/s^2)','color','k'); 
-grid on; box on; xlim([0 time(end)]); ylim([(-a -5) (a +5) ]);
+grid on; box on; xlim([0 time(end)]); %ylim([(-a -5) (a +5) ]);
+
 %% now do magnitude response
 xNSw = xNS.*win;
 XNS = fft(xNSw); %taking the fft
@@ -109,6 +113,7 @@ subplot(3,2,5)
 fig1 = plot(time, dNS);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14,'XColor', 'k');
 xlabel('time (secs)','color','k'); ylabel('(cm)', 'color','k');
 grid on; box on; xlim([0 time(end)]); 
+
 %% now do magnitude response of displacement
 dNS = dNS';
 dNSw = dNS.*win;
@@ -133,11 +138,12 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 %% Plot East-west component acceleration
 %acceleration
 figure
-sgtitle('East-West','FontName', 'Times New Roman', 'FontSize', 18, 'FontWeight', 'bold','color','k');
+%sgtitle('East-West','FontName', 'Times New Roman', 'FontSize', 18, 'FontWeight', 'bold','color','k');
 subplot(3,2,1)
 plot(time, xEW);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14, 'XColor','k');
 ylabel('(cm/s^2)', 'color', 'k'); 
-grid on; box on; xlim([0 time(end)]); ylim([(-a -5) (a +5) ]);
+grid on; box on; xlim([0 time(end)]); %ylim([(-a -5) (a +5) ]);
+
 %% now do magnitude response
 xEWw = xEW.*win;
 XEW = fft(xEWw); %taking the fft
@@ -200,6 +206,7 @@ subplot(3,2,5)
 fig1 = plot(time, dEW);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14,'XColor','k');
 xlabel('Time (secs)', 'color','k'); ylabel('(cm)', 'color','k');
 grid on; box on; xlim([0 time(end)]); 
+
 %% now do magnitude response of displacement
 dEW = dEW';
 dEWw = dEW.*win;
@@ -224,11 +231,12 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 %% Plot Vertical component acceleration
 %acceleration
 figure
-sgtitle('Vertical','FontName', 'Times New Roman', 'FontSize', 18, 'FontWeight', 'bold', 'color','k');
+%sgtitle('Vertical','FontName', 'Times New Roman', 'FontSize', 18, 'FontWeight', 'bold', 'color','k');
 subplot(3,2,1)
 plot(time, xV);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14, 'XColor','k');
 ylabel('(cm/s^2)', 'color','k'); 
-grid on; box on; xlim([0 time(end)]); ylim([(-a -5) (a +5) ]);
+grid on; box on; xlim([0 time(end)]); %ylim([(-a -5) (a +5) ]);
+
 %% now do magnitude response
 xVw = xV.*win;
 XV = fft(xVw); %taking the fft
@@ -291,6 +299,7 @@ subplot(3,2,5)
 fig1 = plot(time, dV);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14, 'XColor','k');
 xlabel('Time (secs)', 'color','k'); ylabel('(cm)', 'color','k');
 grid on; box on; xlim([0 time(end)]); 
+
 %% now do magnitude response of displacement
 dV = dV';
 dVw = dV.*win;
@@ -311,45 +320,65 @@ xticklabels({'0.1','1','10'})
 yticks([0.001 0.01 0.1 1 10])
 yticklabels({'0.001','0.01','0.1','1', '10'})
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
-%% plot particle motion
-figure
-title('Particle motion')
-xlabel('North-south')
-ylabel('East-west')
-grid on
-plot(dEW,dNS, 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.2)
-set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
-xlabel('east-west disp'); ylabel('north-south disp'); title('particle motion')
-hold on; grid on
-% for i = 2:length(dNS)
-%     plot(dEW(i),dNS(i), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.2)
+vEW = vEW';
+vNS = vNS';
+vV = vV';
+save(strcat('C:\Users\mpontr01\Box\2020_1_spring\SSA\Time domain\Data_mat_files\',statname,'.mat'),'xNS', 'vNS', 'dNS', 'xEW', 'vEW', 'dEW', 'xV', 'vV', 'dV')
+% %% plot particle motion
+% figure
+% title('Particle motion')
+% xlabel('North-south')
+% ylabel('East-west')
+% grid on
+% plot(dEW,dNS, 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.2)
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% xlabel('east-west disp'); ylabel('north-south disp'); title('particle motion')
+% hold on; grid on
+% % for i = 2:length(dNS)
+% %     plot(dEW(i),dNS(i), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.2)
+% %     hold on
+% % end
+% 
+% 
+% %% do displacement HVSR
+% HV_disp = DEW_mag./DV_mag;
+% figure 
+% freqvert = plot(freq, HV_disp, 'linewidth',1.2);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14, 'Yscale','log', 'Xscale', 'log');
+% xlabel('Frequency (Hz)'); ylabel('Magnitude response'); title('HVSR displacement');
+% grid on; box on;
+% xlim([0.03 10]); ylim([1e-2 100]);
+% xticks([0.1 1 10])
+% xticklabels({'0.1','1','10'})
+% yticks([0.001 0.01 0.1 1 10])
+% yticklabels({'0.001','0.01','0.1','1', '10'})
+% %% plot particle motion in 3d
+% figure
+% title('Particle motion')
+% subplot(2,1,1)
+% plot3(dEW(1),dNS(1),dV(1), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% xlabel('east-west disp'); ylabel('north-south disp');zlabel('vertical disp'); title('particle motion')
+% hold on; grid on
+% xlim([-20 20]);ylim([-20 20]);zlim([-3 3]);
+% set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+% subplot(2,1,2)
+% plot(time(1),dEW(1), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% xlabel('time (secs)'); ylabel('displacement (cm)');
+% hold on; grid on
+% xlim([0 time(end)]); ylim([(-a -5) (a +5) ]);
+% 
+% for i = 6000:length(dNS)
+%     subplot(2,1,1)
+%     plot3(dEW(i),dNS(i),dV(i), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
 %     hold on
+%     
+%     xlim([-20 20]);ylim([-20 20]);zlim([-3 3]);
+%     subplot(2,1,2)
+%     plot(time(i),dEW(i), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
+%     set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+%     xlabel('time (secs)'); ylabel('displacement (cm)');
+%     hold on; grid on
+%     xlim([0 time(end)]); ylim([-15 15 ]);
+%     pause(0.001)
 % end
-
-
-%% do displacement HVSR
-HV_disp = DEW_mag./DV_mag;
-figure 
-freqvert = plot(freq, HV_disp, 'linewidth',1.2);set(gca, 'FontName', 'Times New Roman', 'FontSize', 14, 'Yscale','log', 'Xscale', 'log');
-xlabel('Frequency (Hz)'); ylabel('Magnitude response'); title('HVSR displacement');
-grid on; box on;
-xlim([0.03 10]); ylim([1e-2 100]);
-xticks([0.1 1 10])
-xticklabels({'0.1','1','10'})
-yticks([0.001 0.01 0.1 1 10])
-yticklabels({'0.001','0.01','0.1','1', '10'})
-%% plot particle motion in 3d
-figure
-title('Particle motion')
-plot3(dEW(1),dNS(1),dV(1), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
-set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
-xlabel('east-west disp'); ylabel('north-south disp');zlabel('vertical disp'); title('particle motion')
-hold on; grid on
-xlim([-20 20]);ylim([-20 20]);zlim([-3 3]);
-for i = 17000:length(dNS)
-    plot3(dEW(i),dNS(i),dV(i), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
-    hold on
-    pause(0.00001)
-    xlim([-20 20]);ylim([-20 20]);zlim([-3 3]);
-    disp(i)
-end
