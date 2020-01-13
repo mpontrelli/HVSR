@@ -346,7 +346,7 @@ set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
 xlabel('east-west disp'); ylabel('north-south disp');zlabel('vertical disp'); title('particle motion')
 hold on; grid on
 xlim([-20 20]);ylim([-20 20]);zlim([-3 3]);
-for i = 17000:length(dNS)
+for i = 7000:length(dNS)
     plot3(dEW(i),dNS(i),dV(i), 'o','markeredgecolor', 'k', 'markerFacecolor', 'k','markersize', 0.4)
     hold on
     pause(0.00001)
