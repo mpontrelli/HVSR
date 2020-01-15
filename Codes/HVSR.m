@@ -201,8 +201,8 @@ for eee = 1:length(stationlist)
             if fs > fsmin 
                 ff = ff * (fs / fsmin);
             end
-            [XH_mag, fax_HzN] =  Magresp(xH, fs, ff);
-            [XV_mag] =  Magresp(xV, fs, ff);
+            [XH_mag, fax_HzN] =  Magresp(xH, fs);
+            [XV_mag] =  Magresp(xV, fs);
                 
             % smooth the magnitude response
             width = .1; % width for smoothing filter in hz
