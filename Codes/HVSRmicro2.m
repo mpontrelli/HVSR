@@ -75,6 +75,9 @@ defaultnumwin = 10;
 defaultwindis = 25;
 defaultlowbound = 0;
 defaultupbound =  fs/2 -1;
+defaultLowCorner = 0.1;
+defaultHighCorner = fs/2 - 1;
+defaultNpoles = 4;
 % Required inputs
 addRequired(p,'Vfname',@ischar);
 addRequired(p,'NSfname',@ischar);
@@ -92,6 +95,10 @@ addParameter(p, 'windowlen', defaultwindowlen, @isnumeric);
 addParameter(p, 'numwin', defaultnumwin, @isnumeric);
 addParameter(p, 'windis', defaultwindis, @isnumeric);
 addParameter(p, 'plots', 'no', @ischar);
+addParameter(p, 'LowCorner', defaultLowCorner, @isnumeric);
+addParameter(p, 'HighCorner', defaultHighCorner, @isnumeric);
+addParameter(p, 'Npoles', defaultNpoles, @isnumeric);
+
 % parse the inputs
 parse(p, Vfname, NSfname, EWfname,fs, statname, varargin{:})
 % set varibales from the parse
@@ -104,7 +111,9 @@ sav = p.Results.sav;
 lowbound = p.Results.lowbound;
 upbound = p.Results.upbound;
 plots = p.Results.plots;
-fsmin = fs;
+LowCorner = p.Results.LowCorner;
+HighCorner = p.Results.HighCorner;
+Npoles = p.Results.Npoles;
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
@@ -132,9 +141,9 @@ windisnum = windis*fs;
 %xV = rdmseed(Vfname);
 %xV = xV.d;
 %% Filter
-[xV] = Butter2(xV);
-[xNS] = Butter2(xNS);
-[xEW] = Butter2(xEW);
+[xV] = Butter2(xV, LowCorner, HighCorner, Npoles, fs);
+[xNS] = Butter2(xNS, LowCorner, HighCorner, Npoles, fs);
+[xEW] = Butter2(xEW, LowCorner, HighCorner, Npoles, fs);
 
 %% Create a time series plot (Output 1)]
 if strcmp(plots, 'yes') == 1
