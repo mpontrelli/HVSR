@@ -48,6 +48,9 @@
     
     % HVSRplot - if toggled on, plots HVSR
     
+    % Filterplot - if toggled on, plots the Butterworth filter used on the
+    % time series. 
+    
     % outpath - the filepath for the figure outputs (string)
     
     % sav - if toggled on, saves the figures to specified output
@@ -118,6 +121,7 @@ addParameter(p, 'AUMagplot', 'no', @ischar);
 addParameter(p, 'IFMagplot', 'no', @ischar);
 addParameter(p, 'AFMagplot', 'no', @ischar);
 addParameter(p, 'HVSRplot', 'no', @ischar);
+addParameter(p, 'Filterplot', 'no', @ischar);
 addParameter(p, 'LowCorner', defaultLowCorner, @isnumeric);
 addParameter(p, 'HighCorner', defaultHighCorner, @isnumeric);
 addParameter(p, 'Npoles', defaultNpoles, @isnumeric);
@@ -140,6 +144,7 @@ AUMagplot = p.Results.AUMagplot;
 IFMagplot = p.Results.IFMagplot;
 AFMagplot = p.Results.AFMagplot;
 HVSRplot = p.Results.HVSRplot;
+Filterplot = p.Results.Filterplot;
 LowCorner = p.Results.LowCorner;
 HighCorner = p.Results.HighCorner;
 Npoles = p.Results.Npoles;
@@ -170,9 +175,10 @@ windisnum = windis*fs;
 %xV = rdmseed(Vfname);
 %xV = xV.d;
 %% Filter
-[xV] = Butter2(xV, LowCorner, HighCorner, Npoles, fs);
-[xNS] = Butter2(xNS, LowCorner, HighCorner, Npoles, fs);
-[xEW] = Butter2(xEW, LowCorner, HighCorner, Npoles, fs);
+[xV] = Butter2(xV, LowCorner, HighCorner, Npoles, fs, Filterplot);
+Filterplot = 'no'; % toggle off filter plot so it doesn't plot response three times
+[xNS] = Butter2(xNS, LowCorner, HighCorner, Npoles, fs, Filterplot);
+[xEW] = Butter2(xEW, LowCorner, HighCorner, Npoles, fs, Filterplot);
 
 %% Create a time series plot (Output 1)]
 if strcmp(Allplots, 'yes') == 1 || strcmp(Timeplot, 'yes') == 1
