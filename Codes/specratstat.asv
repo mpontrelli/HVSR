@@ -18,22 +18,15 @@
     % newfaxhz1 - vector of frequencies corresponding to ahatf1, likely
     % from peakiden
     
-    % sigma - Vector of standard deviations, likely from wavav
+    % sigma - 
     
-    % statname - station name, this gets put in the first column
+    % statname - 
     
-    % lowbound - lowest frequency of interest
+    % lowbound - 
     
     % OUTPUTS
     
-    % taxstat - a matrix containing information about all the significant peaks 
-    % with: column 1) name of the station, column 2) the frequency of the
-    % significant peak, column 3) the amplitude of the significant peak,
-    % column 4) the halfpower bandwidth of the significant peak, 5) the
-    % interevent variability of each peak across the halfpower bandwidth,
-    % 6) the prominence of the significant peak, anf 7) the width of the
-    % significant peak. The last two have definitions in the matlab
-    % documentation for findpeaks. 
+    % taxstat - 
     
 
 %% Author: Marshall Pontrelli

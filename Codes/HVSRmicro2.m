@@ -61,7 +61,7 @@
   %Summer 2019
   
 %% Start
-function [ahatf, fax_HzN, varargout] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
+function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
 %% parse inputs
 % create Input Parser object
 p = inputParser;
@@ -228,14 +228,14 @@ end
 if strcmp(plots, 'yes') == 1
     HVSRmicroplot(fax_HzN, ahatf, fs, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
 end
-%% compute statistics on HVSR
-% [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound, fsmin);
-% [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
-% % save
-% if strcmp(sav, 'yes') == 1
-%     taxstat2 = cell2table(taxstat);
-%     writetable(taxstat2, strcat(outpath, '\', 'statistics.txt'));
-%  end
+% compute statistics on HVSR
+[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound);
+[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
+% save
+if strcmp(sav, 'yes') == 1
+    taxstat2 = cell2table(taxstat);
+    writetable(taxstat2, strcat(outpath, '\', 'statistics.txt'));
+ end
 
 end
 

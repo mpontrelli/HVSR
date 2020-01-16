@@ -14,13 +14,11 @@
     
     % OUTPUTS
     
-    % matrix - column 1 is the frequency of the significant peak, column 2
-    % is the amplitude of the significant peak
+    % matrix - magnitude response
     
-    % matrix1 - column 1 is the prominence of the significant peak, column
-    % 2 is the width of the significant peak
+    % matrix1 - 
     
-    % peakind - peak index
+    % peakind - frequency vector of X
     
     % ahatf1 - the clipped transfer function vector to take the lowbound and
     % upbound values into account 
@@ -34,7 +32,7 @@
 % Update - 1/16/2020 added comments while I was coming back to debug this
 % and specratstat - Marshall
 
-function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound)
+function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, upbound, fsmin)
 newfaxhz1 = newfaxhz(lowbound: end);
 ahatf1 = ahatf(lowbound:end);
 
