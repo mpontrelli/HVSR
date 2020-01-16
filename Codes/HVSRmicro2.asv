@@ -8,7 +8,7 @@
     %statname - Name of the station, used in plotting titles (string)
 
     %lowbound - lowcutoff value for the plots (used to get rid of large
-    %error bars at low frequencies (samples)
+    %error bars at low frequencies (frequency)
     
     %fs - sampling frequency (Hz)
     
@@ -61,7 +61,7 @@
   %Summer 2019
   
 %% Start
-function [taxstat, ahatf, fax_HzN, varargout] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
+function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
 %% parse inputs
 % create Input Parser object
 p = inputParser;
@@ -105,21 +105,28 @@ fsmin = fs;
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
 
+
+
 %% read files and convert into vectors
 %.sacBinary
 [xV] = ReadSacBinaryFile(Vfname); %vertical
 [xNS] = ReadSacBinaryFile(NSfname); %North-south
 [xEW] = ReadSacBinaryFile(EWfname); %East-West
 %rdsac
-% [xV] = rdsac('Vfname');
-% [xV] = xV.d;
-% [xNS] = rdsac('NSfname');
-% [xNS] = xNS.d;
-% [xEW] = rdsac('EWfname');
-% [xEW] = xEW.d;
+%[xV] = rdsac('Vfname');
+%[xV] = xV.d;
+%[xNS] = rdsac('NSfname');
+%[xNS] = xNS.d;
+%[xEW] = rdsac('EWfname');
+%[xEW] = xEW.d;
 
 %miniseed
-%A = rdmseed('fname');
+%xNS = rdmseed(NSfname);
+%xNS = xNS.d;
+%xEW = rdmseed(EWfname);
+%xEW = xEW.d;
+%xV = rdmseed(Vfname);
+%xV = xV.d;
 %% Filter
 [xV] = Butter2(xV);
 [xNS] = Butter2(xNS);
@@ -171,6 +178,12 @@ for iii = 1:numwin
     XVmatrix2(iii,:) = XVmat(1 : N_2);
     XHmatrix2(iii,:) = XHmat(1 : N_2);
 end
+
+%%
+% create upbound and lowbound in terms of sample number
+[~, lowbound] = min(abs(fax_HzN - lowbound));
+
+[~, upbound] = (min(abs(fax_HzN - upbound)));
 %% plot individual unfiltered magnitude responses (OUTPUT 2)
 if strcmp(plots, 'yes') == 1
     individmagrespplot(fax_HzN, XHmatrix2, XVmatrix2, fs, lowbound, outpath, sav)
@@ -223,9 +236,9 @@ end
 if strcmp(plots, 'yes') == 1
     HVSRmicroplot(fax_HzN, ahatf, fs, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
 end
-%% compute statistics on HVSR
-[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound, fsmin);
-[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
+% compute statistics on HVSR
+[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound);
+[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound, upbound);
 % save
 if strcmp(sav, 'yes') == 1
     taxstat2 = cell2table(taxstat);

@@ -7,8 +7,12 @@
     %INPUTS
     %statname - Name of the station, used in plotting titles (string)
 
-    %lowbound - lowcutoff value for the plots (used to get rid of large
-    %error bars at low frequencies (samples)
+    %lowbound - lowcutoff value for the plots, can be any frequency. If a 
+    % weird frequency is put in, 3.17 or something, it will find the closest 
+    % frequency and use that. The bound between upbound and lowbound is also
+    % used for the statistics calculation, ie. the program only finds the peaks 
+    % in between the bounds.(used to get rid of large error bars at low frequencies 
+    %(must be a frequency between 0 and fs/2, default, 1 which is the first frequency)
     
     %fs - sampling frequency (Hz)
     
@@ -69,8 +73,8 @@ p = inputParser;
 defaultwindowlen = 40;
 defaultnumwin = 10;
 defaultwindis = 25;
-defaultlowbound = 1/defaultwindowlen;
-defaultupbound = ceil(fs/2)-1;
+defaultlowbound = 0;
+defaultupbound =  fs/2 -1;
 % Required inputs
 addRequired(p,'Vfname',@ischar);
 addRequired(p,'NSfname',@ischar);
