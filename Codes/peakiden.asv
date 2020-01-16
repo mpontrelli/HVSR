@@ -18,10 +18,12 @@ for ii = 1:length(p)
 end 
 topprom = p(o)';
 topwidth = w(o)';
-A = peaks(o)'; peakind = locs(o)'; fn = newfaxhz1(peakind)';
+A = peaks(o)'; fn = locs(o)'; fn
 matrix = [fn,A];
 matrix1 = [topprom, topwidth];
-
+for i = 1:length(fn)
+    peakind(i) = find(newfaxhz1==fn(i));
+end
 %plot(fn, A, 'o', 'markeredgecolor', 'g', 'markerfacecolor', 'g')
 % for hh = 1:length(amps)
 %     freqpeak(hh) = newfaxhz1(amplocs(hh));
