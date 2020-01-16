@@ -38,8 +38,8 @@ function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz,
 % find the values in the frequency vector closest to the lowbound and
 % upbound values
 
-newfaxhz1 = newfaxhz(find(newfaxhz == lowbound): find(newfaxhz == upbound));
-ahatf1 = ahatf(find(newfaxhz == lowbound): find(newfaxhz == upbound));
+newfaxhz1 = newfaxhz(lowbound:upbound);
+ahatf1 = ahatf(lowbound: upbound);
 
 %% Determine if peak is a peak
 [peaks,locs,w,p] = findpeaks(ahatf1);

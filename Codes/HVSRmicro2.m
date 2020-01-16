@@ -105,6 +105,8 @@ fsmin = fs;
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
 
+
+
 %% read files and convert into vectors
 %.sacBinary
 [xV] = ReadSacBinaryFile(Vfname); %vertical
@@ -176,6 +178,12 @@ for iii = 1:numwin
     XVmatrix2(iii,:) = XVmat(1 : N_2);
     XHmatrix2(iii,:) = XHmat(1 : N_2);
 end
+
+%%
+% create upbound and lowbound in terms of sample number
+[~, lowbound] = min(abs(fax_HzN - lowbound));
+
+[~, upbound] = (min(abs(fax_HzN - upbound)));
 %% plot individual unfiltered magnitude responses (OUTPUT 2)
 if strcmp(plots, 'yes') == 1
     individmagrespplot(fax_HzN, XHmatrix2, XVmatrix2, fs, lowbound, outpath, sav)
@@ -230,7 +238,7 @@ if strcmp(plots, 'yes') == 1
 end
 % compute statistics on HVSR
 [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound);
-[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, fax_HzN, newfaxhz1, sigma, statname, lowbound, upbound);
+[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound, upbound);
 % save
 if strcmp(sav, 'yes') == 1
     taxstat2 = cell2table(taxstat);
