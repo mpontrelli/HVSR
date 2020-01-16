@@ -34,9 +34,12 @@
 % Update - 1/16/2020 added comments while I was coming back to debug this
 % and specratstat - Marshall
 
-function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound)
-newfaxhz1 = newfaxhz(lowbound: end);
-ahatf1 = ahatf(lowbound:end);
+function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, upbound)
+% find the values in the frequency vector closest to the lowbound and
+% upbound values
+
+newfaxhz1 = newfaxhz(find(newfaxhz == lowbound): find(newfaxhz == upbound));
+ahatf1 = ahatf(find(newfaxhz == lowbound): find(newfaxhz == upbound));
 
 %% Determine if peak is a peak
 [peaks,locs,w,p] = findpeaks(ahatf1);

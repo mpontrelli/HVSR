@@ -41,9 +41,9 @@
 % Update - 1/16/2020 added comments while I was coming back to debug this
 % and peakiden - Marshall
 
-function [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound)
+function [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz, newfaxhz1, sigma, statname,lowbound, upbound)
 [m] = length(peakind);
-sigma1 = sigma(lowbound:length(sigma));  
+sigma1 = sigma(find(newfaxhz == lowbound): find(newfaxhz == upbound)); 
 for f = 1:m
     loc = peakind(f);
     A = matrix(f,2);

@@ -11,7 +11,9 @@
 % feel like trouble shooting to do it on one or the other, but if you're
 % ever bored, come back and make the code more efficient by commiting to
 % radians or degrees. The results are identical to azimuth and deg2km
-% matlab commands
+% matlab commands, just use those. 
+
+% 1/16/2020- Damn it why did I write this. 
 
 % Author - Marshall Pontrelli
 % Date - 5/30/2019

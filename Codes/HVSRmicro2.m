@@ -224,8 +224,8 @@ if strcmp(plots, 'yes') == 1
     HVSRmicroplot(fax_HzN, ahatf, fs, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
 end
 % compute statistics on HVSR
-[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound);
-[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound);
+[matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound);
+[taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, fax_HzN, newfaxhz1, sigma, statname, lowbound, upbound);
 % save
 if strcmp(sav, 'yes') == 1
     taxstat2 = cell2table(taxstat);
