@@ -119,12 +119,12 @@ windisnum = windis*fs;
 %[xEW] = xEW.d;
 
 %miniseed
-%xNS = rdmseed(NSfname);
-%xNS = xNS.d;
-%xEW = rdmseed(EWfname);
-%xEW = xEW.d;
-%xV = rdmseed(Vfname);
-%xV = xV.d;
+xNS = rdmseed(NSfname);
+xNS = xNS.d;
+xEW = rdmseed(EWfname);
+xEW = xEW.d;
+xV = rdmseed(Vfname);
+xV = xV.d;
 %% Filter
 [xV] = Butter2(xV);
 [xNS] = Butter2(xNS);
