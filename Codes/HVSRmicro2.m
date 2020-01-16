@@ -78,7 +78,7 @@
     
     
   %% Author: Marshall Pontrelli
-  % Co-author Justin Reyes and Jeremy Salerno
+  % Co-authors: Justin Reyes and Jeremy Salerno
   % Summer 2019
   
   % Update, ongoing edits in January 2020. See Github repository HVSR for
