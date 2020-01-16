@@ -1,4 +1,38 @@
+%% peakiden
+% indentify significant peaks above a certain prominence threshold.
+% Prominence is defined in the matlab "findpeaks" documentation.
+% https://www.mathworks.com/help/signal/ref/findpeaks.html#bufbbs1-p
 
+    % INPUTS
+    
+    % peakind - peak index, comes from peakiden
+    
+    % matrix - matrix with frequencies and amplitudes of significant peaks,
+    % from peakiden
+    
+    % matrix1 - matrix with prominence and widths of significant peaks from
+    % peakiden
+    
+    % ahatf1 - spectral ratio of interest, likely from peakiden
+    
+    % newfaxhz1 - vector of frequencies corresponding to ahatf1, likely
+    % from peakiden
+    
+    % sigma - 
+    
+    % statname - 
+    
+    % lowbound - 
+    
+    % OUTPUTS
+    
+    % taxstat - 
+    
+
+%% Author: Marshall Pontrelli
+% Date: developed during summer 2019 
+% Update - 1/16/2020 added comments while I was coming back to debug this
+% and peakiden - Marshall
 
 function [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound)
 [m] = length(peakind);
