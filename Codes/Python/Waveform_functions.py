@@ -22,18 +22,19 @@ import math
     # station - the station you want to pull data from 
     # outpath - path where the mseed datafile will go
     # file that you want to extract, you have to go into the ftp directory to pick the one you want
+    
 
 # OUTPUTS
     # This writes a datafile from the D.O data ftp server to the outpath
-def ftp_connect(datatype, station, outpath, file):
+def ftp_connect(datatype, station, outpath, file, pw):
     #outpath = 'C:/Users/mpontr01/Desktop/Stations/Tufts University/2019_10_26/Data'
-    ftp = ftplib.FTP("ftp.aftac.gov") #, 'anonymous', 'DTRA2015')
+    ftp = ftplib.FTP("ftp.aftac.gov")
     ftp.login()
     ftp.cwd('outgoing/TuftsUniversity/BostonSeismicStudy/' + datatype + '/' + station + '/')
     ftp.retrlines('LIST') 
     with open(file, "wb") as gFile:
         ftp.retrbinary('RETR'+ ' ' +  file, gFile.write)
-    ZipFile(file).extractall(path = outpath, members = None, pwd=bytes('DTRA2015', 'utf-8'))
+    ZipFile(file).extractall(path = outpath, members = None, pwd=bytes(pw, 'utf-8'))
     #
 
 def mag_response(x, fs):
