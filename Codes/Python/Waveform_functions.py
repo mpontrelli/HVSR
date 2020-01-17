@@ -22,7 +22,7 @@ import math
     # station - the station you want to pull data from 
     # outpath - path where the mseed datafile will go
     # file that you want to extract, you have to go into the ftp directory to pick the one you want
-    
+    # pw - must be a string
 
 # OUTPUTS
     # This writes a datafile from the D.O data ftp server to the outpath
@@ -35,7 +35,6 @@ def ftp_connect(datatype, station, outpath, file, pw):
     with open(file, "wb") as gFile:
         ftp.retrbinary('RETR'+ ' ' +  file, gFile.write)
     ZipFile(file).extractall(path = outpath, members = None, pwd=bytes(pw, 'utf-8'))
-    #
 
 def mag_response(x, fs):
     N = len(x)
@@ -268,17 +267,16 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = filtfilt(b, a, data) # I edited this from the recipe (it was lfilt)
     return y
 
-def wavav(SR_matrix):
-    size1 = SR_matrix.shape
+def wavav(H):
+    size1 = H.shape
     len1 = size1[0]
-    q = np.log(SR_matrix)
-    ahatf = math.exp(np.nansum(q)/len1)
+    q = np.log(H)
+    ahatf = np.exp(np.nansum(q, axis=0)/len1)
     for i in range(len1):
-        q[i,:] = (np.log(SR_matrix[i,:]) - np.log(ahatf))^2
-    
-    sigma = math.sqrt(np.nansum(q)/len1)
-    confinthigh = math.exp(np.log(ahatf)+1.96*sigma)
-    confintlow = math.exp(np.log(ahatf)-1.96*sigma)
+        q[i,:] = (np.log(H[i,:]) - np.log(ahatf))**2
+    sigma = np.sqrt(np.nansum(q, axis = 0)/len1)
+    confinthigh = np.exp(np.log(ahatf)+1.96*sigma)
+    confintlow = np.exp(np.log(ahatf)-1.96*sigma)
     return ahatf, sigma, confinthigh, confintlow
 
 
@@ -333,3 +331,75 @@ def run():
 
 
 run()
+
+## PLOTS
+def timeseriesplot(xNS, xV, xEW, fs, sav, outpath):
+    # find length of xV
+    npts = len(xV)
+    # find the maximum value for bounds for plotting
+    a = np.max(np.abs(xV))
+    b = np.max(np.abs(xNS))
+    c = np.max(np.abs(xEW))
+    d = np.array([a,b,c])
+    d = np.max(d)
+    
+    # create a time vector and plot time series
+    time = np.linspace(0, npts/fs, npts, endpoint=False)/60
+    
+    plt.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9, wspace=0.2, hspace=0.2)
+    plt.rcParams.update({'font.size': 12})
+    plt.rcParams['font.family'] = "Times New Roman"
+    fig = plt.figure()
+    fig.set_size_inches(8, 8)
+    ax1 = fig.add_subplot(3,1,1)
+    ax1.plot(time, xV, label='Time (mins)')
+    plt.ylabel('counts')
+    plt.title('V')
+    plt.grid(True)
+    plt.ylim((-d, d))
+    plt.xlim((0, npts/(fs*60)))
+
+    # North-south
+    ax2 = fig.add_subplot(3,1,2)
+    ax2.plot(time, xNS, label='Time (mins)')
+    plt.ylabel('counts')
+    plt.title('EW')
+    plt.grid(True)
+    plt.ylim((-d, d))
+    plt.xlim((0, npts/(fs*60)))
+
+    # East-west
+    ax3 = fig.add_subplot(3,1,3)
+    ax3.plot(time, xEW, label='Filtered signal')
+    plt.xlabel('time (hours)')
+    plt.ylabel('counts')
+    plt.title('NS')
+    plt.grid(True)
+    plt.ylim((-d, d))
+    plt.xlim((0, npts/(fs*60)))
+
+    # and save
+    if sav in 'yes':
+        fig.savefig(outpath  + '\timeseries.jpg', dpi=100)
+        
+def HVSRplot(fax_HzN, ahatf, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav):
+    fig2 = plt.figure()
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.rcParams.update({'font.size': 12})
+    plt.rcParams['font.family'] = "Times New Roman"
+    plt.fill_between(fax_HzN, confintlow, confinthigh, color= [0.9, 0.9, 0.9])
+    plt.plot(fax_HzN, ahatf, color = [0, 0.30196, 0.6588], linewidth = 2)
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Amplification')
+    plt.title(statname)
+    plt.grid(True)
+    plt.ylim((0.1, 100))
+    plt.xlim((fax_HzN[lowbound], fax_HzN[upbound]))
+    
+    ## save if sav is toggled on
+    if sav in 'yes':
+        fig.savefig(outpath  + '\HVSR.jpg', dpi=100)
+
+    
+    
