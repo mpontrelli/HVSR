@@ -10,7 +10,7 @@ Created on Thu Jan 16 18:04:24 2020
 
 ## inputs
 
-ftype = '.msd' # filetype, this is to support a bunch of filtypes
+ftype = '.sac' # filetype, this is to support a bunch of filtypes
 sav = 'no' # do you want to save your figures?
 outpath = 'C:\\Users\\mpontr01\\Desktop\\Stations\\Tufts University\\2019_10_26\\Figures' # if you want to save your figures use outpath
 fs = 100 # I think we'll change this to read in from the file
@@ -22,13 +22,16 @@ EWfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments
 # filename, this is a test for miniseed
 filename = 'C:\\Users\\mpontr01\\Box\\2019_2_summer\\Projects\\Boston\\Data\\bd\\Waltham\\bd_data_A23L_1560124800\\bd_mseed_A23L_1560124800'
 
-Allplots = 'yes'
+Allplots = 'no'
 Timeplot = 'no'
 HVSRplottog = 'no'
+IUMagplot = 'no'
+AUMagplot = 'yes'
+
 ## defaults for windowing the time series
-numwin = 1000
+numwin = 10
 windowlen = 40
-fs = 200
+fs = 100
 windis = 25
 sampnum = windowlen*fs
 windisnum = windis *fs
@@ -118,18 +121,29 @@ N = sampnum
 faxbinsN = np.linspace(0,fs, N - 1)
 N_2 = math.ceil(N/2)
 fax_HzN = faxbinsN[0:int(N_2)]
-    
+xV = []
+xH = []
+xV = xVmatrix[:,0:N_2]
+xH = xHmatrix[:,0:N_2]
+xH = np.real(xH)
+
 ## translate upbound and lowbound in from Hz to sample index
 lowbound = np.argmin(np.abs(fax_HzN - lowbound))
 upbound = np.argmax(np.abs(fax_HzN - lowbound))
 
-# now cut the magnitude responses in half
-    
-xV = []
-xH = []
-xV = xVmatrix[0:N_2]
-xH = xHmatrix[0:N_2]
-xH = np.real(xH)
+# plot individual unfiltered magnitude responses 
+if Allplots in 'yes' or IUMagplot in 'yes':
+    individmagrespplot(fax_HzN, xH, xV, fs, N_2, lowbound, upbound, outpath, sav)  
+
+# Average the un-smoothed magnitude responses
+[ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] = wavav(xH)
+[ahatfvert, sigmavert, confinthighvert, confintlowvert] = wavav(xV)  
+
+# plot averaged unfiltered magnitude responses
+if Allplots in 'yes' or AUMagplot in 'yes':
+    averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
+
+
 
 ## do the HVSR
 H = xH/xV
@@ -138,8 +152,6 @@ H = xH/xV
 [ahatf, sigma, confinthigh, confintlow] = wavav(H)
     
 ## and cut to the half magnitude
-ahatf = ahatf[0:N_2]
-sigma = sigma[0:N_2]
 confinthigh = confinthigh[0:N_2]
 confintlow = confintlow[0:N_2]
     

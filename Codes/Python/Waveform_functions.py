@@ -401,5 +401,72 @@ def HVSRplot(fax_HzN, ahatf, confinthigh, confintlow, statname, lowbound, upboun
     if sav in 'yes':
         fig.savefig(outpath  + '\HVSR.jpg', dpi=100)
 
+def individmagrespplot(fax_HzN, xH, xV, fs,N_2, lowbound, upbound, outpath, sav):
+    fig3 = plt.figure()
+    ax1 = fig3.add_subplot(2,1,1)
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.rcParams.update({'font.size': 12})
+    plt.rcParams['font.family'] = "Times New Roman"
+    ax1.plot(fax_HzN, xH[0:N_2, :].T, color = [0.8, 0.8, 0.8])
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Mag resp')
+    plt.title('Horizontal')
+    plt.grid(True)
+    plt.ylim((0.1, 1000))
+    plt.xlim((fax_HzN[lowbound], fax_HzN[upbound]))
     
     
+    fig4 = plt.figure()
+    ax1 = fig4.add_subplot(2,1,2)
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.rcParams.update({'font.size': 12})
+    plt.rcParams['font.family'] = "Times New Roman"
+    ax1.plot(fax_HzN, xV[0:N_2, :].T, color = [0.8, 0.8, 0.8])
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Mag resp')
+    plt.title('Vertical')
+    plt.grid(True)
+    plt.ylim((0.1, 1000))
+    plt.xlim((fax_HzN[lowbound], fax_HzN[upbound]))
+    
+    ## save if sav is toggled on
+    if sav in 'yes':
+        fig.savefig(outpath  + '\HVSR.jpg', dpi=100)
+        
+def averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav):    
+    fig5 = plt.figure()
+    ax1 = fig5.add_subplot(2,1,1)
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.rcParams.update({'font.size': 12})
+    plt.rcParams['font.family'] = "Times New Roman"
+    plt.fill_between(fax_HzN, confintlowhorz, confinthighhorz, color= [0.9, 0.9, 0.9])
+    ax1.plot(fax_HzN, ahatfhorz, color = [0, 0.30196, 0.6588])
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Mag resp')
+    plt.title('Horizontal')
+    plt.grid(True)
+    plt.ylim((0.1, 1000))
+    plt.xlim((fax_HzN[lowbound], fax_HzN[upbound]))
+    
+    
+    fig6 = plt.figure()
+    ax1 = fig6.add_subplot(2,1,2)
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.rcParams.update({'font.size': 12})
+    plt.rcParams['font.family'] = "Times New Roman"
+    plt.fill_between(fax_HzN, confintlowvert, confinthighvert, color= [0.9, 0.9, 0.9])
+    ax1.plot(fax_HzN, ahatfvert, color = [0, 0.30196, 0.6588])
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Mag resp')
+    plt.title('Vertical')
+    plt.grid(True)
+    plt.ylim((0.1, 1000))
+    plt.xlim((fax_HzN[lowbound], fax_HzN[upbound]))
+    
+    ## save if sav is toggled on
+    if sav in 'yes':
+        fig.savefig(outpath  + '\HVSR.jpg', dpi=100)

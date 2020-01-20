@@ -27,7 +27,7 @@ Allplots = 'yes'
 Timeplot = 'no'
 HVSRplottog = 'no'
 ## defaults for windowing the time series
-numwin = 1000
+numwin = 10
 windowlen = 40
 fs = 200
 windis = 25
