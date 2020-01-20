@@ -20,7 +20,7 @@ NSfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments
 EWfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments\\Boston area\\908DP\\Data\\2000004171152005_908DP_1_3.sac'
 
 # filename, this is a test for miniseed
-filename = 'C:\\Users\\mpontr01\\Desktop\\Stations\\Tufts University\\2019_10_26\\Data\\bd_mseed_A00L_1572134400'
+filename = 'C:\\Users\\mpontr01\\Box\\2019_2_summer\\Projects\\Boston\\Data\\bd\\Waltham\\bd_data_A23L_1560124800\\bd_mseed_A23L_1560124800'
 
 Allplots = 'yes'
 Timeplot = 'no'
@@ -38,7 +38,7 @@ lowcut = 0.5
 highcut = fs/2 - 1
 order = 4
 
-## bounds for plotting and statistcs calculation
+## bounds for plotting and statistics calculation
 upbound = 49
 lowbound = 0.1
 
