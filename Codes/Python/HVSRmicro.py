@@ -24,9 +24,11 @@ filename = 'C:\\Users\\mpontr01\\Box\\2019_2_summer\\Projects\\Boston\\Data\\bd\
 
 Allplots = 'no'
 Timeplot = 'no'
-HVSRplottog = 'no'
+HVSRplottog = 'yes'
 IUMagplot = 'no'
-AUMagplot = 'yes'
+AUMagplot = 'no'
+IFMagplot = 'no'
+AFMagplot = 'no'
 
 ## defaults for windowing the time series
 numwin = 10
@@ -35,6 +37,7 @@ fs = 100
 windis = 25
 sampnum = windowlen*fs
 windisnum = windis *fs
+width = 0.5
 
 ## Filter inputs
 lowcut = 0.5
@@ -42,8 +45,8 @@ highcut = fs/2 - 1
 order = 4
 
 ## bounds for plotting and statistics calculation
-upbound = 49
-lowbound = 0.1
+upbound = 20
+lowbound = 0.5
 
 
 if ftype in '.sac':
@@ -143,17 +146,38 @@ if Allplots in 'yes' or IUMagplot in 'yes':
 if Allplots in 'yes' or AUMagplot in 'yes':
     averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
 
+# compute smoothed magnitude responses
+window = int(np.ceil((N/fs)*width))
+# check to see if even becasue must be odd
+if window % 2 == 0:
+    window = window -1
+else:
+    window = window
+XVsmooth = np.zeros([numwin, N_2])
+XHsmooth = np.zeros([numwin, N_2])
+for i in range(numwin):
+    XVsmooth[i, :] = smooth(xV[i,:],window)
+    XHsmooth[i,:] = smooth(xH[i,:],window)
 
+# plot individual, smoothed magnitude responses
+if Allplots in 'yes' or IFMagplot in 'yes':
+    individmagrespplot(fax_HzN, XHsmooth, XVsmooth, fs, N_2, lowbound, upbound, outpath, sav)  
+
+# average the smoothed magnitude responses
+[ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] = wavav(XHsmooth)
+[ahatfvert, sigmavert, confinthighvert, confintlowvert] = wavav(XVsmooth)     
+
+# plot averaged, smoothed magnitude responses
+if Allplots in 'yes' or AFMagplot in 'yes':
+    averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
 
 ## do the HVSR
-H = xH/xV
+H = XHsmooth/XVsmooth
     
 ## and compute the Thomspon statistics
 [ahatf, sigma, confinthigh, confintlow] = wavav(H)
     
-## and cut to the half magnitude
-confinthigh = confinthigh[0:N_2]
-confintlow = confintlow[0:N_2]
+
     
 ## now plot the HVSR
 if Allplots in 'yes' or HVSRplottog in 'yes':

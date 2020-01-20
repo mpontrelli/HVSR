@@ -55,6 +55,9 @@
     
     % sav - if toggled on, saves the figures to specified output
     
+    % width - the width of the smoothing filter for the magnitude
+    % responses in Hz, default is 0.5 Hz.
+    
     % OUTPUTS
     % 6 figures:
     
@@ -98,6 +101,7 @@ defaultupbound =  fs/2 -1;
 defaultLowCorner = 0.1;
 defaultHighCorner = fs/2 - 1;
 defaultNpoles = 4;
+defaultwidth = 0.5;
 % Required inputs
 addRequired(p,'Vfname',@ischar);
 addRequired(p,'NSfname',@ischar);
@@ -125,7 +129,7 @@ addParameter(p, 'Filterplot', 'no', @ischar);
 addParameter(p, 'LowCorner', defaultLowCorner, @isnumeric);
 addParameter(p, 'HighCorner', defaultHighCorner, @isnumeric);
 addParameter(p, 'Npoles', defaultNpoles, @isnumeric);
-
+addParameter(p, 'width', defaultwidth, @isnumeric);
 % parse the inputs
 parse(p, Vfname, NSfname, EWfname,fs, statname, varargin{:})
 % set varibales from the parse
@@ -148,6 +152,7 @@ Filterplot = p.Results.Filterplot;
 LowCorner = p.Results.LowCorner;
 HighCorner = p.Results.HighCorner;
 Npoles = p.Results.Npoles;
+width = p.results.width;
 %turn windows into samples for windowing calculations
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
@@ -248,7 +253,6 @@ end
 
 
 %% compute smoothed magnitude responses
-width = .5; %width for triangle moving average filter in hz
 window = ceil((N/fs)*width); %width for triangle moving average filter in samples where 20 is the number of Hz on your x-axis
 for iii = 1:numwin
     XVmatrix3(iii,:) = smooth(XVmatrix2(iii,:),window);

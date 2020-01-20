@@ -242,7 +242,20 @@ def sac_timeseries(filename, outpath, sav):
 def HVSR(xV, xH):
         HV_1 = xH/xV
         return HV_1
+    
+def wavav(H):
+    size1 = H.shape
+    len1 = size1[0]
+    q = np.log(H)
+    ahatf = np.exp(np.nansum(q, axis=0)/len1)
+    for i in range(len1):
+        q[i,:] = (np.log(H[i,:]) - np.log(ahatf))**2
+    sigma = np.sqrt(np.nansum(q, axis = 0)/len1)
+    confinthigh = np.exp(np.log(ahatf)+1.96*sigma)
+    confintlow = np.exp(np.log(ahatf)-1.96*sigma)
+    return ahatf, sigma, confinthigh, confintlow
 
+## FILTERS
 
 ## Butterworth filter
     # butterworth filter designed for processing microtremor data
@@ -267,17 +280,7 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = filtfilt(b, a, data) # I edited this from the recipe (it was lfilt)
     return y
 
-def wavav(H):
-    size1 = H.shape
-    len1 = size1[0]
-    q = np.log(H)
-    ahatf = np.exp(np.nansum(q, axis=0)/len1)
-    for i in range(len1):
-        q[i,:] = (np.log(H[i,:]) - np.log(ahatf))**2
-    sigma = np.sqrt(np.nansum(q, axis = 0)/len1)
-    confinthigh = np.exp(np.log(ahatf)+1.96*sigma)
-    confintlow = np.exp(np.log(ahatf)-1.96*sigma)
-    return ahatf, sigma, confinthigh, confintlow
+
 
 
 def run():
@@ -332,7 +335,22 @@ def run():
 
 run()
 
+# this is a basic moving average filter. Python may have a better one but I just
+# wanted to copy the MATLAB smooth function https://www.mathworks.com/help/curvefit/smooth.html 
+# window is in samples
+# I pulled this from stackoverflow: https://stackoverflow.com/questions/40443020/matlabs-smooth-implementation-n-point-moving-average-in-numpy-python
+def smooth(a,window):
+    # a: NumPy 1-D array containing the data to be smoothed
+    # WSZ: smoothing window size needs, which must be odd number,
+    # as in the original MATLAB implementation
+    out0 = np.convolve(a,np.ones(window,dtype=int),'valid')/window    
+    r = np.arange(1,window-1,2)
+    start = np.cumsum(a[:window-1])[::2]/r
+    stop = (np.cumsum(a[:-window:-1])[::2]/r)[::-1]
+    q = np.concatenate((  start , out0, stop  ))
+    return q
 ## PLOTS
+
 def timeseriesplot(xNS, xV, xEW, fs, sav, outpath):
     # find length of xV
     npts = len(xV)
@@ -470,3 +488,5 @@ def averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confi
     ## save if sav is toggled on
     if sav in 'yes':
         fig.savefig(outpath  + '\HVSR.jpg', dpi=100)
+        
+        
