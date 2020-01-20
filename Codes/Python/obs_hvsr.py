@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 #for testing: to load script in py3 command prompt: `exec(open('obs_hvsr.py').read())`
+#NOTE: PROVIDE CUT 3-COMPONENT WAVEFORMS ONLY (WORKING ON SINGLE CHANNEL VERSION)
+
 
 """BEGIN IMPORTS"""
 from obspy import read
@@ -9,120 +11,119 @@ import numpy as np
 import math
 import scipy as sp
 import matplotlib.pyplot as plt
+import argparse
+import sys
 """END IMPORTS"""
 
+def main():
+    
+    parser = argparse.ArgumentParser(
+    	formatter_class=argparse.RawDescriptionHelpFormatter,
+    	description="Calculate HVSR using 3-Component Seismic Data\nPontrelli and Salerno, 2020\n\nRun `python obs_hvsr.py --help`")
+    
+    parser.add_argument("-f", "--file", type=str,
+        required=True, help="Input file path, format: `/path/to/file.msd`")
+    
+    parser.add_argument("-sr","--sample_rate", type=int, 
+        required=False, default=200, help="Sample Rate in Hz, ex: `100`, default: 200")
+    
+    parser.add_argument("-wl", "--window_length", type=int,
+        required=False, default=40, help="Window Length in Sec, ex: `50`, default: 40")
 
-filename = '/Users/jeremy/tufts_2019/research/waves/mseed/2018/258/tufts_trimmed.msd' #3600 seconds
+    parser.add_argument("-wd", "--window_distance", type=int,
+        required=False, default=25, help="Window Distance in Sec, ex: `100`, default: 25")
+    
+    parser.add_argument("-v", "--verbose", action="count",
+        default=0, help="increase spewage")
+    
+    if len(sys.argv)==1:
+        parser.print_help(sys.stderr)   # <--If script is executed w/out args, it will auto show help
+        sys.exit(1) # ...and exit out without running anything
 
-#windows vars
-window_len = 100
-fs = 200
-win_dis = 100
-sampnum = window_len*fs
-windisnum = win_dis *fs
+    args = parser.parse_args()
+    fyle = args.file 
+    window_len = args.window_length
+    fs = args.sample_rate
+    win_dis = args.window_distance
+    
+    #windows vars
+    sampnum = window_len*fs
+    windisnum = win_dis *fs
 
-#filter vars
-lowpass=0.5
-highpass=fs/2 - 1
-order=4
+    #filter vars
+    lowpass=0.5
+    highpass=fs/2 - 1
+    order=4
 
-#begin 
-st = read(filename)
+    #begin 
+    st = read(fyle)
 
-start = st[0].stats.starttime
-end = st[0].stats.endtime
-st_len = np.abs(end - start)
-
-
-#detrend
-st.detrend(type='demean')
-
-#bandpass filter
-st.filter('bandpass', freqmin=lowpass, freqmax=highpass, corners=order, zerophase=False)
-
-#window
-windows = []
-tapered_windows = []
-num_win = 10
-
-for window in st.slide(window_length=window_len, step=win_dis):
-    windows.append(window)
-
-#print(windows)
-
-for window in windows:
-    tapered_windows.append(window.taper(type='hann', max_percentage=0.05)) #NOTE: must taper AFTER detrending/filtering
-
-
-vert = []
-for each in tapered_windows:
-    vert.append(each[0].data)
-
-horz = []
-for each in tapered_windows:
-    horz.append(each[1].data + 1j * each[2].data)
+    start = st[0].stats.starttime
+    end = st[0].stats.endtime
+    st_len = np.abs(end - start)
 
 
-#freq axe [from Pontrelli]
-N = len(horz[0])
-faxbinsN = np.linspace(0, fs, N - 1)
-N_2 = math.ceil(N/2)
-fax_HzN = faxbinsN[0:int(N_2)]
+    #detrend
+    st.detrend(type='demean')
 
-vert_array = np.array(vert) #turn into np array, could do as `vert = np.array(vert)` but want to show steps w/ new vars
-horz_array = np.array(horz)
+    #bandpass filter
+    st.filter('bandpass', freqmin=lowpass, freqmax=highpass, corners=order, zerophase=False)
 
-vert_fft = np.abs(np.fft.fft(vert_array)) / sampnum #need to confirm why normalize by `sampnum`, simple fft tutorial may explain
-horz_fft = np.abs(np.fft.fft(horz_array)) / sampnum 
+    #window
+    windows = []
+    tapered_windows = []
+    num_win = 10
 
-h_v = horz_fft / vert_fft #divides horz np array by vert np array into new HVSR array, simply called `h_v`
+    for window in st.slide(window_length=window_len, step=win_dis):
+        windows.append(window)
 
-#holder holds half of the values in each window, MP does this in `HVSR_micro.m`, review tutorial he gave last year, due to inherent FFT properties
-holder = []
-for i in h_v:
-    half_h_v = np.vstack(i[0:N_2])
-    holder.append(half_h_v) #w/out will just keep writing over each iteration, half of values, i.e. 1-100 Hz ? maybe 101 or 99 actually? in a LIST
+    #print(windows)
 
-fig,ax = plt.subplots()
+    for window in windows:
+        tapered_windows.append(window.taper(type='hann', max_percentage=0.05)) #NOTE: must taper AFTER detrending/filtering
 
-plt.loglog(fax_HzN, holder[0])
+
+    vert = []
+    for each in tapered_windows:
+        vert.append(each[0].data)
+
+    horz = []
+    for each in tapered_windows:
+        horz.append(each[1].data + 1j * each[2].data)
+
+
+    #freq axe [from MP HVSR_micro.py]
+    N = len(horz[0])
+    faxbinsN = np.linspace(0, fs, N - 1)
+    N_2 = math.ceil(N/2)
+    fax_HzN = faxbinsN[0:int(N_2)]
+
+    vert_array = np.array(vert) #turn into np array, could do as `vert = np.array(vert)` but want to show steps w/ new vars
+    horz_array = np.array(horz)
+
+    vert_fft = np.abs(np.fft.fft(vert_array)) / sampnum #need to confirm why normalize by `sampnum`, simple fft tutorial may explain
+    horz_fft = np.abs(np.fft.fft(horz_array)) / sampnum 
+
+    h_v = horz_fft / vert_fft #divides horz np array by vert np array into new HVSR array, simply called `h_v`
+
+    #holder holds half of the values in each window, MP does this in `HVSR_micro.m`, review tutorial he gave last year, due to inherent FFT properties
+    holder = []
+    for i in h_v:
+        half_h_v = np.vstack(i[0:N_2])
+        holder.append(half_h_v) #w/out will just keep writing over each iteration, half of values, i.e. 1-100 Hz ? maybe 101 or 99 actually? in a LIST
+
+    fig,ax = plt.subplots()
+
+    plt.loglog(fax_HzN, holder[0])
+    plt.show()
+
 
 """
 for i in holder:
     plt.loglog(fax_HzN, holder[i])
 """
-plt.show()
 
 
 
-
-
-"""
-#mag resp
-mV, mH = [], []
-#script slow here
-for i in vert:
-    mV.append(np.abs(sp.fftpack.fft(i)) / sampnum)
-
-for i in horz:
-    mH.append(np.abs(sp.fftpack.fft(i)) / sampnum)
-
-half_mV, half_mH = [], []
-
-for each in mV:
-    half_mV.append(mV[each][0:N_2])
-
-for each in mH:
-    half_mH.append(mH[each][0:N_2])
-
-
-"""
-
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    main()
