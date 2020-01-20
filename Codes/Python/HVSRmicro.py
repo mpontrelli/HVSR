@@ -10,10 +10,10 @@ Created on Thu Jan 16 18:04:24 2020
 
 ## inputs
 
-ftype = '.sac' # filetype, this is to support a bunch of filtypes
+ftype = '.msd' # filetype, this is to support a bunch of filtypes
 sav = 'no' # do you want to save your figures?
 outpath = 'C:\\Users\\mpontr01\\Desktop\\Stations\\Tufts University\\2019_10_26\\Figures' # if you want to save your figures use outpath
-fs = 100 # I think we'll change this to read in from the file
+
 ## filenames, these are for .sac
 Vfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments\\Boston area\\908DP\\Data\\2000004171152005_908DP_1_1.sac'
 NSfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments\\Boston area\\908DP\\Data\\2000004171152005_908DP_1_2.sac'
@@ -31,9 +31,9 @@ IFMagplot = 'no'
 AFMagplot = 'no'
 
 ## defaults for windowing the time series
-numwin = 10
+numwin = 100
 windowlen = 40
-fs = 100
+fs = 200
 windis = 25
 sampnum = windowlen*fs
 windisnum = windis *fs
@@ -45,7 +45,7 @@ highcut = fs/2 - 1
 order = 4
 
 ## bounds for plotting and statistics calculation
-upbound = 20
+upbound = 49
 lowbound = 0.5
 
 
@@ -132,7 +132,7 @@ xH = np.real(xH)
 
 ## translate upbound and lowbound in from Hz to sample index
 lowbound = np.argmin(np.abs(fax_HzN - lowbound))
-upbound = np.argmax(np.abs(fax_HzN - lowbound))
+upbound = np.argmin(np.abs(fax_HzN - upbound))
 
 # plot individual unfiltered magnitude responses 
 if Allplots in 'yes' or IUMagplot in 'yes':
