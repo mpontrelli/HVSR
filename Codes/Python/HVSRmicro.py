@@ -100,7 +100,7 @@ for i in range(numwin):
     xNSmatrix[i,:] = xNS[(k[0]):int((k[1] * windowlen + k[0])-1)]
     xEWmatrix[i,:] = xEW[(k[0]):int((k[1] * windowlen + k[0])-1)]
     k = (k[0] + sampnum + windisnum, fs)
-xHmatrix = xNSmatrix + 1j * xEWmatrix
+xHmatrix = xNSmatrix + 1j * xEWmatrix #can you also do sqrt(ns + ew) ??
 
 ## apply a Hanning window to the data
 win = np.hanning(sampnum-1)
