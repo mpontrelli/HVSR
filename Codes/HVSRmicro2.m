@@ -214,8 +214,8 @@ end
 %% Compute unfiltered magnitude responses
 % Compute the fft for each data window
 for iii = 1:numwin
-    XVmatrix(iii,:) = abs(fft(xVmatrix(iii,:)))/sampnum;
-    XHmatrix(iii,:) = abs(fft(xHmatrix(iii,:)))/sampnum;
+    XVmatrix(iii,:) = 4*abs(fft(xVmatrix(iii,:)))/sampnum;
+    XHmatrix(iii,:) = 4*abs(fft(xHmatrix(iii,:)))/sampnum;
 end
 
 %Computing the frequency -axis

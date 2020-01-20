@@ -10,14 +10,14 @@ Created on Thu Jan 16 18:04:24 2020
 
 ## inputs
 
-ftype = '.msd' # filetype, this is to support a bunch of filtypes
+ftype = '.sac' # filetype, this is to support a bunch of filtypes
 sav = 'no' # do you want to save your figures?
 outpath = 'C:\\Users\\mpontr01\\Desktop\\Stations\\Tufts University\\2019_10_26\\Figures' # if you want to save your figures use outpath
 
 ## filenames, these are for .sac
-Vfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments\\Boston area\\908DP\\Data\\2000004171152005_908DP_1_1.sac'
-NSfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments\\Boston area\\908DP\\Data\\2000004171152005_908DP_1_2.sac'
-EWfname = 'C:\\Users\\mpontr01\\Desktop\\boston_site_response\\field_deployments\\Boston area\\908DP\\Data\\2000004171152005_908DP_1_3.sac'
+Vfname = 'B:\\Erkan Yilar\\Ambient Noise Data\\Files\\Ambient Noise Data Set\\08.15.2014\\Dan\\Danehy Park Cambridge\\Ground\\Original Files\\2014227134758005_T4260_1_1.sac'
+NSfname = 'B:\\Erkan Yilar\\Ambient Noise Data\\Files\\Ambient Noise Data Set\\08.15.2014\\Dan\\Danehy Park Cambridge\\Ground\\Original Files\\2014227134758005_T4260_1_2.sac'
+EWfname = 'B:\\Erkan Yilar\\Ambient Noise Data\\Files\\Ambient Noise Data Set\\08.15.2014\\Dan\\Danehy Park Cambridge\\Ground\\Original Files\\2014227134758005_T4260_1_3.sac'
 
 # filename, this is a test for miniseed
 filename = 'C:\\Users\\mpontr01\\Box\\2019_2_summer\\Projects\\Boston\\Data\\bd\\Waltham\\bd_data_A23L_1560124800\\bd_mseed_A23L_1560124800'
@@ -31,9 +31,9 @@ IFMagplot = 'no'
 AFMagplot = 'no'
 
 ## defaults for windowing the time series
-numwin = 100
+numwin = 10
 windowlen = 40
-fs = 200
+fs = 100
 windis = 25
 sampnum = windowlen*fs
 windisnum = windis *fs
@@ -116,8 +116,8 @@ for ii in range(numwin):
 
 # compute unfiltered magnitude response
 for iii in range(numwin):
-    xVmatrix[iii,:] = np.abs(np.fft.fft(xVmatrix[iii,:]))/sampnum
-    xHmatrix[iii,:] = np.abs(np.fft.fft(xHmatrix[iii,:]))/sampnum
+    xVmatrix[iii,:] = 4*np.abs(np.fft.fft(xVmatrix[iii,:]))/sampnum
+    xHmatrix[iii,:] = 4*np.abs(np.fft.fft(xHmatrix[iii,:]))/sampnum
     
 # compute the frequency axis
 N = sampnum
