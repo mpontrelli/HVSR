@@ -435,6 +435,9 @@ def individmagrespplot(fax_HzN, xH, xV, fs,N_2, lowbound, upbound, outpath, sav)
     plt.xlim((fax_HzN[lowbound], fax_HzN[upbound]))
     
     
+<<<<<<< HEAD
+    
+=======
     fig4 = plt.figure()
     ax1 = fig4.add_subplot(2,1,2)
     plt.yscale("log")
@@ -490,3 +493,4 @@ def averagedmagrespplot(fax_HzN, ahatfhorz, ahatfvert, fs,confinthighhorz, confi
         fig.savefig(outpath  + '\HVSR.jpg', dpi=100)
         
         
+>>>>>>> b2fba09c062ebdb8dd3bfe5ff5b1662417c678bc
