@@ -202,7 +202,7 @@ for iii = 1:numwin
 end
 
 %% Compute the complex time series
-%Steidl et al. 1994
+%Steidl et al. 1996
 xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
 
 %% window the data

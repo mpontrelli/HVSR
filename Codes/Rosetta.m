@@ -5,7 +5,9 @@
 % frequency and finds and translates the soil type to be plotted on the 
 % final plot that HVSR outputs. If the user wishes to use HVSR for another
 % dataset, Rosetta must be written such that readfile1 outputs the
-% necessary information.
+% necessary information. The style is baed off of Dr. John Ebel's codes
+% which extract information from similar datafiles. It's where I learned
+% it.
 
     % INPUTS
     
@@ -20,7 +22,7 @@
 
 %% Author: Marshall Pontrelli
 % Date: developed between September, 2017 and August, 2019
-%% 
+%% start 
 function [fs, soil] = Rosetta(filename)
 [fid3,~] = fopen(filename,'r');
 
