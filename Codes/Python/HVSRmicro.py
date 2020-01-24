@@ -10,9 +10,9 @@ Created on Thu Jan 16 18:04:24 2020
 
 ## inputs
 
-ftype = '.sac' # filetype, this is to support a bunch of filtypes
+ftype = '.msd' # filetype, this is to support a bunch of filtypes
 sav = 'no' # do you want to save your figures?
-outpath = 'C:\\Users\\mpontr01\\Desktop\\Stations\\Tufts University\\2019_10_26\\Figures' # if you want to save your figures use outpath
+outpath = 'C:\\Users\\Marshall\\Desktop\\Stations\\Tufts University\\2019_10_26\\Figures' # if you want to save your figures use outpath
 
 ## filenames, these are for .sac
 Vfname = 'B:\\Erkan Yilar\\Ambient Noise Data\\Files\\Ambient Noise Data Set\\08.15.2014\\Dan\\Danehy Park Cambridge\\Ground\\Original Files\\2014227134758005_T4260_1_1.sac'
@@ -20,7 +20,7 @@ NSfname = 'B:\\Erkan Yilar\\Ambient Noise Data\\Files\\Ambient Noise Data Set\\0
 EWfname = 'B:\\Erkan Yilar\\Ambient Noise Data\\Files\\Ambient Noise Data Set\\08.15.2014\\Dan\\Danehy Park Cambridge\\Ground\\Original Files\\2014227134758005_T4260_1_3.sac'
 
 # filename, this is a test for miniseed
-filename = 'C:\\Users\\mpontr01\\Box\\2019_2_summer\\Projects\\Boston\\Data\\bd\\Waltham\\bd_data_A23L_1560124800\\bd_mseed_A23L_1560124800'
+filename = 'C:\\Users\\Marshall\\Box\\2019_2_summer\\Projects\\Boston\\Data\\bd\\Waltham\\bd_data_A23L_1560124800\\bd_mseed_A23L_1560124800'
 
 Allplots = 'no'
 Timeplot = 'no'
@@ -33,7 +33,7 @@ AFMagplot = 'no'
 ## defaults for windowing the time series
 numwin = 10
 windowlen = 40
-fs = 100
+fs = 200
 windis = 25
 sampnum = windowlen*fs
 windisnum = windis *fs
