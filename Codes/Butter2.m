@@ -5,7 +5,16 @@
        
     %OUTPUTS
     %y - butterworth filtered waveform
+%% Author: Marshall Pontrelli
+% Date: developed between September, 2017 and August, 2019
 
+% Updates: 
+% January 2020 - added inputs LowCorner, Highcorner, Npoles, fs and
+% filterplot to allow for filter parameter input in HVSRmicro. It is also
+% now used in Mexico_City_processing for processing the time domain
+% waveforms.
+
+%% Start
 function [y] = Butter2(x, LowCorner, HighCorner, Npoles, fs, Filterplot)
 % Here are the filter parameters
 
