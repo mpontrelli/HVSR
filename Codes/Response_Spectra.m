@@ -38,6 +38,7 @@
 function [y] = Response_Spectra(x, fs, zeta)
     alpha = 0.5; %value for Crank-Nicholson approximation
     dt = 1/fs;
+    zeta = zeta /100;
 
     %% Loop over SDOF systems of differing period between 0 and 10 seconds
     for ii = 1:1000
@@ -74,36 +75,42 @@ function [y] = Response_Spectra(x, fs, zeta)
     % displacement
     subplot(3,1,1)
     plot(period, displacement);
-    title('Response spectra')
-    xlabel('Period (secs)')
+    title('Displacement')
     ylabel('Displacement')
     grid on
     box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 14);
+    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 18);
     xlim([0.01 10])
+    xticks([0.01 0.1 1 10])
+    xticklabels({'0.01', '0.1', '1', '10'})
 
     % velocity
     subplot(3,1,2)
     plot(period, velocity);
-    title('Response spectra')
-    xlabel('Period (secs)')
+    title('Velocity')
     ylabel('Velocity')
     grid on
     box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 14);
+    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 18);
     xlim([0.01 10])
+    xticks([0.01 0.1 1 10])
+    xticklabels({'0.01', '0.1', '1', '10'})
 
     % acceleration
     subplot(3,1,3)
-    plot(period, acceleration);
-    title('Response spectra')
+    plot(period, y);
+    title('Acceleration')
     xlabel('Period (secs)')
     ylabel('Acceleration')
     grid on
     box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 14);
+    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 18);
     xlim([0.01 10])
-
+    xticks([0.01 0.1 1 10])
+    xticklabels({'0.01', '0.1', '1', '10'})
+    %makes figure full screen
+    set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+    
     % plot acceleration on its own
     figure
     plot(period, y);
@@ -114,4 +121,6 @@ function [y] = Response_Spectra(x, fs, zeta)
     box on
     set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 14);
     xlim([0.01 10])
+    xticks([0.01 0.1 1 10])
+    xticklabels({'0.01', '0.1', '1', '10'})
 end
