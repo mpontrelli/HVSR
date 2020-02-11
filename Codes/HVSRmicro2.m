@@ -155,7 +155,7 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     LowCorner = p.Results.LowCorner;
     HighCorner = p.Results.HighCorner;
     Npoles = p.Results.Npoles;
-    width = p.results.width;
+    width = p.Results.width;
     %turn windows into samples for windowing calculations
     sampnum = windowlen*fs; 
     windisnum = windis*fs;
@@ -181,10 +181,10 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     %xV = rdmseed(Vfname);
     %xV = xV.d;
     %% Filter
-    [V] = Butter2(V, LowCorner, HighCorner, Npoles, fs, Filterplot);
+    [V] = Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
     Filterplot = 'no'; % toggle off filter plot so it doesn't plot response three times
-    [NS] = Butter2(NS, LowCorner, HighCorner, Npoles, fs, Filterplot);
-    [EW] = Butter2(EW, LowCorner, HighCorner, Npoles, fs, Filterplot);
+    [NS] = Butter2(NS, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
+    [EW] = Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 
     %% Create a time series plot (Output 1)]
     if strcmp(Allplots, 'yes') == 1 || strcmp(Timeplot, 'yes') == 1
@@ -192,31 +192,31 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     end
 
     %% Window data
-    %Window the data with 'numwin' non-overlapping windows of 'windowlen' secs and 
-    % 'windis' secs apart
+    %Window the data with 'numwin' windows of 'windowlen' secs and 
+    % 'windis' secs apart. This does support overlapping windows
     k = [1,fs];
     for iii = 1:numwin
-        xVmatrix(iii,:) = xV((k(1)):(k(2)*windowlen+k(1))-1);
-        xNSmatrix(iii,:) = xNS((k(1)):(k(2)*windowlen+k(1))-1);
-        xEWmatrix(iii,:) = xEW((k(1)):(k(2)*windowlen+k(1))-1);
+        Vmatrix(iii,:) = V((k(1)):(k(2)*windowlen+k(1))-1);
+        NSmatrix(iii,:) = NS((k(1)):(k(2)*windowlen+k(1))-1);
+        EWmatrix(iii,:) = EW((k(1)):(k(2)*windowlen+k(1))-1);
         k(1) = k(1)+ sampnum + windisnum;
     end
 
     %% Compute the complex time series
     %Steidl et al. 1996
-    xHmatrix = xNSmatrix + 1i.*xEWmatrix; 
+    Hmatrix = NSmatrix + 1i.*EWmatrix; 
 
     %% window the data
     win = hann(sampnum)';
     for i = 1:numwin
-        xVmatrix(i,:) = xVmatrix(i,:).*win;
-        xHmatrix(i,:) = xHmatrix(i,:).*win;
+        Vmatrix(i,:) = Vmatrix(i,:).*win;
+        Hmatrix(i,:) = Hmatrix(i,:).*win;
     end
     %% Compute unfiltered magnitude responses
     % Compute the fft for each data window
     for iii = 1:numwin
-        XVmatrix(iii,:) = 4*abs(fft(xVmatrix(iii,:)))/sampnum;
-        XHmatrix(iii,:) = 4*abs(fft(xHmatrix(iii,:)))/sampnum;
+        Vmatrix(iii,:) = 4*abs(fft(Vmatrix(iii,:)))/sampnum;
+        Hmatrix(iii,:) = 4*abs(fft(Hmatrix(iii,:)))/sampnum;
     end
 
     %Computing the frequency -axis
@@ -226,10 +226,10 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     N_2 = ceil(N/2); %half magnitude spectrum
     fax_HzN = fax_HzN1(1 : N_2);
     for iii = 1:numwin
-        XVmat = XVmatrix(iii,:);
-        XHmat = XHmatrix(iii, :);
-        XVmatrix2(iii,:) = XVmat(1 : N_2);
-        XHmatrix2(iii,:) = XHmat(1 : N_2);
+        Vmat = Vmatrix(iii,:);
+        Hmat = Hmatrix(iii, :);
+        Vmatrix2(iii,:) = Vmat(1 : N_2);
+        Hmatrix2(iii,:) = Hmat(1 : N_2);
     end
 
     %% create upbound and lowbound in terms of sample number
@@ -238,12 +238,12 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     
     %% plot individual unfiltered magnitude responses (OUTPUT 2)
     if strcmp(Allplots, 'yes') == 1 || strcmp(IUMagplot, 'yes') == 1
-        individmagrespplot(fax_HzN, XHmatrix2, XVmatrix2, fs, lowbound, outpath, sav)
+        individmagrespplot(fax_HzN, Hmatrix2, Vmatrix2, fs, lowbound, outpath, sav)
     end
 
     %% Average the un-smoothed magnitude responses
-    [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix2);
-    [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix2);
+    [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(Hmatrix2);
+    [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(Vmatrix2);
 
     %% Plot averaged unfiltered magnitude responses (OUTPUT 3)
     if strcmp(Allplots, 'yes') == 1 || strcmp(AUMagplot, 'yes') == 1
@@ -254,18 +254,18 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     %% compute smoothed magnitude responses
     window = ceil((N/fs)*width); %width for smoothing filter in samples where 20 is the number of Hz on your x-axis
     for iii = 1:numwin
-        XVmatrix3(iii,:) = smooth(XVmatrix2(iii,:),window);
-        XHmatrix3(iii,:) = smooth(XHmatrix2(iii,:),window);
+        Vmatrix3(iii,:) = smooth(Vmatrix2(iii,:),window);
+        Hmatrix3(iii,:) = smooth(Hmatrix2(iii,:),window);
     end
 
     %% Plot individual, smoothed magnitude responses (OUTPUT 4)
     if strcmp(Allplots, 'yes') == 1 || strcmp(IFMagplot, 'yes') == 1
-        individmagrespplot(fax_HzN, XHmatrix3, XVmatrix3, fs, lowbound, outpath, sav)
+        individmagrespplot(fax_HzN, Hmatrix3, Vmatrix3, fs, lowbound, outpath, sav)
     end
 
     %% Average the smoothed magnitude responses
-    [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(XHmatrix3);
-    [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(XVmatrix3);
+    [ahatfhorz, sigmahorz, confinthighhorz, confintlowhorz] =  wavav(Hmatrix3);
+    [ahatfvert, sigmavert, confinthighvert, confintlowvert] =  wavav(Vmatrix3);
 
     %% Plot averaged, smoothed magnitude responses (OUTPUT 5)
     if strcmp(Allplots, 'yes') == 1 || strcmp(AFMagplot, 'yes') == 1
@@ -274,7 +274,7 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
 
     %% Compute the HVSR
     for iii = 1:numwin
-        [H_V(iii,:)] = HV(XHmatrix3(iii,:),XVmatrix3(iii,:));
+        [H_V(iii,:)] = HV(Hmatrix3(iii,:),Vmatrix3(iii,:));
     end
 
     %% average the HVSR

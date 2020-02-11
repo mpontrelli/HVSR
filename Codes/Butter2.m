@@ -29,7 +29,7 @@ function [y] = Butter2(x, fs, varargin)
     addParameter(p, 'LowCorner', 0.1, @isnumeric);
     addParameter(p, 'HighCorner', fs/2 - 1, @isnumeric);
     addParameter(p, 'Npoles', 4, @isnumeric);
-    addParameter(p, 'Filterplot', 'no', @isnumeric);
+    addParameter(p, 'Filterplot', 'no', @ischar);
 
     % parse the inputs
     parse(p, x, fs, varargin{:})
