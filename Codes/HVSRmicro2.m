@@ -253,7 +253,7 @@ end
 
 
 %% compute smoothed magnitude responses
-window = ceil((N/fs)*width); %width for triangle moving average filter in samples where 20 is the number of Hz on your x-axis
+window = ceil((N/fs)*width); %width for smoothing filter in samples where 20 is the number of Hz on your x-axis
 for iii = 1:numwin
     XVmatrix3(iii,:) = smooth(XVmatrix2(iii,:),window);
     XHmatrix3(iii,:) = smooth(XHmatrix2(iii,:),window);
