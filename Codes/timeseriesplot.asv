@@ -26,29 +26,7 @@
 % edited - 2/11/2020 - formatting and axis labeling
 
 %% Start
-function timeseriesplot(xNS,xEW, xV, fs, varargin)
-    %% parse inputs
-    % create Input Parser object
-    p = inputParser;
-
-    % Required inputs
-    addRequired(p, 'xNS',@isnumeric);
-    addRequired(p, 'xEW',@isnumeric);
-    addRequired(p, 'xV',@isnumeric);
-    addRequired(p, 'fs',@isnumeric);
-    
-    % Optional inputs
-    addParameter(p, 'yaxislabel', '', @ischar);
-    addParameter(p, 'sav', 'no', @ischar);
-    addParameter(p, 'outpath', 'no', @ischar);
-    
-    % parse the inputs
-    parse(p, xNS, xEW, xV,fs, varargin{:})
-    % set varibales from the parse
-    yaxis = p.Results.yaxislabel;
-    sav = p.Results.sav;
-    outpath = p.Results.outpath;
-    
+function timeseriesplot(xNS,xEW, xV, fs, varargin sav, outpath)
     %% find the maximum value to make bounds for plotting
     a = max(abs(xV));
     a(2) = max(abs(xNS));
@@ -63,7 +41,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     subplot(3,1,1)
     plot(time,xNS)
     title('NS')
-    ylabel(yaxis)
+    ylabel('counts')
     xlim([0 length(xNS)/fs])
     ylim([-d d])
     set(gca,'FontSize',20)
@@ -75,7 +53,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     subplot(3,1,2)
     plot(time,xEW)
     title('EW')
-    ylabel(yaxis)
+    ylabel('counts')
     xlim([0 length(xV)/fs])
     ylim([-d d])
     set(gca,'FontSize',20)
@@ -88,7 +66,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     plot(time,xV);
     title('V')
     xlabel('Time (secs)')
-    ylabel(yaxis)
+    ylabel('counts')
     xlim([0 length(xV)/fs])
     ylim([-d d])
     set(gca,'FontSize',20)
@@ -96,6 +74,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     box on
     set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
     
+
     %makes figure full screen and font in times
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 

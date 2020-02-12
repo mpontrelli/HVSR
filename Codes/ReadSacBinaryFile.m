@@ -1,4 +1,4 @@
-function [waveform] = ReadSacBinaryFile(filename)
+function [waveform, delta, stla, stlo] = ReadSacBinaryFile(filename)
 % ReadSacBinary.m
 %
 % Matlab m-file to read Binary SAC files

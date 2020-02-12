@@ -29,15 +29,14 @@ function [y] = Butter2(x, fs, varargin)
     addParameter(p, 'LowCorner', 0.1, @isnumeric);
     addParameter(p, 'HighCorner', fs/2 - 1, @isnumeric);
     addParameter(p, 'Npoles', 4, @isnumeric);
-    addParameter(p, 'Filterplot', 'no', @ischar);
+    addParameter(p, 'Filterplot', 'no', @isnumeric);
 
     % parse the inputs
     parse(p, x, fs, varargin{:})
     % set varibales from the parse
     LowCorner = p.Results.LowCorner;
     HighCorner = p.Results.HighCorner;
-    Npoles = p.Results.Npoles;
-    Filterplot = p.Results.Filterplot;
+    Npoles = p.Results.outpath;
     
     % Filter parameters
     fN=fs/2;
