@@ -31,6 +31,10 @@ function [data] = Sac_binary_2_mat(NSfname, EWfname, Vfname, varargin) %name, ou
     numwin = p.Results.numwin;
     windis = p.Results.windis;
     width = p.Results.width;
+    data.proc.window_length = windowlen;
+    data.proc.number_windows = numwin;
+    data.proc.window_distance = windis;
+    data.proc.filt_width = width;
     
     %% read the files
     [NS] = ReadSacBinaryFile(NSfname); %North-south

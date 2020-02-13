@@ -25,17 +25,13 @@
     
     % y - a vector containing the acceleration response spectra
     
-    % plot 1 - plot with acceleration, velocity and displacement spectra
-    
-    % plot 2 - plot with just acceleration response spectra
-    
-
-
 
 %% Author: Marshall Pontrelli
 % Date: 2/11/2020
+
+% Edits 2/12 - removed plots and computed values at important periods
 %% start 
-function [y] = Response_Spectra(x, fs, zeta)
+function [y, displacement, velocity, period, max1, per_max, resp_02_secs, resp_05_secs, resp_1_secs, resp_2_secs, resp_5_secs    ] = Response_Spectra(x, fs, zeta)
     alpha = 0.5; %value for Crank-Nicholson approximation
     dt = 1/fs;
     zeta = zeta /100;
@@ -55,8 +51,6 @@ function [y] = Response_Spectra(x, fs, zeta)
         v = 0;
         u = 0;
         for i = 1:length(x)-1
-            time = (i-1)*0.02;
-            timevec(i) = time;
             v(i+1) = (1/a1)*(a2*v(i)+ a3*u(i) + dt*(alpha*x(i+1)+(1-alpha)*x(i)));
             u(i+1) = u(i) + (alpha*v(i+1) + (1 - alpha) *v(i))*dt;
         end
@@ -66,61 +60,29 @@ function [y] = Response_Spectra(x, fs, zeta)
         y(ii) = max(abs(u)) * (2*pi/Tn)^2; % pseudo-acceleration response spectra using equaiton 6.6.3 from Chopra
         period(ii) = Tn; % vector of periods
     end
-
-
-
-    %% now plot
-    figure
-
-    % displacement
-    subplot(3,1,1)
-    plot(period, displacement);
-    title('Displacement')
-    ylabel('Displacement')
-    grid on
-    box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 18);
-    xlim([0.01 10])
-    xticks([0.01 0.1 1 10])
-    xticklabels({'0.01', '0.1', '1', '10'})
-
-    % velocity
-    subplot(3,1,2)
-    plot(period, velocity);
-    title('Velocity')
-    ylabel('Velocity')
-    grid on
-    box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 18);
-    xlim([0.01 10])
-    xticks([0.01 0.1 1 10])
-    xticklabels({'0.01', '0.1', '1', '10'})
-
-    % acceleration
-    subplot(3,1,3)
-    plot(period, y);
-    title('Acceleration')
-    xlabel('Period (secs)')
-    ylabel('Acceleration')
-    grid on
-    box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 18);
-    xlim([0.01 10])
-    xticks([0.01 0.1 1 10])
-    xticklabels({'0.01', '0.1', '1', '10'})
-    %makes figure full screen
-    set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+%     y_freq = flip(y);
+%     freq = 1/period;
     
-    % plot acceleration on its own
-    figure
-    plot(period, y);
-    title('Response spectra')
-    xlabel('Period (secs)')
-    ylabel('Acceleration')
-    grid on
-    box on
-    set(gca, 'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 14);
-    xlim([0.01 10])
-    xticks([0.01 0.1 1 10])
-    xticklabels({'0.01', '0.1', '1', '10'})
+    %% now find some important periods
+    
+    % maximum
+    [max1, I] = max(y);
+    per_max = period(I);
+    
+    % 0.2 secs
+    [~, I] = min(abs(period - 0.2));
+    resp_02_secs = y(I);
+    
+    % 0.5 secs
+    [~, I] = min(abs(period - 0.5));
+    resp_05_secs = y(I);    
+    % 1 sec
+    [~, I] = min(abs(period - 1));
+    resp_1_secs = y(I);
+    % 2 secs
+    [~, I] = min(abs(period - 2));
+    resp_2_secs = y(I);    
+    % 5 secs
+    [~, I] = min(abs(period - 5));
+    resp_5_secs = y(I);
 end
