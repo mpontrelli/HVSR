@@ -30,15 +30,9 @@ function [data] = Rosetta(filename, varargin)
     [fid3,~] = fopen(filename,'r');
     % Now read the file
     %
-    % Skip the first 9 lines because they only contain header information.
-    %% EVENT ID then read the 9th line which contains the event ID
-    for jjj = 1:9
-        line = fgetl(fid3);
-    end
-    b = length(line);
-    data.meta.event.ID = line(46:b); 
-    %% STATION NAME then skip 8 lines and read the 17th line which contains the station name
-    for jjj = 1:8
+    % Skip the first 16 lines because they only contain header information.
+    %% STATION NAME then read the 17th line which contains the station name
+    for jjj = 1:17
         line = fgetl(fid3);
     end
     b = length(line);
@@ -461,56 +455,23 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.acceleration.V.spectra.seconds_2 = resp_2_secs;
     data.processing.filtereddata.acceleration.V.spectra.seconds_5 = resp_5_secs;
     
-    data.processing.filtereddata.velocity.V.spectra.waveform = velocity;
-    data.processing.filtereddata.velocity.V.spectra.max = max1V;
-    data.processing.filtereddata.velocity.V.spectra.max_period = per_maxV;
-    data.processing.filtereddata.velocity.V.spectra.seconds_02 = resp_02_secsV;
-    data.processing.filtereddata.velocity.V.spectra.seconds_05 = resp_05_secsV;
-    data.processing.filtereddata.velocity.V.spectra.seconds_1 = resp_1_secsV;
-    data.processing.filtereddata.velocity.V.spectra.seconds_2 = resp_2_secsV;
-    data.processing.filtereddata.velocity.V.spectra.seconds_5 = resp_5_secsV;
+    data.processing.filtereddata.velocity.EW.spectra.waveform = velocity;
+    data.processing.filtereddata.velocity.EW.spectra.max = max1V;
+    data.processing.filtereddata.velocity.EW.spectra.max_period = per_maxV;
+    data.processing.filtereddata.velocity.EW.spectra.seconds_02 = resp_02_secsV;
+    data.processing.filtereddata.velocity.EW.spectra.seconds_05 = resp_05_secsV;
+    data.processing.filtereddata.velocity.EW.spectra.seconds_1 = resp_1_secsV;
+    data.processing.filtereddata.velocity.EW.spectra.seconds_2 = resp_2_secsV;
+    data.processing.filtereddata.velocity.EW.spectra.seconds_5 = resp_5_secsV;
     
-    data.processing.filtereddata.displacement.V.spectra.waveform = displacement;
-    data.processing.filtereddata.displacement.V.spectra.max = max1D;
-    data.processing.filtereddata.displacement.V.spectra.max_period = per_maxD;
-    data.processing.filtereddata.displacement.V.spectra.seconds_02 = resp_02_secsD;
-    data.processing.filtereddata.displacement.V.spectra.seconds_05 = resp_05_secsD;
-    data.processing.filtereddata.displacement.V.spectra.seconds_1 = resp_1_secsD;
-    data.processing.filtereddata.displacement.V.spectra.seconds_2 = resp_2_secsD;
-    data.processing.filtereddata.displacement.V.spectra.seconds_5 = resp_5_secsD;    
-    
-    % rotated
-    [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV,...
-        per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
-        resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
-        resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,...
-        resp_5_secsD] = Response_Spectra(rot, fs, 5);
-    data.processing.filtereddata.acceleration.rotated.spectra.waveform = y;
-    data.processing.filtereddata.acceleration.rotated.spectra.max = max1;
-    data.processing.filtereddata.acceleration.rotated.spectra.max_period = per_maxA;
-    data.processing.filtereddata.acceleration.rotated.spectra.seconds_02 = resp_02_secs;
-    data.processing.filtereddata.acceleration.rotated.spectra.seconds_05 = resp_05_secs;
-    data.processing.filtereddata.acceleration.rotated.spectra.seconds_1 = resp_1_secs;
-    data.processing.filtereddata.acceleration.rotated.spectra.seconds_2 = resp_2_secs;
-    data.processing.filtereddata.acceleration.rotated.spectra.seconds_5 = resp_5_secs;
-    
-    data.processing.filtereddata.velocity.rotated.spectra.waveform = velocity;
-    data.processing.filtereddata.velocity.rotated.spectra.max = max1V;
-    data.processing.filtereddata.velocity.rotated.spectra.max_period = per_maxV;
-    data.processing.filtereddata.velocity.rotated.spectra.seconds_02 = resp_02_secsV;
-    data.processing.filtereddata.velocity.rotated.spectra.seconds_05 = resp_05_secsV;
-    data.processing.filtereddata.velocity.rotated.spectra.seconds_1 = resp_1_secsV;
-    data.processing.filtereddata.velocity.rotated.spectra.seconds_2 = resp_2_secsV;
-    data.processing.filtereddata.velocity.rotated.spectra.seconds_5 = resp_5_secsV;
-    
-    data.processing.filtereddata.displacement.rotated.spectra.waveform = displacement;
-    data.processing.filtereddata.displacement.rotated.spectra.max = max1D;
-    data.processing.filtereddata.displacement.rotated.spectra.max_period = per_maxD;
-    data.processing.filtereddata.displacement.rotated.spectra.seconds_02 = resp_02_secsD;
-    data.processing.filtereddata.displacement.rotated.spectra.seconds_05 = resp_05_secsD;
-    data.processing.filtereddata.displacement.rotated.spectra.seconds_1 = resp_1_secsD;
-    data.processing.filtereddata.displacement.rotated.spectra.seconds_2 = resp_2_secsD;
-    data.processing.filtereddata.displacement.rotated.spectra.seconds_5 = resp_5_secsD;    
+    data.processing.filtereddata.displacement.EW.spectra.waveform = displacement;
+    data.processing.filtereddata.displacement.EW.spectra.max = max1D;
+    data.processing.filtereddata.displacement.EW.spectra.max_period = per_maxD;
+    data.processing.filtereddata.displacement.EW.spectra.seconds_02 = resp_02_secsD;
+    data.processing.filtereddata.displacement.EW.spectra.seconds_05 = resp_05_secsD;
+    data.processing.filtereddata.displacement.EW.spectra.seconds_1 = resp_1_secsD;
+    data.processing.filtereddata.displacement.EW.spectra.seconds_2 = resp_2_secsD;
+    data.processing.filtereddata.displacement.EW.spectra.seconds_5 = resp_5_secsD;    
     
     data.processing.filtereddata.period_vec = period;
     

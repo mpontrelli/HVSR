@@ -33,7 +33,7 @@
 %% start 
 function [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV, per_maxD,...
     resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,resp_05_secsV,resp_05_secsD, resp_1_secs, ...
-    resp_1_secsV,resp_1_secsD, resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,resp_5_secsD] = Response_Spectra(x, fs, zeta)
+    resp_1_secsV,resp_1_secsD, resp_2_secs,resp_2_secsV, resp_2_secsV,resp_5_secs,resp_5_secsV] = Response_Spectra(x, fs, zeta)
     alpha = 0.5; %value for Crank-Nicholson approximation
     dt = 1/fs;
     zeta = zeta /100;
