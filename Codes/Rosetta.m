@@ -319,6 +319,11 @@ function [data] = Rosetta(filename, varargin)
     rot = rot';
     data.processing.filtereddata.acceleration.rotated.waveform = rot; %rotated
     
+   
+    %% Now we start processing te record one by one, NS, EW, V, rotated, then we'll do
+    % complex combination of horizontals
+    
+    %% North-south
     %% Now integrate the waveform for velocity and displacement
     [PGA1, PGV1, PGD1, v, d] =  waveform_integrate(NS, fs);
     data.processing.filtereddata.acceleration.NS.PGA = PGA1;
@@ -327,29 +332,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.NS.waveform = d;
     data.processing.filtereddata.displacement.NS.PGD = PGD1;
     
-    [PGA1, PGV1, PGD1, v, d] =  waveform_integrate(EW, fs);
-    data.processing.filtereddata.acceleration.EW.PGA = PGA1;
-    data.processing.filtereddata.velocity.EW.waveform = v;
-    data.processing.filtereddata.velocity.EW.PGV = PGV1;
-    data.processing.filtereddata.displacement.EW.waveform = d;
-    data.processing.filtereddata.displacement.EW.PGD = PGD1;
-    
-    [PGA1, PGV1, PGD1, v, d] =  waveform_integrate(V, fs);
-    data.processing.filtereddata.acceleration.V.PGA = PGA1;
-    data.processing.filtereddata.velocity.V.waveform = v;
-    data.processing.filtereddata.velocity.V.PGV = PGV1;
-    data.processing.filtereddata.displacement.V.waveform = d;
-    data.processing.filtereddata.displacement.V.PGD = PGD1;
-    
-    [PGA, PGV, PGD, v, d] =  waveform_integrate(rot, fs);
-    data.processing.filtereddata.acceleration.rotated.PGA = PGA;
-    data.processing.filtereddata.velocity.rotated.waveform = v;
-    data.processing.filtereddata.velocity.rotated.PGV = PGV;
-    data.processing.filtereddata.displacement.rotated.waveform = d;
-    data.processing.filtereddata.displacement.rotated.PGD = PGD;
-    
-    
-    %% Now do Arias intensity
+        %% Now do Arias intensity
     [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, NS, fs);
     data.processing.filtereddata.acceleration.NS.arias.intensity = Iaval;
     data.processing.filtereddata.acceleration.NS.arias.D595 = D5D95;
@@ -357,29 +340,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.acceleration.NS.arias.rate = rate_arias;
     data.processing.filtereddata.acceleration.NS.arias.normalized = Ianorm;
     
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, EW, fs);
-    data.processing.filtereddata.acceleration.EW.arias.intensity = Iaval;
-    data.processing.filtereddata.acceleration.EW.arias.D595 = D5D95;
-    data.processing.filtereddata.acceleration.EW.arias.D575 = D5D75;
-    data.processing.filtereddata.acceleration.EW.arias.rate = rate_arias;
-    data.processing.filtereddata.acceleration.EW.arias.normalized = Ianorm;
-    
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, V, fs);
-    data.processing.filtereddata.acceleration.V.arias.intensity = Iaval;
-    data.processing.filtereddata.acceleration.V.arias.D595 = D5D95;
-    data.processing.filtereddata.acceleration.V.arias.D575 = D5D75;
-    data.processing.filtereddata.acceleration.V.arias.rate = rate_arias;
-    data.processing.filtereddata.acceleration.V.arias.normalized = Ianorm;
-    
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, rot, fs);
-    data.processing.filtereddata.acceleration.rotated.arias.intensity = Iaval;
-    data.processing.filtereddata.acceleration.rotated.arias.D595 = D5D95;
-    data.processing.filtereddata.acceleration.rotated.arias.D575 = D5D75;
-    data.processing.filtereddata.acceleration.rotated.arias.rate = rate_arias;
-    data.processing.filtereddata.acceleration.rotated.arias.normalized = Ianorm;
-    %% Response spectra
-    
-    % NS
+   %% Now do response spectra
     [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV,...
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
@@ -412,9 +373,43 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.NS.spectra.seconds_2 = resp_2_secsD;
     data.processing.filtereddata.displacement.NS.spectra.seconds_5 = resp_5_secsD;
     
+    %% Now do magnitude response
+    [NS_mag_a, NS_mag_smooth_a] =  magresp_ros(NS, fs);
+    data.processing.filtereddata.acceleration.NS.mag_resps.unfiltered = NS_mag_a;
+    data.processing.filtereddata.acceleration.NS.mag_resps.smooth = NS_mag_smooth_a;
+    [NS_mag, NS_mag_smooth] =  magresp_ros(v', fs);
+    data.processing.filtereddata.velocity.NS.mag_resps.unfiltered = NS_mag;
+    data.processing.filtereddata.velocity.NS.mag_resps.smooth = NS_mag_smooth;
+    [NS_mag, NS_mag_smooth] =  magresp_ros(d', fs);
+    data.processing.filtereddata.displacement.NS.mag_resps.unfiltered = NS_mag;
+    data.processing.filtereddata.displacement.NS.mag_resps.smooth = NS_mag_smooth;
+    %% Compute the frequency - axis
+    N = length(NS);
+    fax_binsN = (0 : N-1); %samples in NS component
+    fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
+    N_2 = floor(N/2); %half magnitude spectrum
+    fax_HzN = fax_HzN1(1 : N_2);
+    data.processing.filtereddata.freq_vec = fax_HzN';
     
-    % EW
-    [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV,...
+    %% East - West
+    %% Now integrate the waveform for velocity and displacement
+    [PGA1, PGV1, PGD1, v, d] =  waveform_integrate(EW, fs);
+    data.processing.filtereddata.acceleration.EW.PGA = PGA1;
+    data.processing.filtereddata.velocity.EW.waveform = v;
+    data.processing.filtereddata.velocity.EW.PGV = PGV1;
+    data.processing.filtereddata.displacement.EW.waveform = d;
+    data.processing.filtereddata.displacement.EW.PGD = PGD1;
+    
+    %% Now do Arias intensity
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, EW, fs);
+    data.processing.filtereddata.acceleration.EW.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.EW.arias.D595 = D5D95;
+    data.processing.filtereddata.acceleration.EW.arias.D575 = D5D75;
+    data.processing.filtereddata.acceleration.EW.arias.rate = rate_arias;
+    data.processing.filtereddata.acceleration.EW.arias.normalized = Ianorm;
+    
+    %% Now do response spectra
+   [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV,...
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
         resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,...
@@ -445,8 +440,35 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.EW.spectra.seconds_1 = resp_1_secsD;
     data.processing.filtereddata.displacement.EW.spectra.seconds_2 = resp_2_secsD;
     data.processing.filtereddata.displacement.EW.spectra.seconds_5 = resp_5_secsD;
+
+    %% Now do magnitude response
+    [EW_mag_a, EW_mag_smooth_a] =  magresp_ros(EW, fs);
+    data.processing.filtereddata.acceleration.EW.mag_resps.unfiltered = EW_mag_a;
+    data.processing.filtereddata.acceleration.EW.mag_resps.smooth = EW_mag_smooth_a;
+    [EW_mag, EW_mag_smooth] =  magresp_ros(v', fs);
+    data.processing.filtereddata.velocity.EW.mag_resps.unfiltered = EW_mag;
+    data.processing.filtereddata.velocity.EW.mag_resps.smooth = EW_mag_smooth;
+    [EW_mag, EW_mag_smooth] =  magresp_ros(d', fs);
+    data.processing.filtereddata.displacement.EW.mag_resps.unfiltered = EW_mag;
+    data.processing.filtereddata.displacement.EW.mag_resps.smooth = EW_mag_smooth;
+    %% Vertical
+    %% Integrate the waveform
+    [PGA1, PGV1, PGD1, v, d] =  waveform_integrate(V, fs);
+    data.processing.filtereddata.acceleration.V.PGA = PGA1;
+    data.processing.filtereddata.velocity.V.waveform = v;
+    data.processing.filtereddata.velocity.V.PGV = PGV1;
+    data.processing.filtereddata.displacement.V.waveform = d;
+    data.processing.filtereddata.displacement.V.PGD = PGD1;
     
-    % V
+    %% Now do Arias intensity    
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, V, fs);
+    data.processing.filtereddata.acceleration.V.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.V.arias.D595 = D5D95;
+    data.processing.filtereddata.acceleration.V.arias.D575 = D5D75;
+    data.processing.filtereddata.acceleration.V.arias.rate = rate_arias;
+    data.processing.filtereddata.acceleration.V.arias.normalized = Ianorm;
+    
+    %% Now response spectra
     [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV,...
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
@@ -479,7 +501,35 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.V.spectra.seconds_2 = resp_2_secsD;
     data.processing.filtereddata.displacement.V.spectra.seconds_5 = resp_5_secsD;    
     
-    % rotated
+    %% Now do magnitude response
+    [V_mag_a, V_mag_smooth_a] =  magresp_ros(V, fs);
+    data.processing.filtereddata.acceleration.V.mag_resps.unfiltered = V_mag_a;
+    data.processing.filtereddata.acceleration.V.mag_resps.smooth = V_mag_smooth_a;
+    [V_mag, V_mag_smooth] =  magresp_ros(v', fs);
+    data.processing.filtereddata.velocity.V.mag_resps.unfiltered = V_mag;
+    data.processing.filtereddata.velocity.V.mag_resps.smooth = V_mag_smooth;
+    [V_mag, V_mag_smooth] =  magresp_ros(d', fs);
+    data.processing.filtereddata.displacement.V.mag_resps.unfiltered = V_mag;
+    data.processing.filtereddata.displacement.V.mag_resps.smooth = V_mag_smooth;    
+    
+    %% Rotated
+    %5 Integrate the waveform
+    [PGA, PGV, PGD, v, d] =  waveform_integrate(rot, fs);
+    data.processing.filtereddata.acceleration.rotated.PGA = PGA;
+    data.processing.filtereddata.velocity.rotated.waveform = v;
+    data.processing.filtereddata.velocity.rotated.PGV = PGV;
+    data.processing.filtereddata.displacement.rotated.waveform = d;
+    data.processing.filtereddata.displacement.rotated.PGD = PGD;
+    
+    %% Now do Arias intensity
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, rot, fs);
+    data.processing.filtereddata.acceleration.rotated.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.rotated.arias.D595 = D5D95;
+    data.processing.filtereddata.acceleration.rotated.arias.D575 = D5D75;
+    data.processing.filtereddata.acceleration.rotated.arias.rate = rate_arias;
+    data.processing.filtereddata.acceleration.rotated.arias.normalized = Ianorm;
+
+    %% Now do response spectra
     [y, displacement, velocity, period, max1, max1V, max1D, per_maxA, per_maxV,...
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
@@ -514,5 +564,61 @@ function [data] = Rosetta(filename, varargin)
     
     data.processing.filtereddata.period_vec = period;
     
+     %% Now do magnitude response
+    [rot_mag_a, rot_mag_smooth_a] =  magresp_ros(rot, fs);
+    data.processing.filtereddata.acceleration.rotated.mag_resps.unfiltered = rot_mag_a;
+    data.processing.filtereddata.acceleration.rotated.mag_resps.smooth = rot_mag_smooth_a;
+    [rot_mag, rot_mag_smooth] =  magresp_ros(v', fs);
+    data.processing.filtereddata.velocity.rotated.mag_resps.unfiltered = rot_mag;
+    data.processing.filtereddata.velocity.rotated.mag_resps.smooth = rot_mag_smooth;
+    [rot_mag, rot_mag_smooth] =  magresp_ros(d', fs);
+    data.processing.filtereddata.displacement.rotated.mag_resps.unfiltered = rot_mag;
+    data.processing.filtereddata.displacement.rotated.mag_resps.smooth = rot_mag_smooth;  
     
+    %% Now onto the HVSRs
+    %% first do the complex combination
+    H = NS + 1i*EW;   
+    [comp_mag, comp_mag_smooth] =  magresp_ros(H, fs);
+    data.processing.filtereddata.acceleration.complex.mag_resps.unfiltered = comp_mag;
+    data.processing.filtereddata.acceleration.complex.mag_resps.smooth = comp_mag_smooth;
+    [H_V] = HV(comp_mag,V_mag_a);
+    data.processing.filtereddata.acceleration.complex.HVSR.unfilt = H_V;
+    [H_V] = HV(comp_mag_smooth,V_mag_smooth_a);
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.HV = H_V;
+    [M, I] = max(H_V);
+    freq_max = fax_HzN(I);
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.Amp = M;
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.fn = freq_max;
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.fn_index = I;
+    %% NS
+    [H_V] = HV(NS_mag_a,V_mag_a);
+    data.processing.filtereddata.acceleration.NS.HVSR.unfilt = H_V;
+    [H_V] = HV(NS_mag_smooth_a,V_mag_smooth_a);
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.HV = H_V;
+    [M, I] = max(H_V);
+    freq_max = fax_HzN(I);
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.Amp = M;
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.fn = freq_max;
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.fn_index = I;
+    %% EW
+    [H_V] = HV(EW_mag_a,V_mag_a);
+    data.processing.filtereddata.acceleration.EW.HVSR.unfilt = H_V;
+    [H_V] = HV(EW_mag_smooth_a,V_mag_smooth_a);
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.HV = H_V;
+    [M, I] = max(H_V);
+    freq_max = fax_HzN(I);
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.Amp = M;
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.fn = freq_max;
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.fn_index = I;
+    
+    %% rot
+    [H_V] = HV(rot_mag_a,V_mag_a);
+    data.processing.filtereddata.acceleration.rotated.HVSR.unfilt = H_V;
+    [H_V] = HV(rot_mag_smooth_a,V_mag_smooth_a);
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.HV = H_V;
+    [M, I] = max(H_V);
+    freq_max = fax_HzN(I);
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.Amp = M;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.fn = freq_max;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.fn_index = I;
 end
