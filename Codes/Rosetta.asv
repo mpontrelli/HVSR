@@ -327,7 +327,7 @@ function [data] = Rosetta(filename, varargin)
     [EW] = (Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles));
     
     %% Zero pad on either side to equal 100000 200000 depending on fs
-    if fs == 100
+    if strcmp(fs, 100) == 1
         len = length(V);
         f = (100000 - len)/2;
         if mod(f,1) == 0
@@ -343,7 +343,7 @@ function [data] = Rosetta(filename, varargin)
             c2 = zeros(1, q1);        
         end 
     end
-    if fs == 200
+    if strcmp(fs, 200) == 1
         len = length(V);
         f = (200000 - len)/2;
         if mod(f,1) == 0
@@ -359,10 +359,10 @@ function [data] = Rosetta(filename, varargin)
             c2 = zeros(1, q1);        
         end   
     end
-    time = vertcat(c1',time',c2');
-    NS = vertcat(c1',NS,c2');
-    EW = vertcat(c1',EW,c2');
-    V = vertcat(c1',V,c2');
+    time = vertcat(c1,time,c2);
+    NS = vertcat(c1,NS,c2);
+    EW = vertcat(c1,EW,c2);
+    V = vertcat(c1,V,c2);
    
     
     %

@@ -26,12 +26,12 @@
 % Date: developed between September, 2017 and August, 2019, altered
 % 2/20/2020 from magresp to work with Rosetta
 %% Start   
-function [X_mag, X_mag_smooth]=  magresp_ros(x, fs)
+function [X_mag, X_mag_smooth]=  magresp_ros(x, fs, len)
     width = 0.3;
     N = length(x);
     win = hann(N);
     x_win = x.*win;
-    X_mag = 4*abs(fft(x_win))/N;
+    X_mag = 4*abs(fft(x_win))/len;
     window = ceil((N/fs)*width); %width for smoothing filter in samples where 20 is the number of Hz on your x-axis
     X_mag_smooth = smooth(X_mag,window);
     N_2 = floor(N/2); %half magnitude spectrum
