@@ -52,9 +52,9 @@ for ii = 1:length(p)
     end 
 end 
 topprom = p(o)';
-topwidth = w(o)';
+%topwidth = w(o)';
 A = peaks(o)'; peakind = locs(o)'; fn = newfaxhz1(peakind)';
 matrix = [fn,A];
-matrix1 = [topprom, topwidth];
+matrix1 = [topprom];%, topwidth];
 
 end

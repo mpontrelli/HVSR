@@ -1,0 +1,33 @@
+%% plot vecotrs of sigma
+close all
+clear all
+% Author Marshall Pontrelli
+% Date: 11/20/2019
+
+codepath = 'C:\Users\mpontr01\Desktop\HVSR\Codes';
+datapath = 'C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\Shape_statistics';
+
+cd(datapath)
+stationlist = dir;
+stationlist = stationlist(3:length(stationlist));
+sigma_mat = [];
+for i = 1: length(stationlist)
+    station = stationlist(i);
+    filename = strcat(station.folder, '\', station.name);
+    load(filename)
+    sigma_mat(i,:) = shapedata.complex.sig_vec;
+end
+sigma_freq = shapedata.sigma_freq;
+cd(codepath);
+
+%% now sm
+%% now plot
+figure
+plot(sigma_freq, sigma_mat, 'Color',  'k' , 'Linewidth', .5);
+%title(strcat(statname), 'FontSize', 20)
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Amplification','FontSize', 18)
+%set(gca,'FontSize',20,'YScale', 'log')
+xlim([0.1 5])
+ylim([0.1 2])
+grid on   

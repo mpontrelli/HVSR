@@ -60,4 +60,5 @@ taxstat1 = num2cell(taxstat1);
 taxstat=[taxstat, matrix, taxstat1, matrix1];
 title = {'Station', 'Frequency', 'Amplitude', 'HPB', 'Peak sigma', 'Prominence'};
 taxstat = vertcat(title,taxstat);
+freq1 = newfaxhz(
 end

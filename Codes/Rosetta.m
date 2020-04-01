@@ -337,8 +337,8 @@ function [data] = Rosetta(filename, varargin)
             zz = randi([1, 2], 1);
             z = [0.5, -0.5];
             zzz = z(zz);
-            q = int16(f + zzz);
-            q1 = int16(f - zzz);
+            q = (f + zzz);
+            q1 = (f - zzz);
             c1 = zeros(1, q);
             c2 = zeros(1, q1);        
         end 
@@ -353,8 +353,8 @@ function [data] = Rosetta(filename, varargin)
             zz = randi([1, 2], 1);
             z = [0.5, -0.5];
             zzz = z(zz);
-            q = int16(f + zzz);
-            q1 = int16(f - zzz);
+            q = (f + zzz);
+            q1 = (f - zzz);
             c1 = zeros(1, q);
             c2 = zeros(1, q1);        
         end   
