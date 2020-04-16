@@ -161,14 +161,10 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     windisnum = windis*fs;
 
     %% read files and convert into vectors
-    
-    [~,~,ext] = fileparts(Vfname);
-   %.sacBinary
-    if ext == '.sac' % use "rdmseed" if file is in miniseed format
-        [V] = ReadSacBinaryFile(Vfname); %vertical
-        [NS] = ReadSacBinaryFile(NSfname); %North-south
-        [EW] = ReadSacBinaryFile(EWfname); %East-West
-    end
+    %.sacBinary
+    [V] = ReadSacBinaryFile(Vfname); %vertical
+    [NS] = ReadSacBinaryFile(NSfname); %North-south
+    [EW] = ReadSacBinaryFile(EWfname); %East-West
     %rdsac
     %[xV] = rdsac('Vfname');
     %[xV] = xV.d;
@@ -179,10 +175,14 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
 
 
     %miniseed
-    if ext == '.msd' % use "rdmseed" if file is in miniseed format
-        x = rdmseed(NSfname);
-        [NS, EW, V] = openmseed(x);
-    end
+    %xNS = rdmseed(NSfname);
+	% xNS = xNS.d;
+    %xEW = rdmseed(EWfname);
+    %xEW = xEW.d;
+    %xV = rdmseed(Vfname);
+    %xV = xV.d;
+    x 
+    [NS, EW, V] = openmseed(x);
     %% Filter
     [V] = Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
     Filterplot = 'no'; % toggle off filter plot so it doesn't plot response three times

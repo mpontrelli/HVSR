@@ -16,7 +16,7 @@ stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
 HV_mat = [];
-for i = 9%1: length(stationlist)
+for i = 20%59: length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
@@ -24,7 +24,7 @@ for i = 9%1: length(stationlist)
 %     event_num{i,1} = station;
 %     event_num{i,2} = length(eventlist);
     for j = 1: length(eventlist)
-        disp(j)
+        %disp(j)
         filename = eventlist(j);
         filename = strcat(filename.folder, '\', filename.name);
         load(filename)
@@ -47,7 +47,17 @@ for i = 9%1: length(stationlist)
         end
     end
     statname = data.meta.station.name;
+    if length(data.processing.filtereddata.freq_vec) == 100000
+        freq_short = data.processing.filtereddata.freq_vec;
+        freq = freq_short(1:50000);
+    else
     freq = data.processing.filtereddata.freq_vec;
+    end
+    % remove infinite rows
+    HV_EW_mat(any(isinf(HV_EW_mat),2),:) = [];
+    HV_NS_mat(any(isinf(HV_NS_mat),2),:) = [];
+    HV_comp_mat(any(isinf(HV_comp_mat),2),:) = [];
+
     [ahatfEW, sigmaEW, confinthighEW, confintlowEW] =  wavav(HV_EW_mat);
     shapedata.EW.ahatf = ahatfEW;
     shapedata.EW.sigma = sigmaEW;
@@ -96,5 +106,6 @@ for i = 9%1: length(stationlist)
     shapedata.sigma_freq = newfaxhz1;
     %% now save the file
     save(strcat(shapepath, statname, '.mat'), 'shapedata')
+    %close all
 end
 

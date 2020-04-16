@@ -13,7 +13,7 @@ plot(x, h, 'Color',  'k' , 'Linewidth', .5);
 title('Horizontal', 'FontSize', 20)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log', 'Xscale', 'log')
+set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
 xlim([x(1) (fs/2)])
 ylim([0.1 1000])
 xticks([0.1 1 10 fs/2])

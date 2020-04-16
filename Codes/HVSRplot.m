@@ -31,7 +31,7 @@ ETF = plot(newfaxhz(lowbound:length(newfaxhz)), ahatf(lowbound:length(ahatf)), '
 title(statname)
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize','YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
 xlim([newfaxhz(lowbound) 20])
 ylim([0.1 100])
 xticks([.1 1 10])
