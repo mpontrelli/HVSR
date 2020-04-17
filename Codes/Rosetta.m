@@ -31,6 +31,7 @@ function [data] = Rosetta(filename, varargin)
     % Now read the file
     %
     % Skip the first 9 lines because they only contain header information.
+
     %% EVENT ID then read the 9th line which contains the event ID
     for jjj = 1:9
         line = fgetl(fid3);
@@ -644,6 +645,11 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.rotated.mag_resps.smooth = rot_mag_smooth;  
     
     %% Now onto the HVSRs
+    %% create upbound and lowbound values
+    lowbound = 0.1;
+    upbound = 5;
+    [~, lowbound] = min(abs(fax_HzN - lowbound));
+    [~, upbound] = min(abs(fax_HzN - upbound));
     %% first do the complex combination
     H = NS + 1i*EW;   
     [comp_mag, comp_mag_smooth] =  magresp_ros(H, fs, len, c1, c2);
@@ -653,40 +659,40 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.acceleration.complex.HVSR.unfilt = H_V;
     [H_V] = HV(comp_mag_smooth,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.complex.HVSR.smooth.HV = H_V;
-    [M, I] = max(H_V);
-    freq_max = fax_HzN(I);
+    [M, I] = max(H_V(lowbound:upbound));
+    freq_max = fax_HzN(I + lowbound);
     data.processing.filtereddata.acceleration.complex.HVSR.smooth.Amp = M;
     data.processing.filtereddata.acceleration.complex.HVSR.smooth.fn = freq_max;
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.fn_index = I;
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.fn_index = I + lowbound;
     %% NS
     [H_V] = HV(NS_mag_a,V_mag_a);
     data.processing.filtereddata.acceleration.NS.HVSR.unfilt = H_V;
     [H_V] = HV(NS_mag_smooth_a,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.HV = H_V;
-    [M, I] = max(H_V);
-    freq_max = fax_HzN(I);
+    [M, I] = max(H_V(lowbound:upbound));
+    freq_max = fax_HzN(I + lowbound);
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.Amp = M;
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.fn = freq_max;
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.fn_index = I;
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.fn_index = I + lowbound;
     %% EW
     [H_V] = HV(EW_mag_a,V_mag_a);
     data.processing.filtereddata.acceleration.EW.HVSR.unfilt = H_V;
     [H_V] = HV(EW_mag_smooth_a,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.HV = H_V;
-    [M, I] = max(H_V);
-    freq_max = fax_HzN(I);
+    [M, I] = max(H_V(lowbound:upbound));
+    freq_max = fax_HzN(I + lowbound);
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.Amp = M;
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.fn = freq_max;
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.fn_index = I;
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.fn_index = I + lowbound;
     
     %% rot
     [H_V] = HV(rot_mag_a,V_mag_a);
     data.processing.filtereddata.acceleration.rotated.HVSR.unfilt = H_V;
     [H_V] = HV(rot_mag_smooth_a,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.HV = H_V;
-    [M, I] = max(H_V);
-    freq_max = fax_HzN(I);
+    [M, I] = max(H_V(lowbound:upbound));
+    freq_max = fax_HzN(I + lowbound);
     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.Amp = M;
     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.fn = freq_max;
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.fn_index = I;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.fn_index = I + lowbound;
 end

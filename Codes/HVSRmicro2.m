@@ -237,7 +237,7 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
 
     %% create upbound and lowbound in terms of sample number
     [~, lowbound] = min(abs(fax_HzN - lowbound));
-    [~, upbound] = (min(abs(fax_HzN - upbound)));
+    [~, upbound] = min(abs(fax_HzN - upbound));
     
     %% plot individual unfiltered magnitude responses (OUTPUT 2)
     if strcmp(Allplots, 'yes') == 1 || strcmp(IUMagplot, 'yes') == 1

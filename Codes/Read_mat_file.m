@@ -16,7 +16,7 @@ stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
 HV_mat = [];
-for i = 20%59: length(stationlist)
+for i = 2%59: length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
