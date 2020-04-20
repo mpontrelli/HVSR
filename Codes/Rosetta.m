@@ -327,7 +327,24 @@ function [data] = Rosetta(filename, varargin)
 %     [V] = (Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles));
 %     [NS] = (Butter2(NS, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles));
 %     [EW] = (Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles));
+    %% rotate the horizontals
+    for i = 1:length(NS)
+        rot(i) = NS(i)*cos(pi/4) + EW(i)*sin(pi/4);
+    end
+    rot = rot';
     
+    %% save vectors that aren't zero padded for later and make them in m/s
+    NS_orig = NS * 9.8;
+    EW_orig = EW * 9.8;
+    V_orig = V * 9.8;
+    rot_orig = rot * 9.8;
+   
+    time_orig = time;
+    data.processing.filtereddata.acceleration.NS.waveform_orig = NS_orig; %North_South_Component
+    data.processing.filtereddata.acceleration.EW.waveform_orig = EW_orig; %East_West_Component
+    data.processing.filtereddata.acceleration.V.waveform_orig = V_orig; %Vertical_Component
+    data.processing.filtereddata.acceleration.rotated.waveform_orig = rot_orig; %rotated
+    data.processing.filtereddata.time_orig = time_orig; %rotated
     %% Zero pad on either side to equal 100000 or 200000 depending on fs
     if fs == 100
         len = length(V);
@@ -369,29 +386,22 @@ function [data] = Rosetta(filename, varargin)
     NS = vertcat(c1',NS,c2');
     EW = vertcat(c1',EW,c2');
     V = vertcat(c1',V,c2');
-   
+    rot = vertcat(c1',rot,c2');
     
     %
 
     data.processing.filtereddata.acceleration.NS.waveform = NS; %North_South_Component
     data.processing.filtereddata.acceleration.EW.waveform = EW; %East_West_Component
     data.processing.filtereddata.acceleration.V.waveform = V; %Vertical_Component
+    data.processing.filtereddata.acceleration.rotated.waveform = rot; %rotated
     data.processing.filtereddata.time = time';
     data.processing.filtereddata.filter.lowcorner = LowCorner;
     data.processing.filtereddata.filter.highcorner = HighCorner;
     data.processing.filtereddata.filter.npoles = Npoles;
     
-    %% rotate the horizontals
-    for i = 1:length(NS)
-        rot(i) = NS(i)*cos(pi/4) + EW(i)*sin(pi/4);
-    end
-    rot = rot';
-    data.processing.filtereddata.acceleration.rotated.waveform = rot; %rotated
+
     
-   
-    %% Now we start processing te record one by one, NS, EW, V, rotated, then we'll do
-    % complex combination of horizontals
-    
+     
     %% North-south
     %% Now integrate the waveform for velocity and displacement
     [PGA1, PGV1, PGD1, v, d] =  waveform_integrate(NS, fs);
@@ -402,7 +412,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.NS.PGD = PGD1;
     
         %% Now do Arias intensity
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, NS, fs);
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, NS_orig, fs);
     data.processing.filtereddata.acceleration.NS.arias.intensity = Iaval;
     data.processing.filtereddata.acceleration.NS.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.NS.arias.D575 = D5D75;
@@ -414,7 +424,7 @@ function [data] = Rosetta(filename, varargin)
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
         resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,...
-        resp_5_secsD] = Response_Spectra(NS, fs, 5);
+        resp_5_secsD] = Response_Spectra(NS_orig, fs, 5);
     data.processing.filtereddata.acceleration.NS.spectra.waveform = y;
     data.processing.filtereddata.acceleration.NS.spectra.max = max1;
     data.processing.filtereddata.acceleration.NS.spectra.max_period = per_maxA;
@@ -470,7 +480,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.EW.PGD = PGD1;
     
     %% Now do Arias intensity
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, EW, fs);
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, EW_orig, fs);
     data.processing.filtereddata.acceleration.EW.arias.intensity = Iaval;
     data.processing.filtereddata.acceleration.EW.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.EW.arias.D575 = D5D75;
@@ -482,7 +492,7 @@ function [data] = Rosetta(filename, varargin)
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
         resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,...
-        resp_5_secsD] = Response_Spectra(EW, fs, 5);
+        resp_5_secsD] = Response_Spectra(EW_orig, fs, 5);
     data.processing.filtereddata.acceleration.EW.spectra.waveform = y;
     data.processing.filtereddata.acceleration.EW.spectra.max = max1;
     data.processing.filtereddata.acceleration.EW.spectra.max_period = per_maxA;
@@ -530,7 +540,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.V.PGD = PGD1;
     
     %% Now do Arias intensity    
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, V, fs);
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, V_orig, fs);
     data.processing.filtereddata.acceleration.V.arias.intensity = Iaval;
     data.processing.filtereddata.acceleration.V.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.V.arias.D575 = D5D75;
@@ -542,7 +552,7 @@ function [data] = Rosetta(filename, varargin)
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
         resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,...
-        resp_5_secsD] = Response_Spectra(V, fs, 5);
+        resp_5_secsD] = Response_Spectra(V_orig, fs, 5);
     data.processing.filtereddata.acceleration.V.spectra.waveform = y;
     data.processing.filtereddata.acceleration.V.spectra.max = max1;
     data.processing.filtereddata.acceleration.V.spectra.max_period = per_maxA;
@@ -591,7 +601,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.rotated.PGD = PGD;
     
     %% Now do Arias intensity
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, rot, fs);
+    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, rot_orig, fs);
     data.processing.filtereddata.acceleration.rotated.arias.intensity = Iaval;
     data.processing.filtereddata.acceleration.rotated.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.rotated.arias.D575 = D5D75;
@@ -603,7 +613,7 @@ function [data] = Rosetta(filename, varargin)
         per_maxD, resp_02_secs, resp_02_secsV, resp_02_secsD ,resp_05_secs ,...
         resp_05_secsV,resp_05_secsD, resp_1_secs, resp_1_secsV,resp_1_secsD,...
         resp_2_secs,resp_2_secsV, resp_2_secsD, resp_5_secs,resp_5_secsV,...
-        resp_5_secsD] = Response_Spectra(rot, fs, 5);
+        resp_5_secsD] = Response_Spectra(rot_orig, fs, 5);
     data.processing.filtereddata.acceleration.rotated.spectra.waveform = y;
     data.processing.filtereddata.acceleration.rotated.spectra.max = max1;
     data.processing.filtereddata.acceleration.rotated.spectra.max_period = per_maxA;

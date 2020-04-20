@@ -15,8 +15,11 @@ cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
-HV_mat = [];
-for i = 2%59: length(stationlist)
+
+for i = 1: length(stationlist)
+    HV_EW_mat = [];
+    HV_NS_mat = [];
+    HV_comp_mat = [];
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
@@ -24,7 +27,7 @@ for i = 2%59: length(stationlist)
 %     event_num{i,1} = station;
 %     event_num{i,2} = length(eventlist);
     for j = 1: length(eventlist)
-        %disp(j)
+        disp(j)
         filename = eventlist(j);
         filename = strcat(filename.folder, '\', filename.name);
         load(filename)

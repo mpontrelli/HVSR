@@ -11,20 +11,23 @@ cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
-for i = 3 : length(stationlist)
+for i = 1 : length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
     eventlist = eventlist(3:length(eventlist));
     event_num{i,1} = station;
-    event_num{i,2} = length(eventlist);
-    for j = 1: length(eventlist)
+    event_num{ i,2} = length(eventlist);
+    tic
+    parfor j = 1: length(eventlist)
+        %disp(j)
         filename = eventlist(j);
         event_name = filename.name;
         filename = strcat(filename.folder, '\', filename.name);
         cd(codepath)
         data = Rosetta(filename);
-        cd(strcat(outpath, '\', station))
-        save(strcat(event_name, '.mat'), 'data')
+        fname = strcat(outpath,'\',station,'\',event_name, '.mat');
+        parsave(fname, data)
     end
+    toc
 end
