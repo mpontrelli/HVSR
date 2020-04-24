@@ -11,7 +11,7 @@ cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
-for i = 1 : length(stationlist)
+for i = 75% : length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;

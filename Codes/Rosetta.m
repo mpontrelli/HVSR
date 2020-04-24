@@ -113,6 +113,8 @@ function [data] = Rosetta(filename, varargin)
         data.meta.station.soil = 'Compact';
     elseif strcmp(soil, 'TER') == 1 && strcmp(soil1, 'E') == 1
         data.meta.station.soil = 'Compact';
+    elseif strcmp(soil, 'TER') == 1 && strcmp(soil1, 'F') == 1
+        data.meta.station.soil = 'Compact';
 
     % COMPACT END
 

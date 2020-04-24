@@ -1,4 +1,4 @@
-%% plot vecotrs of sigma
+%% plot vectors of sigma
 close all
 clear all
 % Author Marshall Pontrelli
@@ -26,20 +26,29 @@ sigma_freq = shapedata.sigma_freq;
 cd(codepath);
 
 %% now smooth
-for iii = 1:10
-    sigma_mat2(iii,:) = smooth(sigma_mat(iii,:),400);
+for iii = 1:length(stationlist)
+    sigma_mat2(iii,:) = smooth(sigma_mat(iii,:),10000);
 end
 
 sigma_mat3 = sigma_mat2(I,:);
 %% now plot
 figure
-
-for i = 1:length(stationlist)
-    color = 1/(2*i);
-    color = [color color color];
-    plot(sigma_freq, sigma_mat3(i,:), 'Color',  color , 'Linewidth', .5);
+for i = 53: 72
+    plot(sigma_freq, sigma_mat3(i,:), 'Color',  'b' , 'Linewidth', .5);
     hold on
 end
+hold on
+for i = 26: 52
+    plot(sigma_freq, sigma_mat3(i,:), 'Color',  'g' , 'Linewidth', .5);
+    hold on
+end
+for i = 1: 25
+    plot(sigma_freq, sigma_mat3(i,:), 'Color',  'r' , 'Linewidth', .5);
+    hold on
+end
+
+
+
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('\sigma','FontSize', 18)
 set(gca,'XScale', 'log', 'FontName', 'Times New Roman', 'FontSize', 14)

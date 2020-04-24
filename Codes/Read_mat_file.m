@@ -46,15 +46,17 @@ for i = 1: length(stationlist)
             hv_short = data.processing.filtereddata.acceleration.complex.HVSR.smooth.HV;
             hv_shortcomp = hv_short(1:50000);
             HV_comp_mat(j,:) = hv_shortcomp;
-     
+            clear data
         end
+        
     end
+    load(filename)
     statname = data.meta.station.name;
     if length(data.processing.filtereddata.freq_vec) == 100000
         freq_short = data.processing.filtereddata.freq_vec;
         freq = freq_short(1:50000);
     else
-    freq = data.processing.filtereddata.freq_vec;
+        freq = data.processing.filtereddata.freq_vec;
     end
     % remove infinite rows
     HV_EW_mat(any(isinf(HV_EW_mat),2),:) = [];

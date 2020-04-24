@@ -66,7 +66,8 @@ A = {'event_ID', 'event_mag', 'event_lat', 'event_lon', ...
     'rotated_PGD',  'D_rotated_spectra_max', 'D_rotated_spectra_max_period',...
     'D_rotated_spectra_seconds_02', 'D_rotated_spectra_seconds_05', 'D_rotated_spectra_seconds_1',...
     'D_rotated_spectra_seconds_2', 'D_rotated_spectra_seconds_5'};
-for i = 3% : length(stationlist)
+tic
+for i = 1 : length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
@@ -287,6 +288,7 @@ for i = 3% : length(stationlist)
         A{counter, 132} = data.processing.filtereddata.displacement.rotated.spectra.seconds_1; % response at 1 second
         A{counter, 133} = data.processing.filtereddata.displacement.rotated.spectra.seconds_2; % response at 2 seconds
         A{counter, 134} = data.processing.filtereddata.displacement.rotated.spectra.seconds_5; % response at 5 seconds    
-    
+        clear data
     end
 end
+toc
