@@ -9,7 +9,7 @@
 % Date: 4/17/2020
 % edited - 2/11/2020 - formatting and axis labeling
 
-function Arias_plot(time, Ianorm, D5D95, D5D75)
+function Arias_plot(time, Ianorm)
     figure
     [~,I5] = min(abs((Ianorm - 0.05)));
     D5 = time(I5);

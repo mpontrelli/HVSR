@@ -30,8 +30,10 @@
 % edited - 2/12/2020 - formatting and editing to make compatable with
 % updated code.
 
+% 4/27/2020 - update to output IaX, D5, D75 and D95
 
-function [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, X, fs)
+
+function [IaX, D5, D75, D95, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, X, fs)
     dt = 1/fs;
     IaX = 0;
     for i = 1:length(X)-1

@@ -41,7 +41,7 @@ A = {'event_ID', 'event_mag', 'event_lat', 'event_lon', ...
     'A_V_arias_D575', 'A_V_arias_rate', 'A_V_spectra_max',...
     'A_V_spectra_max_period','A_V_spectra_seconds02','A_V_spectra_seconds05', ...
     'A_V_spectra_seconds1', 'A_V_spectra_seconds2', 'A_V_spectra_seconds5',...
-    'A_complex_HV_amp','A_complex_HV_freq','A_complex_HV_hpb',...
+    'A_complex_HV_amp','A_complex_HV_freq',...
     'NS_PGV',  'V_NS_spectra_max', 'V_NS_spectra_max_period',...
     'V_NS_spectra_seconds_02', 'V_NS_spectra_seconds_05', 'V_NS_spectra_seconds_1'...,
     'V_NS_spectra_seconds_2', 'V_NS_spectra_seconds_5',...
@@ -170,128 +170,127 @@ for i = 1 : length(stationlist)
         
         % V
         % arias
-        A{counter, 60} = data.processing.filtereddata.acceleration.V.PGA; % PGA
-        A{counter, 61} = data.processing.filtereddata.acceleration.V.arias.intensity; % arias intensity
-        A{counter, 62} = data.processing.filtereddata.acceleration.V.arias.D595; % arias D595
-        A{counter, 63} = data.processing.filtereddata.acceleration.V.arias.D575; % arias D575
-        A{counter, 64} = data.processing.filtereddata.acceleration.V.arias.rate; % arias rate
+        A{counter, 57} = data.processing.filtereddata.acceleration.V.PGA; % PGA
+        A{counter, 58} = data.processing.filtereddata.acceleration.V.arias.intensity; % arias intensity
+        A{counter, 59} = data.processing.filtereddata.acceleration.V.arias.D595; % arias D595
+        A{counter, 60} = data.processing.filtereddata.acceleration.V.arias.D575; % arias D575
+        A{counter, 61} = data.processing.filtereddata.acceleration.V.arias.rate; % arias rate
         
         % response spectra
-        A{counter, 65} = data.processing.filtereddata.acceleration.V.spectra.max; % maximum spectra
-        A{counter, 66} = data.processing.filtereddata.acceleration.V.spectra.max_period; % period of maximum spectra
-        A{counter, 67} = data.processing.filtereddata.acceleration.V.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 68} = data.processing.filtereddata.acceleration.V.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 69} = data.processing.filtereddata.acceleration.V.spectra.seconds_1; % response at 1 second
-        A{counter, 70} = data.processing.filtereddata.acceleration.V.spectra.seconds_2; % response at 2 seconds
-        A{counter, 71} = data.processing.filtereddata.acceleration.V.spectra.seconds_5; % response at 5 seconds
+        A{counter, 62} = data.processing.filtereddata.acceleration.V.spectra.max; % maximum spectra
+        A{counter, 63} = data.processing.filtereddata.acceleration.V.spectra.max_period; % period of maximum spectra
+        A{counter, 64} = data.processing.filtereddata.acceleration.V.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 65} = data.processing.filtereddata.acceleration.V.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 66} = data.processing.filtereddata.acceleration.V.spectra.seconds_1; % response at 1 second
+        A{counter, 67} = data.processing.filtereddata.acceleration.V.spectra.seconds_2; % response at 2 seconds
+        A{counter, 68} = data.processing.filtereddata.acceleration.V.spectra.seconds_5; % response at 5 seconds
         
         % complex
         
         % HVSR
-        A{counter, 72} = data.processing.filtereddata.acceleration.copmlex.HVSR.smooth.freq_amp(1,2); % amplification
-        A{counter, 73} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp(1,1); % frequency
-        A{counter, 74} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb(1,1); % hpb
+        A{counter, 69} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.Amp; % amplification
+        A{counter, 70} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.fn; % frequency
         
         % VELOCITY
         
         % NS
-        A{counter, 75} = data.processing.filtereddata.velocity.NS.PGV; % PGV
+        A{counter, 71} = data.processing.filtereddata.velocity.NS.PGV; % PGV
         
         % spectra
-        A{counter, 76} = data.processing.filtereddata.velocity.NS.spectra.max; % maximum velocity spectra
-        A{counter, 77} = data.processing.filtereddata.velocity.NS.spectra.max_period; % period of maximum spectra
-        A{counter, 78} = data.processing.filtereddata.velocity.NS.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 79} = data.processing.filtereddata.velocity.NS.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 80} = data.processing.filtereddata.velocity.NS.spectra.seconds_1; % response at 1 second
-        A{counter, 81} = data.processing.filtereddata.velocity.NS.spectra.seconds_2; % response at 2 seconds
-        A{counter, 82} = data.processing.filtereddata.velocity.NS.spectra.seconds_5; % response at 5 seconds
+        A{counter, 72} = data.processing.filtereddata.velocity.NS.spectra.max; % maximum velocity spectra
+        A{counter, 73} = data.processing.filtereddata.velocity.NS.spectra.max_period; % period of maximum spectra
+        A{counter, 74} = data.processing.filtereddata.velocity.NS.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 75} = data.processing.filtereddata.velocity.NS.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 76} = data.processing.filtereddata.velocity.NS.spectra.seconds_1; % response at 1 second
+        A{counter, 77} = data.processing.filtereddata.velocity.NS.spectra.seconds_2; % response at 2 seconds
+        A{counter, 78} = data.processing.filtereddata.velocity.NS.spectra.seconds_5; % response at 5 seconds
 
         % EW
-        A{counter, 83} = data.processing.filtereddata.velocity.EW.PGV; % PGV
+        A{counter, 79} = data.processing.filtereddata.velocity.EW.PGV; % PGV
         
         % spectra
-        A{counter, 84} = data.processing.filtereddata.velocity.EW.spectra.max; % maximum velocity spectra
-        A{counter, 85} = data.processing.filtereddata.velocity.EW.spectra.max_period; % period of maximum spectra
-        A{counter, 86} = data.processing.filtereddata.velocity.EW.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 87} = data.processing.filtereddata.velocity.EW.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 88} = data.processing.filtereddata.velocity.EW.spectra.seconds_1; % response at 1 second
-        A{counter, 89} = data.processing.filtereddata.velocity.EW.spectra.seconds_2; % response at 2 seconds
-        A{counter, 90} = data.processing.filtereddata.velocity.EW.spectra.seconds_5; % response at 5 seconds
+        A{counter, 80} = data.processing.filtereddata.velocity.EW.spectra.max; % maximum velocity spectra
+        A{counter, 81} = data.processing.filtereddata.velocity.EW.spectra.max_period; % period of maximum spectra
+        A{counter, 82} = data.processing.filtereddata.velocity.EW.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 83} = data.processing.filtereddata.velocity.EW.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 84} = data.processing.filtereddata.velocity.EW.spectra.seconds_1; % response at 1 second
+        A{counter, 85} = data.processing.filtereddata.velocity.EW.spectra.seconds_2; % response at 2 seconds
+        A{counter, 86} = data.processing.filtereddata.velocity.EW.spectra.seconds_5; % response at 5 seconds
         
         % V
-        A{counter, 91} = data.processing.filtereddata.velocity.V.PGV; % PGV
+        A{counter, 87} = data.processing.filtereddata.velocity.V.PGV; % PGV
         
         % spectra
-        A{counter, 92} = data.processing.filtereddata.velocity.V.spectra.max; % maximum velocity spectra
-        A{counter, 93} = data.processing.filtereddata.velocity.V.spectra.max_period; % period of maximum spectra
-        A{counter, 94} = data.processing.filtereddata.velocity.V.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 95} = data.processing.filtereddata.velocity.V.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 96} = data.processing.filtereddata.velocity.V.spectra.seconds_1; % response at 1 second
-        A{counter, 97} = data.processing.filtereddata.velocity.V.spectra.seconds_2; % response at 2 seconds
-        A{counter, 98} = data.processing.filtereddata.velocity.V.spectra.seconds_5; % response at 5 seconds
+        A{counter, 88} = data.processing.filtereddata.velocity.V.spectra.max; % maximum velocity spectra
+        A{counter, 89} = data.processing.filtereddata.velocity.V.spectra.max_period; % period of maximum spectra
+        A{counter, 90} = data.processing.filtereddata.velocity.V.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 91} = data.processing.filtereddata.velocity.V.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 92} = data.processing.filtereddata.velocity.V.spectra.seconds_1; % response at 1 second
+        A{counter, 93} = data.processing.filtereddata.velocity.V.spectra.seconds_2; % response at 2 seconds
+        A{counter, 94} = data.processing.filtereddata.velocity.V.spectra.seconds_5; % response at 5 seconds
        
         % rotated
-        A{counter, 99} = data.processing.filtereddata.velocity.rotated.PGV; % PGV
+        A{counter, 95} = data.processing.filtereddata.velocity.rotated.PGV; % PGV
         
         % spectra
-        A{counter, 100} = data.processing.filtereddata.velocity.rotated.spectra.max; % maximum velocity spectra
-        A{counter, 101} = data.processing.filtereddata.velocity.rotated.spectra.max_period; % period of maximum spectra
-        A{counter, 102} = data.processing.filtereddata.velocity.rotated.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 103} = data.processing.filtereddata.velocity.rotated.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 104} = data.processing.filtereddata.velocity.rotated.spectra.seconds_1; % response at 1 second
-        A{counter, 105} = data.processing.filtereddata.velocity.rotated.spectra.seconds_2; % response at 2 seconds
-        A{counter, 106} = data.processing.filtereddata.velocity.rotated.spectra.seconds_5; % response at 5 seconds
+        A{counter, 96} = data.processing.filtereddata.velocity.rotated.spectra.max; % maximum velocity spectra
+        A{counter, 97} = data.processing.filtereddata.velocity.rotated.spectra.max_period; % period of maximum spectra
+        A{counter, 98} = data.processing.filtereddata.velocity.rotated.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 99} = data.processing.filtereddata.velocity.rotated.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 100} = data.processing.filtereddata.velocity.rotated.spectra.seconds_1; % response at 1 second
+        A{counter, 101} = data.processing.filtereddata.velocity.rotated.spectra.seconds_2; % response at 2 seconds
+        A{counter, 102} = data.processing.filtereddata.velocity.rotated.spectra.seconds_5; % response at 5 seconds
        
         
         % DISPLACEMENT
         
         % NS
-        A{counter, 107} = data.processing.filtereddata.displacement.NS.PGD; % PGD    
+        A{counter, 103} = data.processing.filtereddata.displacement.NS.PGD; % PGD    
         
         % spectra
-        A{counter, 108} = data.processing.filtereddata.displacement.NS.spectra.max; % maximum displacement spectra
-        A{counter, 109} = data.processing.filtereddata.displacement.NS.spectra.max_period; % period of maximum spectra
-        A{counter, 110} = data.processing.filtereddata.displacement.NS.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 111} = data.processing.filtereddata.displacement.NS.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 112} = data.processing.filtereddata.displacement.NS.spectra.seconds_1; % response at 1 second
-        A{counter, 113} = data.processing.filtereddata.displacement.NS.spectra.seconds_2; % response at 2 seconds
-        A{counter, 114} = data.processing.filtereddata.displacement.NS.spectra.seconds_5; % response at 5 seconds
+        A{counter, 104} = data.processing.filtereddata.displacement.NS.spectra.max; % maximum displacement spectra
+        A{counter, 105} = data.processing.filtereddata.displacement.NS.spectra.max_period; % period of maximum spectra
+        A{counter, 106} = data.processing.filtereddata.displacement.NS.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 107} = data.processing.filtereddata.displacement.NS.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 108} = data.processing.filtereddata.displacement.NS.spectra.seconds_1; % response at 1 second
+        A{counter, 109} = data.processing.filtereddata.displacement.NS.spectra.seconds_2; % response at 2 seconds
+        A{counter, 110} = data.processing.filtereddata.displacement.NS.spectra.seconds_5; % response at 5 seconds
     
         % EW
-        A{counter, 115} = data.processing.filtereddata.displacement.EW.PGD; % PGD    
+        A{counter, 111} = data.processing.filtereddata.displacement.EW.PGD; % PGD    
         
         % spectra
-        A{counter, 116} = data.processing.filtereddata.displacement.EW.spectra.max; % maximum displacement spectra
-        A{counter, 117} = data.processing.filtereddata.displacement.EW.spectra.max_period; % period of maximum spectra
-        A{counter, 118} = data.processing.filtereddata.displacement.EW.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 119} = data.processing.filtereddata.displacement.EW.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 120} = data.processing.filtereddata.displacement.EW.spectra.seconds_1; % response at 1 second
-        A{counter, 121} = data.processing.filtereddata.displacement.EW.spectra.seconds_2; % response at 2 seconds
-        A{counter, 122} = data.processing.filtereddata.displacement.EW.spectra.seconds_5; % response at 5 seconds    
+        A{counter, 112} = data.processing.filtereddata.displacement.EW.spectra.max; % maximum displacement spectra
+        A{counter, 113} = data.processing.filtereddata.displacement.EW.spectra.max_period; % period of maximum spectra
+        A{counter, 114} = data.processing.filtereddata.displacement.EW.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 115} = data.processing.filtereddata.displacement.EW.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 116} = data.processing.filtereddata.displacement.EW.spectra.seconds_1; % response at 1 second
+        A{counter, 117} = data.processing.filtereddata.displacement.EW.spectra.seconds_2; % response at 2 seconds
+        A{counter, 118} = data.processing.filtereddata.displacement.EW.spectra.seconds_5; % response at 5 seconds    
     
         % V
-        A{counter, 123} = data.processing.filtereddata.displacement.V.PGD; % PGD    
+        A{counter, 119} = data.processing.filtereddata.displacement.V.PGD; % PGD    
         
         % spectra
-        A{counter, 124} = data.processing.filtereddata.displacement.V.spectra.max; % maximum displacement spectra
-        A{counter, 125} = data.processing.filtereddata.displacement.V.spectra.max_period; % period of maximum spectra
-        A{counter, 126} = data.processing.filtereddata.displacement.V.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 127} = data.processing.filtereddata.displacement.V.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 128} = data.processing.filtereddata.displacement.V.spectra.seconds_1; % response at 1 second
-        A{counter, 129} = data.processing.filtereddata.displacement.V.spectra.seconds_2; % response at 2 seconds
-        A{counter, 130} = data.processing.filtereddata.displacement.V.spectra.seconds_5; % response at 5 seconds    
+        A{counter, 120} = data.processing.filtereddata.displacement.V.spectra.max; % maximum displacement spectra
+        A{counter, 121} = data.processing.filtereddata.displacement.V.spectra.max_period; % period of maximum spectra
+        A{counter, 122} = data.processing.filtereddata.displacement.V.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 123} = data.processing.filtereddata.displacement.V.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 124} = data.processing.filtereddata.displacement.V.spectra.seconds_1; % response at 1 second
+        A{counter, 125} = data.processing.filtereddata.displacement.V.spectra.seconds_2; % response at 2 seconds
+        A{counter, 126} = data.processing.filtereddata.displacement.V.spectra.seconds_5; % response at 5 seconds    
     
         % rotated
-        A{counter, 131} = data.processing.filtereddata.displacement.rotated.PGD; % PGD    
+        A{counter, 127} = data.processing.filtereddata.displacement.rotated.PGD; % PGD    
         
         % spectra
-        A{counter, 132} = data.processing.filtereddata.displacement.rotated.spectra.max; % maximum displacement spectra
-        A{counter, 133} = data.processing.filtereddata.displacement.rotated.spectra.max_period; % period of maximum spectra
-        A{counter, 134} = data.processing.filtereddata.displacement.rotated.spectra.seconds_02; % response at 0.2 seconds
-        A{counter, 135} = data.processing.filtereddata.displacement.rotated.spectra.seconds_05; % response at 0.5 seconds
-        A{counter, 136} = data.processing.filtereddata.displacement.rotated.spectra.seconds_1; % response at 1 second
-        A{counter, 137} = data.processing.filtereddata.displacement.rotated.spectra.seconds_2; % response at 2 seconds
-        A{counter, 138} = data.processing.filtereddata.displacement.rotated.spectra.seconds_5; % response at 5 seconds    
+        A{counter, 128} = data.processing.filtereddata.displacement.rotated.spectra.max; % maximum displacement spectra
+        A{counter, 129} = data.processing.filtereddata.displacement.rotated.spectra.max_period; % period of maximum spectra
+        A{counter, 130} = data.processing.filtereddata.displacement.rotated.spectra.seconds_02; % response at 0.2 seconds
+        A{counter, 131} = data.processing.filtereddata.displacement.rotated.spectra.seconds_05; % response at 0.5 seconds
+        A{counter, 132} = data.processing.filtereddata.displacement.rotated.spectra.seconds_1; % response at 1 second
+        A{counter, 133} = data.processing.filtereddata.displacement.rotated.spectra.seconds_2; % response at 2 seconds
+        A{counter, 134} = data.processing.filtereddata.displacement.rotated.spectra.seconds_5; % response at 5 seconds    
         clear data
     end
 end

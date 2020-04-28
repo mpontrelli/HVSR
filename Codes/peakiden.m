@@ -54,7 +54,7 @@ end
 topprom = p(o)';
 %topwidth = w(o)';
 A = peaks(o)'; peakind = locs(o)'; fn = newfaxhz1(peakind)';
-matrix = [fn,A];
+matrix = [fn',A'];
 matrix1 = [topprom];%, topwidth];
 
 end
