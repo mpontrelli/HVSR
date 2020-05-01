@@ -105,84 +105,187 @@ grid on
 box on
 
 %% TH35 analysis
-%% load data
-TH35_az = T{4511:4581,{'event_azimuth'}}; % azimuth
-TH35_depth = T{4511:4581,{'event_depth'}}; % depth
-TH35_EW_freq = T{4511:4581,{'A_EW_HV_freq'}}; % EW_freq
-TH35_EW_amp = T{4511:4581,{'A_EW_HV_amp'}}; % EW_amp
-TH35_NS_freq = T{4511:4581,{'A_NS_HV_freq'}}; % NS_freq
-TH35_NS_amp = T{4511:4581,{'A_NS_HV_amp'}}; % NS_amp
-TH35_comp_amp = T{4511:4581,{'A_complex_HV_amp'}}; % Complex_amp
-TH35_comp_freq = T{4511:4581,{'A_complex_HV_freq'}}; % Complex_freq
-TH35_NS_PGA = T{4511:4581,{'NS_PGA'}}; % NS PGA
+% %% load data
+% TH35_az = T{4511:4581,{'event_azimuth'}}; % azimuth
+% TH35_depth = T{4511:4581,{'event_depth'}}; % depth
+% TH35_EW_freq = T{4511:4581,{'A_EW_HV_freq'}}; % EW_freq
+% TH35_EW_amp = T{4511:4581,{'A_EW_HV_amp'}}; % EW_amp
+% TH35_NS_freq = T{4511:4581,{'A_NS_HV_freq'}}; % NS_freq
+% TH35_NS_amp = T{4511:4581,{'A_NS_HV_amp'}}; % NS_amp
+% TH35_comp_amp = T{4511:4581,{'A_complex_HV_amp'}}; % Complex_amp
+% TH35_comp_freq = T{4511:4581,{'A_complex_HV_freq'}}; % Complex_freq
+% TH35_NS_PGA = T{4511:4581,{'NS_PGA'}}; % NS PGA
+% 
+% 
+% 
+% % TH35_diff = TH35_az_NS_amp - TH35_az_EW_amp;
+% 
+% %% plot data
+% 
+% figure
+% histogram(TH35_comp_freq)
+% figure
+% plot(TH35_az, TH35_EW_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('Azimuth')
+% ylabel('Amplitude')
+% title('EW')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
+% 
+% figure
+% plot(TH35_az, TH35_NS_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('Azimuth')
+% ylabel('Amplitude')
+% title('NS')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
+% 
+% figure
+% plot(TH35_az, TH35_diff, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('Azimuth')
+% ylabel('Amplitude difference')
+% title('NS_amp - EW_amp')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
+% 
+% figure
+% plot(TH35_az, TH35_comp_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('Azimuth')
+% ylabel('Amplitude')
+% title('Complex')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
+% 
+% figure
+% plot(TH35_depth, TH35_comp_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('Depth')
+% ylabel('Amplitude')
+% title('Complex')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
+% 
+% figure
+% plot(TH35_NS_freq, TH35_NS_PGA, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('Fundamental frequency (Hz)')
+% ylabel('PGA')
+% title('Complex')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
+% 
+% figure
+% plot(TH35_NS_freq, TH35_EW_freq, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+% xlabel('NS_freq (Hz)')
+% ylabel('EW_freq (Hz)')
+% title('Frequency difference')
+% set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+% grid on
+% box on
 
+%%
+T = readtable('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\Final_tables\CE32.csv');%, 'HeaderLines',3);
 
+mag = T{2:45,{'A2'}}; 
+mag = str2double(mag);
+figure
+histogram(mag)
 
-TH35_diff = TH35_az_NS_amp - TH35_az_EW_amp;
+xlabel('Magnitude')
+ylabel('Frequency')
+title('')
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+grid on
+box on
+%%
 
-%% plot data
+az = T{2:45,{'A6'}}; 
+az = str2double(az); 
+
+dist = T{2:45,{'A7'}};  
+dist = str2double(dist); 
 
 figure
-histogram(TH35_comp_freq)
-figure
-plot(TH35_az, TH35_EW_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+plot(az, dist, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
 xlabel('Azimuth')
-ylabel('Amplitude')
-title('EW')
+ylabel('Distance (km)')
+title('')
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+grid on
+box on
+
+
+depth = T{2:45,{'A5'}};  
+depth = str2double(depth); 
+
+figure
+histogram(depth,6)
+
+xlabel('Depth (Km)')
+ylabel('Frequency')
+title('')
 set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
 grid on
 box on
 
 figure
-plot(TH35_az, TH35_NS_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
-xlabel('Azimuth')
-ylabel('Amplitude')
-title('NS')
+histogram(az,6)
+
+xlabel('Azimuth (degrees)')
+ylabel('Frequency')
+title('')
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+grid on
+box on
+
+%%
+hpb = T{2:45,{'A29'}};  
+hpb = str2double(hpb); 
+
+figure
+histogram(hpb,6)
+
+xlabel('HPB (hz)')
+ylabel('Frequency')
+title('')
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+grid on
+box on
+
+
+freq = T{2:45,{'A28'}};  
+freq = str2double(freq); 
+figure
+histogram(freq,6)
+
+xlabel('Frequency (hz)')
+ylabel('Frequency')
+title('')
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
+grid on
+box on
+
+amp = T{2:45,{'A27'}};  
+amp  = str2double(amp); 
+figure
+histogram(amp,6)
+
+xlabel('Amplification')
+ylabel('Frequency')
+title('')
 set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
 grid on
 box on
 
 figure
-plot(TH35_az, TH35_diff, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
-xlabel('Azimuth')
-ylabel('Amplitude difference')
-title('NS_amp - EW_amp')
-set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
-grid on
-box on
-
-figure
-plot(TH35_az, TH35_comp_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
-xlabel('Azimuth')
-ylabel('Amplitude')
-title('Complex')
-set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
-grid on
-box on
-
-figure
-plot(TH35_depth, TH35_comp_amp, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
-xlabel('Depth')
-ylabel('Amplitude')
-title('Complex')
-set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
-grid on
-box on
-
-figure
-plot(TH35_NS_freq, TH35_NS_PGA, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
-xlabel('Fundamental frequency (Hz)')
-ylabel('PGA')
-title('Complex')
-set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
-grid on
-box on
-
-figure
-plot(TH35_NS_freq, TH35_EW_freq, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
-xlabel('NS_freq (Hz)')
-ylabel('EW_freq (Hz)')
-title('Frequency difference')
+plot(freq, hpb, 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'k')
+xlabel('Frequency (hz)')
+ylabel('HPB (hz)')
+title('')
 set(gca, 'FontName', 'Times New Roman', 'FontSize', 14);
 grid on
 box on

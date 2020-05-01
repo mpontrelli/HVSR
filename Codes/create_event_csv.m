@@ -67,7 +67,7 @@ A = {'event_ID', 'event_mag', 'event_lat', 'event_lon', ...
     'D_rotated_spectra_seconds_02', 'D_rotated_spectra_seconds_05', 'D_rotated_spectra_seconds_1',...
     'D_rotated_spectra_seconds_2', 'D_rotated_spectra_seconds_5'};
 tic
-for i = 1 : length(stationlist)
+for i = 20%1 : length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
@@ -188,7 +188,7 @@ for i = 1 : length(stationlist)
         % complex
         
         % HVSR
-        A{counter, 72} = data.processing.filtereddata.acceleration.copmlex.HVSR.smooth.freq_amp(1,2); % amplification
+        A{counter, 72} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp(1,2); % amplification
         A{counter, 73} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp(1,1); % frequency
         A{counter, 74} = data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb(1,1); % hpb
         

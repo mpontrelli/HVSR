@@ -31,9 +31,11 @@ for iii = 1:length(stationlist)
 end
 
 sigma_mat3 = sigma_mat2(I,:);
+%%
+sigma_mat3([27],:) = [];
 %% now plot
 figure
-for i = 53: 72
+for i = 53: 71
     plot(sigma_freq, sigma_mat3(i,:), 'Color',  'b' , 'Linewidth', .5);
     hold on
 end

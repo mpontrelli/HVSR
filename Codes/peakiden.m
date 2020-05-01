@@ -34,7 +34,9 @@
 % Update - 1/16/2020 added comments while I was coming back to debug this
 % and specratstat - Marshall
 
-function [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, newfaxhz, lowbound, upbound)
+% Update - 4/29/2020 added peak areas
+
+function [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(ahatf, newfaxhz, lowbound, upbound)
 % find the values in the frequency vector closest to the lowbound and
 % upbound values
 
@@ -55,6 +57,54 @@ topprom = p(o)';
 %topwidth = w(o)';
 A = peaks(o)'; peakind = locs(o)'; fn = newfaxhz1(peakind)';
 matrix = [fn',A'];
-matrix1 = [topprom];%, topwidth];
+matrix1 = topprom';%, topwidth];
 
+
+%% now compute area under the peak and output the polygon for area
+AA = A - topprom;
+peakfreqs = cell(length(peakind),1);
+peakamps = cell(length(peakind),1);
+for f = 1:length(peakind)
+    loc = peakind(f);
+    cur_amp = AA(f);
+    %move down signal to the right
+    for i = 1:length(newfaxhz1)
+        ii = loc + i;
+        k = ahatf1(ii);
+        if 0.01 - (k - cur_amp) > 0
+            I1 = ii;
+            break
+        end
+    end
+    %move down signal to the left
+    for i = 1:length(newfaxhz1)
+        ii = loc - i;
+        k = ahatf1(ii);
+        if 0.01 - (k - cur_amp) > 0
+            I2 = ii;
+            break
+        end
+    end
+    % Now make the vectors
+    peak_freqs = newfaxhz1(I2:I1)';
+    peak_amps = ahatf1(I2:I1)';
+    
+    % Now compute areas using trapezoids
+    for i = 1:length(peak_freqs) - 1
+        if i == 1
+            Area(i) = ((peak_freqs(i+1) - peak_freqs(i)) * peak_amps(i+1))/2;
+        else
+            Area(i) = ((peak_freqs(i+1) - peak_freqs(i)) * peak_amps(i)) + ((peak_freqs(i+1) - peak_freqs(i)) * (peak_amps(i) - peak_amps(i +1)))/2;
+        end          
+    end
+    Areamat(f) = sum(Area);
+    
+    % Now save
+    peakamps{f} = peak_amps;
+    peakfreqs{f} = peak_freqs;
+    
+    clear peak_freqs
+    clear peak_amps
+    clear Area
+end
 end

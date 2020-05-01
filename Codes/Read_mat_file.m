@@ -16,7 +16,7 @@ stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
 
-for i = 1: length(stationlist)
+for i = 20%1: length(stationlist)
     HV_EW_mat = [];
     HV_NS_mat = [];
     HV_comp_mat = [];
@@ -83,32 +83,42 @@ for i = 1: length(stationlist)
     EW = HVSRplot(ahatfEW, freq, confinthighEW, confintlowEW, lowbound, title, plotcolor);
     individplot(HV_EW_mat, freq, statname)
     upbound = 20000;
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatfEW, freq', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(ahatfEW', freq, lowbound, upbound);
     [taxstatEW, sigma1EW] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigmaEW, statname,lowbound, upbound);
     saveas(EW, strcat(figpath, statname, '\', 'EWHVSR.jpg'));
     shapedata.EW.shapes = taxstatEW;
     shapedata.EW.sig_vec = sigma1EW;
+    shapedata.EW.area_freq = peakfreqs;
+    shapedata.EW.area_amp = peakamps;
+    shapedata.EW.Areamat = Areamat;
     %% NS
     title = strcat(statname, {' '}, 'NS');
     NS = HVSRplot(ahatfNS, freq, confinthighNS, confintlowNS, lowbound, title, plotcolor);
     individplot(HV_NS_mat, freq, statname)
     upbound = 20000;
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatfNS, freq', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(ahatfNS', freq, lowbound, upbound);
     [taxstatNS, sigma1NS] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigmaNS, statname,lowbound, upbound);
     saveas(NS, strcat(figpath, statname, '\', 'NSHVSR.jpg'));
     shapedata.NS.shapes = taxstatNS;
     shapedata.NS.sig_vec = sigma1NS;
+    shapedata.NS.area_freq = peakfreqs;
+    shapedata.NS.area_amp = peakamps;
+    shapedata.NS.Areamat = Areamat;
     %% complex
     title = strcat(statname, {' '}, 'Complex');
     comp = HVSRplot(ahatfcomp, freq, confinthighcomp, confintlowcomp, lowbound, title, plotcolor);
     individplot(HV_comp_mat, freq, statname)
     upbound = 20000;
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatfcomp, freq', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(ahatfcomp', freq, lowbound, upbound);
     [taxstatcomp, sigma1comp] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigmacomp, statname,lowbound, upbound);
     saveas(comp, strcat(figpath, statname, '\', 'compHVSR.jpg'));
     shapedata.complex.shapes = taxstatcomp;
     shapedata.complex.sig_vec = sigma1comp;
+    shapedata.complex.area_freq = peakfreqs;
+    shapedata.complex.area_amp = peakamps;
+    shapedata.complex.Areamat = Areamat; 
     shapedata.sigma_freq = newfaxhz1;
+   
     %% now save the file
     save(strcat(shapepath, statname, '.mat'), 'shapedata')
     %close all

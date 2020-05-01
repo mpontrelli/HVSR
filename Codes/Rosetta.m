@@ -415,9 +415,12 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.NS.PGD = PGD1;
     
         %% Now do Arias intensity
-    [IaX, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, NS_orig, fs);
+    [IaX, D5, D75, D95, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, NS_orig, fs);
     data.processing.filtereddata.acceleration.NS.arias.no_norm = IaX;
     data.processing.filtereddata.acceleration.NS.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.NS.arias.D5 = D5;
+    data.processing.filtereddata.acceleration.NS.arias.D75 = D75;
+    data.processing.filtereddata.acceleration.NS.arias.D95 = D95;
     data.processing.filtereddata.acceleration.NS.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.NS.arias.D575 = D5D75;
     data.processing.filtereddata.acceleration.NS.arias.rate = rate_arias;
@@ -484,9 +487,12 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.EW.PGD = PGD1;
     
     %% Now do Arias intensity
-    [IaX, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, EW_orig, fs);
+    [IaX, D5, D75, D95, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, EW_orig, fs);
     data.processing.filtereddata.acceleration.EW.arias.no_norm = IaX;
     data.processing.filtereddata.acceleration.EW.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.EW.arias.D5 = D5;
+    data.processing.filtereddata.acceleration.EW.arias.D75 = D75;
+    data.processing.filtereddata.acceleration.EW.arias.D95 = D95;
     data.processing.filtereddata.acceleration.EW.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.EW.arias.D575 = D5D75;
     data.processing.filtereddata.acceleration.EW.arias.rate = rate_arias;
@@ -545,9 +551,12 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.V.PGD = PGD1;
     
     %% Now do Arias intensity    
-    [IaX, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, V_orig, fs);
+    [IaX, D5, D75, D95, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, V_orig, fs);
     data.processing.filtereddata.acceleration.V.arias.no_norm = IaX;
     data.processing.filtereddata.acceleration.V.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.V.arias.D5 = D5;
+    data.processing.filtereddata.acceleration.V.arias.D75 = D75;
+    data.processing.filtereddata.acceleration.V.arias.D95 = D95;
     data.processing.filtereddata.acceleration.V.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.V.arias.D575 = D5D75;
     data.processing.filtereddata.acceleration.V.arias.rate = rate_arias;
@@ -607,8 +616,12 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.rotated.PGD = PGD;
     
     %% Now do Arias intensity
-    [Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, rot_orig, fs);
+    [IaX, D5, D75, D95, D5D95, D5D75, Iaval, rate_arias, Ianorm] =  Arias(time_orig, rot_orig, fs);
+    data.processing.filtereddata.acceleration.rotated.arias.no_norm = IaX;
     data.processing.filtereddata.acceleration.rotated.arias.intensity = Iaval;
+    data.processing.filtereddata.acceleration.rotated.arias.D5 = D5;
+    data.processing.filtereddata.acceleration.rotated.arias.D75 = D75;
+    data.processing.filtereddata.acceleration.rotated.arias.D95 = D95;
     data.processing.filtereddata.acceleration.rotated.arias.D595 = D5D95;
     data.processing.filtereddata.acceleration.rotated.arias.D575 = D5D75;
     data.processing.filtereddata.acceleration.rotated.arias.rate = rate_arias;
@@ -682,7 +695,7 @@ function [data] = Rosetta(filename, varargin)
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
     else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(H_V, fax_HzN', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
     for f = 1:length(peakind)
         loc = peakind(f);
         A = matrix(f,2);
@@ -697,6 +710,9 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = peakind;
     data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = hpb1;
     data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = matrix1';
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.areafreqs = peakfreqs;
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.areaamps = peakamps;
+    data.processing.filtereddata.acceleration.complex.HVSR.smooth.Area = Areamat;
     clear hpb1
     clear matrix
     clear matrix1
@@ -717,7 +733,7 @@ function [data] = Rosetta(filename, varargin)
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
     else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(H_V, fax_HzN', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1,peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
     for f = 1:length(peakind)
         loc = peakind(f);
         A = matrix(f,2);
@@ -732,6 +748,9 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.freq_amp_ind = peakind;
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.hpb = hpb1;
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.prom = matrix1';
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.areafreqs = peakfreqs;
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.areaamps = peakamps;
+    data.processing.filtereddata.acceleration.NS.HVSR.smooth.Area = Areamat;
     clear hpb1
     clear matrix
     clear matrix1
@@ -752,7 +771,7 @@ function [data] = Rosetta(filename, varargin)
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
     else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(H_V, fax_HzN', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
     for f = 1:length(peakind)
         loc = peakind(f);
         A = matrix(f,2);
@@ -767,6 +786,9 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.freq_amp_ind = peakind;
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.hpb = hpb1;
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.prom = matrix1';
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.areafreqs = peakfreqs;
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.areaamps = peakamps;
+    data.processing.filtereddata.acceleration.EW.HVSR.smooth.Area = Areamat;
     clear hpb1
     clear matrix
     clear matrix1
@@ -787,7 +809,7 @@ function [data] = Rosetta(filename, varargin)
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
     else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(H_V, fax_HzN', lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
     for f = 1:length(peakind)
         loc = peakind(f);
         A = matrix(f,2);
@@ -798,10 +820,13 @@ function [data] = Rosetta(filename, varargin)
         hpb1(f,4) = I1;
         hpb1(f,5) = I;
     end
-    data.processing.filtereddata.acceleration.rot.HVSR.smooth.freq_amp = matrix;
-    data.processing.filtereddata.acceleration.rot.HVSR.smooth.freq_amp_ind = peakind;
-    data.processing.filtereddata.acceleration.rot.HVSR.smooth.hpb = hpb1;
-    data.processing.filtereddata.acceleration.rot.HVSR.smooth.prom = matrix1';
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.freq_amp = matrix;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.freq_amp_ind = peakind;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.hpb = hpb1;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.prom = matrix1';
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.areafreqs = peakfreqs;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.areaamps = peakamps;
+    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.Area = Areamat;
     clear hpb1
     clear matrix
     clear matrix1
