@@ -41,7 +41,7 @@
 % Update - 1/16/2020 added comments while I was coming back to debug this
 % and peakiden - Marshall
 
-function [taxstat, sigma1] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound, upbound)
+function [taxstat, sigma1, sigmai] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname,lowbound, upbound)
 [m] = length(peakind);
 sigma1 = sigma(lowbound: upbound); 
 for f = 1:m
@@ -51,9 +51,9 @@ for f = 1:m
     taxstat{f,1} = statname;
     taxstat1(f,1) = hpb;
     a = sigma1(I1:I);
-    sigmai = median(a);
-    taxstat1(f,2) = sigmai;
+    sigmai(f) = median(a);
 end
+taxstat1(:,2) = sigmai;
 matrix = num2cell(matrix);
 matrix1 = num2cell(matrix1);
 taxstat1 = num2cell(taxstat1);

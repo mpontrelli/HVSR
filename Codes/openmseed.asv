@@ -10,6 +10,7 @@ function [NS, EW, V] = openmseed(x)
     V = [];
     EW = [];
     NS = [];
+    V = zeros(length(a),1);
     for i = 1:length(x)
         if x(i).ChannelIdentifier == 'ENZ'
             V = vertcat(V, x(i).d);

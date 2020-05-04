@@ -1,0 +1,477 @@
+%% read DMC data
+close all
+clear all
+%% necessary inputs
+% Station
+Station = 'DC23';
+Network = 'ZN';
+time = '2015-06-07 06:07:00';
+time2 = '2015-06-08 06:07:00';
+
+% Filter
+LowCorner = 0.1;
+HighCorner = 15;
+Npoles = 4;
+Filterplot = 'no';
+
+%% NS
+Component = 'EHN';
+
+[sampletimes1,trace1,NS, fs, sensitivity1, sensunits1] = getDMCData(time,time2,Station,Network,Component);
+[NS] = Butter2(NS, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
+NS = NS/sensitivity1;
+NS = NS(1:length(NS)-1);
+%% EW
+Component = 'EHE';
+
+[sampletimes2,trace2,EW, fs, sensitivity2, sensunits2] = getDMCData(time,time2,Station,Network,Component);
+[EW] = Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
+EW = EW/sensitivity2;
+
+%% V
+Component = 'EHZ';
+
+[sampletimes3,trace3,V, fs, sensitivity3, sensunits3] = getDMCData(time,time2,Station,Network,Component);
+[V] = Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
+V = V/sensitivity3;
+%stat2 = stat2(1:length(stat2)-1);
+
+%% make all vectors the same length
+a = length(NS);
+b = length(EW);
+c = length(V);
+d = min([a,b,c]);
+NS = NS(1:d);
+EW = EW(1:d);
+V = V(1:d);
+
+%% plot time series
+% find the maximum value to make bounds for plotting
+a = max(abs(NS));
+b = max(abs(EW));
+c = max(abs(V));
+cc = [a,b,c];
+d = max(cc);
+
+%% create a time vector and plot time series
+time = ((1:length(NS))/fs)/3600;
+
+figure;
+    
+% NS
+subplot(3,1,1)
+plot(time,NS)
+title('NS')
+ylabel(sensunits1)
+xlim([0 length(NS)/(fs*3600)])
+ylim([-d d])
+grid on 
+box on
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
+
+% EW
+subplot(3,1,2)
+plot(time,EW)
+title('EW')
+ylabel(sensunits2)
+xlim([0 length(EW)/(fs*3600)])
+ylim([-d d])
+grid on 
+box on
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+
+% V
+subplot(3,1,3)
+plot(time,V)
+title('V')
+ylabel(sensunits2)
+xlabel('Time (Hours)')
+xlim([0 length(V)/(fs*3600)])
+ylim([-d d])
+grid on 
+box on
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+
+%% integrate for displacement
+alpha = 0.25; %coefficients for Newmark-beta method
+beta = 0.5;
+
+% NS
+dt = 1/fs;
+dNS = 0;
+for i = 1:length(NS) - 1
+    dNS(i+1) = dNS(i) + dt*((1-beta)*NS(i) + beta*NS(i+1));
+end
+dNS = dNS - mean(dNS);
+[dNS] = Butter2(dNS, fs);
+dNS = dNS*1000000; % to microns
+
+% EW
+dEW = 0;
+for i = 1:length(EW) - 1
+    dEW(i+1) = dEW(i) + dt*((1-beta)*EW(i) + beta*EW(i+1));
+end
+dEW = dEW - mean(dEW);
+[dEW] = Butter2(dEW, fs);
+dEW = dEW*1000000; % to microns
+
+% V
+dV = 0;
+for i = 1:length(V) - 1
+    dV(i+1) = dV(i) + dt*((1-beta)*V(i) + beta*V(i+1));
+end
+dV = dV - mean(dV);
+[dV] = Butter2(dV, fs);
+dV = dV*1000000; % to microns
+
+%% plot displacement
+% find the maximum value to make bounds for plotting
+a = max(abs(dNS));
+b = max(abs(dEW));
+c = max(abs(dV));
+cc = [a,b, c];
+d = max(cc);
+figure;
+    
+% NS
+subplot(3,1,1)
+plot(time,dNS)
+title('NS')
+ylabel('Microns')
+xlabel('Time (Hours)')
+xlim([0 length(NS)/(fs*3600)])
+ylim([-d d])
+grid on 
+box on
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
+
+% EW
+subplot(3,1,2)
+plot(time,dEW)
+title('EW')
+ylabel('Microns')
+xlabel('Time (Hours)')
+xlim([0 length(EW)/(fs*3600)])
+ylim([-d d])
+grid on 
+box on
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+
+% V
+subplot(3,1,3)
+plot(time,dV)
+title('V')
+ylabel('Microns')
+xlabel('Time (Hours)')
+xlim([0 length(EW)/(fs*3600)])
+ylim([-d d])
+grid on 
+box on
+set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+
+%% spectrogram inputs (edit this to make plots better)
+nfft = 2048/4;
+noverlap = round(nfft*0.50);
+win = hanning(nfft);
+
+figure
+subplot(1,3,1)
+spectrogram(NS,win,noverlap,nfft,fs,'yaxis');
+title('NS')
+ylim([0.1 100])
+set(gca,'YScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+
+subplot(1,3,2)
+spectrogram(EW,win,noverlap,nfft,fs,'yaxis');
+title('EW')
+ylim([0.1 100])
+ylabel('')
+set(gca,'YScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+
+subplot(1,3,3)
+spectrogram(V,win,noverlap,nfft,fs,'yaxis');
+title('V')
+ylim([0.1 100])
+ylabel('')
+set(gca,'YScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+%set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+%% Now do magnitude responses and compare
+% inputs
+numwin = 1000;
+windowlen = 60;
+windis = 20;
+sampnum = windowlen*fs; 
+windisnum = windis*fs;
+
+k = [1,fs];
+for iii = 1:numwin
+    NSmatrix(iii,:) = NS((k(1)):(k(2)*windowlen+k(1))-1);
+    EWmatrix(iii,:) = EW((k(1)):(k(2)*windowlen+k(1))-1);
+    Vmatrix(iii,:) = V((k(1)):(k(2)*windowlen+k(1))-1);
+    k(1) = k(1)+ sampnum + windisnum;
+end
+
+
+%% window the data
+win = hann(sampnum)';
+for i = 1:numwin
+    NSmatrix(i,:) = NSmatrix(i,:).*win;
+    EWmatrix(i,:) = EWmatrix(i,:).*win;
+    Vmatrix(i,:) = Vmatrix(i,:).*win;
+end
+
+%% Compute unfiltered magnitude responses
+for iii = 1:numwin
+    NSmatrix(iii,:) = 4*abs(fft(NSmatrix(iii,:)))/sampnum;
+    EWmatrix(iii,:) = 4*abs(fft(EWmatrix(iii,:)))/sampnum;
+    Vmatrix(iii,:) = 4*abs(fft(Vmatrix(iii,:)))/sampnum;
+end
+
+%Computing the frequency -axis
+N = sampnum;
+fax_binsN = (0 : N-1); %samples in NS component
+fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
+N_2 = ceil(N/2); %half magnitude spectrum
+fax_HzN = fax_HzN1(1 : N_2);
+for iii = 1:numwin
+    mat1 = NSmatrix(iii,:);
+    mat2 = EWmatrix(iii, :);
+    mat3 = Vmatrix(iii, :);
+    NSmatrix2(iii,:) = mat1(1 : N_2);
+    EWmatrix2(iii,:) = mat2(1 : N_2);
+    Vmatrix2(iii,:) = mat3(1 : N_2);
+end
+
+%% create upbound and lowbound in terms of sample number
+upbound = HighCorner;
+lowbound = LowCorner;
+[~, lowbound] = min(abs(fax_HzN - lowbound));
+[~, upbound] = min(abs(fax_HzN - upbound));
+    
+%% plot individual unfiltered magnitude responses (OUTPUT 2)
+sav = 'no';
+outpath = 'no';
+individualunfiltered = figure;
+subplot(1,3,1)
+plot(fax_HzN, NSmatrix2, 'Color',  'k' , 'Linewidth', .5);
+title('NS', 'FontSize', 20)
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Amplification','FontSize', 18)
+set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([10e-16 10e-5])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+% yticks([0.1 1 10 100 1000])
+% yticklabels({'0.1','1','10', '100', '1000'})
+grid on 
+box on
+
+subplot(1,3,2)
+plot(fax_HzN, EWmatrix2, 'Color',  'k' , 'Linewidth', .5);
+title('EW', 'FontSize', 20)
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Amplification','FontSize', 18)
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([10e-16 10e-5])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+% yticks([0.1 1 10 100 1000])
+% yticklabels({'0.1','1','10', '100', '1000'})
+grid on 
+box on
+
+subplot(1,3,3)
+plot(fax_HzN, Vmatrix2, 'Color',  'k' , 'Linewidth', .5);
+title('V', 'FontSize', 20)
+xlabel('Frequency (Hz)','FontSize', 18)
+ylabel('Amplification','FontSize', 18)
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([10e-16 10e-5])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+% yticks([0.1 1 10 100 1000])
+% yticklabels({'0.1','1','10', '100', '1000'})
+grid on 
+box on
+
+%makes figure full screen
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
+
+
+%% Average the un-smoothed magnitude responses
+[ahatfNS, sigmaNS, confinthighNS, confintlowNS] =  wavav(NSmatrix2);
+[ahatfEW, sigmaEW, confinthighEW, confintlowEW] =  wavav(EWmatrix2);
+[ahatfV, sigmaV, confinthighV, confintlowV] =  wavav(Vmatrix2);
+
+%% now plot
+averageunfiltered = figure;
+subplot(1,3,1)
+hold on
+confidenceinterval=shadedplot(fax_HzN, confinthighNS, confintlowNS,[.9,.9,.9],'k');
+hold on
+plot(fax_HzN, ahatfNS, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title('NS')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([10e-16 10e-5])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+% yticks([0.1 1 10 100 1000])
+% yticklabels({'0.1','1','10', '100', '1000'})
+grid on 
+box on
+
+%makes figure full screen
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
+
+
+subplot(1,3,2)
+hold on
+confidenceinterval=shadedplot(fax_HzN, confinthighEW, confintlowEW,[.9,.9,.9],'k');
+hold on
+plot(fax_HzN, ahatfEW, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title('EW')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([10e-16 10e-5])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+% yticks([0.1 1 10 100 1000])
+% yticklabels({'0.1','1','10', '100', '1000'})
+grid on 
+box on
+
+subplot(1,3,3)
+hold on
+confidenceinterval=shadedplot(fax_HzN, confinthighV, confintlowV,[.9,.9,.9],'k');
+hold on
+plot(fax_HzN, ahatfV, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title('V')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([10e-16 10e-5])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+% yticks([0.1 1 10 100 1000])
+% yticklabels({'0.1','1','10', '100', '1000'})
+grid on 
+box on
+
+%makes figure full screen
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
+
+%% Now compute geometric mean
+horz = sqrt(NSmatrix2.*EWmatrix2);
+%% now compute HVSR
+HV = horz ./Vmatrix2;
+figure
+plot(fax_HzN,HV, 'Color',  'k' , 'Linewidth', .5)
+title('HVSR')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([0.1 100])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100])
+yticklabels({'0.1','1','10', '100'})
+grid on 
+box on
+
+%makes figure full screen
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+
+%% average HVSR
+[ahatf, sigma, confinthigh, confintlow] =  wavav(HV);
+
+%% Now plot
+figure
+hold on
+confidenceinterval=shadedplot(fax_HzN, confinthigh, confintlow,[.9,.9,.9],'k');
+hold on
+plot(fax_HzN, ahatf, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title('HVSR')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([0.1 100])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100])
+yticklabels({'0.1','1','10', '100'})
+grid on 
+box on
+
+%% Now smooth
+width = 0.15;
+window = ceil((N/fs)*width); %width for smoothing filter in samples where 20 is the number of Hz on your x-axis
+for iii = 1:numwin
+    Vmatrix3(iii,:) = smooth(Vmatrix2(iii,:),window);
+    horz2(iii,:) = smooth(horz(iii,:),window);
+end
+
+%% Now compute HVSR
+HV = horz2 ./Vmatrix3;
+figure
+plot(fax_HzN,HV, 'Color',  'k' , 'Linewidth', .5)
+title('HVSR')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([0.1 100])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100])
+yticklabels({'0.1','1','10', '100'})
+grid on 
+box on
+
+%makes figure full screen
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
+
+%% average HVSR
+[ahatf, sigma, confinthigh, confintlow] =  wavav(HV);
+
+%% Now plot
+figure
+hold on
+confidenceinterval=shadedplot(fax_HzN, confinthigh, confintlow,[.9,.9,.9],'k');
+hold on
+plot(fax_HzN, ahatf, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title('HVSR')
+xlabel('Frequency (Hz)')
+ylabel('Amplification')
+set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])
+ylim([0.1 100])
+xticks([0.1 1 10])
+xticklabels({'0.1','1','10'})
+yticks([0.1 1 10 100])
+yticklabels({'0.1','1','10', '100'})
+grid on 
+box on
+
+%% Now plot sigma
+figure
+plot(fax_HzN, sigma)
+title('Sigma')
+xlabel('Frequency (Hz)')
+ylabel('Sigma')
+set(gca, 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([0.1 10])

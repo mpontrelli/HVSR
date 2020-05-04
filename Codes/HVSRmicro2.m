@@ -164,11 +164,11 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     
     [~,~,ext] = fileparts(Vfname);
    %.sacBinary
-    if ext == '.sac' % use "rdmseed" if file is in miniseed format
+    if strcmp(ext, '.sac') == 1 % use "rdmseed" if file is in miniseed format
         [V] = ReadSacBinaryFile(Vfname); %vertical
         [NS] = ReadSacBinaryFile(NSfname); %North-south
         [EW] = ReadSacBinaryFile(EWfname); %East-West
-    end
+    
     %rdsac
     %[xV] = rdsac('Vfname');
     %[xV] = xV.d;
@@ -179,7 +179,11 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
 
 
     %miniseed
-    if ext == '.msd' % use "rdmseed" if file is in miniseed format
+    elseif strcmp(ext, '.msd') == 1 % use "rdmseed" if file is in miniseed format
+        x = rdmseed(NSfname);
+        [NS, EW, V] = openmseed(x);
+    
+    elseif strcmp(ext, '.mseed') == 1 % use "rdmseed" if file is in miniseed format
         x = rdmseed(NSfname);
         [NS, EW, V] = openmseed(x);
     end
@@ -198,6 +202,9 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     %Window the data with 'numwin' windows of 'windowlen' secs and 
     % 'windis' secs apart. This does support overlapping windows
     k = [1,fs];
+    NSmatrix = zeros(numwin, sampnum);
+    EWmatrix = zeros(numwin, sampnum);
+    Vmatrix = zeros(numwin, sampnum);
     for iii = 1:numwin
         Vmatrix(iii,:) = V((k(1)):(k(2)*windowlen+k(1))-1);
         NSmatrix(iii,:) = NS((k(1)):(k(2)*windowlen+k(1))-1);
@@ -228,6 +235,8 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
     N_2 = ceil(N/2); %half magnitude spectrum
     fax_HzN = fax_HzN1(1 : N_2);
+    Hmatrix2 = zeros(numwin, N_2);
+    Vmatrix2 = zeros(numwin, N_2);
     for iii = 1:numwin
         Vmat = Vmatrix(iii,:);
         Hmat = Hmatrix(iii, :);
@@ -256,6 +265,8 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
 
     %% compute smoothed magnitude responses
     window = ceil((N/fs)*width); %width for smoothing filter in samples where 20 is the number of Hz on your x-axis
+    Hmatrix3 = zeros(numwin, N_2);
+    Vmatrix3 = zeros(numwin, N_2);
     for iii = 1:numwin
         Vmatrix3(iii,:) = smooth(Vmatrix2(iii,:),window);
         Hmatrix3(iii,:) = smooth(Hmatrix2(iii,:),window);
@@ -276,10 +287,10 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
     end
 
     %% Compute the HVSR
+    H_V = zeros(numwin, N_2);
     for iii = 1:numwin
         [H_V(iii,:)] = HV(Hmatrix3(iii,:),Vmatrix3(iii,:));
     end
-
     %% average the HVSR
     [ahatf, sigma, confinthigh, confintlow] =  wavav(H_V);
 
@@ -288,12 +299,128 @@ function [ahatf, fax_HzN, taxstat] = HVSRmicro2(Vfname, NSfname, EWfname, fs, st
         HVSRmicroplot(fax_HzN, ahatf, confinthigh, confintlow, statname, lowbound, upbound, outpath, sav, TTF)
     end
     % compute statistics on HVSR
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1] = peakiden(ahatf, fax_HzN, lowbound, upbound);
-    [taxstat] = specratstat(peakind, matrix, matrix1, ahatf1, newfaxhz1, sigma, statname, lowbound, upbound);
+    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(ahatf, fax_HzN, lowbound, upbound);
+    [taxstat,sigma1, sigs] = specratstat(peakind, matrix, matrix1', ahatf1, newfaxhz1, sigma, statname, lowbound, upbound);
     % save
     if strcmp(sav, 'yes') == 1
         taxstat2 = cell2table(taxstat);
         writetable(taxstat2, strcat(outpath, '\', 'statistics.txt'));
     end
+    
+    %% now plot with filled peaks
+    % Compute half power bandwidths
+    for f = 1:length(peakind)
+        loc = peakind(f);
+        A = matrix(f,2);
+        [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
+        hpb1(f,1) = hpb;
+        hpb1(f,2) = f1;
+        hpb1(f,3) = f2;
+        hpb1(f,4) = I1;
+        hpb1(f,5) = I;
+    end
+    
+    % Pull out vectors: amplitude, frequency, left hpb frequency, right
+    % hpb frequency, prominence, hpb
+    amps = matrix(:,2)'; freqs = matrix(:,1)'; f1s = hpb1(:,2)'; f2s = hpb1(:,3)';
+    proms = matrix1; hpbss = hpb1(:,1)';
+    
+    % Now set some conditions to classify the peak
+    [~, amp_class] = sort(amps, 'descend');
+    [~, prom_class] = sort(proms, 'descend');
+    [~, hpb_class] = sort(hpbss, 'descend');
+    [~, area_class] = sort(Areamat, 'descend');
+    [~, sig_class] = sort(sigs, 'descend');
+    classmatrix = vertcat(amp_class, prom_class, hpb_class, area_class, sig_class);
+    % now plot
+    figure
+
+    % start with the confidence interval
+    confidenceinterval=shadedplot(fax_HzN(lowbound:length(fax_HzN)), confinthigh(lowbound:length(confinthigh)), confintlow(lowbound:length(confintlow)),[.9,.9,.9],[1 1 1]);
+    hold on
+    
+    % Plot filled in peaks color coordinated based on their area
+    len = length(peakfreqs);
+    red = [1, 0, 0];
+    pink = [255, 192, 203]/255;
+    colors_p = [linspace(red(1),pink(1),len)', linspace(red(2),pink(2),len)', linspace(red(3),pink(3),len)'];
+    col = colormap(colors_p);
+    for i = 1:length(peakfreqs)
+        freq_ar = peakfreqs{i};
+        amp_ar = peakamps{i};
+        fill(freq_ar, amp_ar, col(i,:), 'LineStyle','none')
+        alpha(.5)
+        hold on
+    end
+%     hold on
+%     freq_ar = peakfreqs{1};
+%     amp_ar = peakamps{1};
+%     fill(freq_ar, amp_ar, 'r', 'LineStyle','none')
+%     alpha(.5)
+%     hold on
+%     freq_ar = peakfreqs{2};
+%     amp_ar = peakamps{2};
+%     fill(freq_ar, amp_ar, 'b', 'LineStyle','none')
+%     alpha(.5)
+%     hold on
+
+    plot(fax_HzN,ahatf, 'LineWidth',2, 'Color',[0 0.5 0])
+    for i = 1:2%length(f1s)
+        dddd = f1s(i);
+        ampd = find(fax_HzN == dddd);
+        ampd = ahatf(ampd);
+        ddddd = f2s(i);
+        ampdd = find(fax_HzN == ddddd);
+        ampdd = ahatf(ampdd);
+        plot([dddd,ddddd],[ampd, ampdd], 'k')
+        hold on
+    end
+    hold on
+
+    % now plot fundamental resonance
+    line([freqs(1),freqs(1)],[0.1, 40],'LineStyle', '--', 'color','r')
+
+    % and the second peak
+    line([freqs(2),freqs(2)],[0.1, 40], 'LineStyle','--', 'color', 'b')
+
+    hold on
+    for i = 1:2%length(amps)
+        plot([freqs(i),freqs(i)],[amps(i), amps(i) - proms(i)], 'k')
+        hold on
+    end
+
+    hold on
+    xlim([0.1 20])
+    ylim([0.5 40])
+    xticks([.1 1 20])
+    xticklabels({'0.1', '1', '10'})
+    yticks([1 10 100])
+    yticklabels({ '1','10', '100'})
+    xlabel('Frequency (Hz)')
+    ylabel('Amplification')
+    title(statname)
+    set(gca,'YScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+    grid on
+    box on
+    hold on
+
+    str = {strcat('Peak 1 prom = ',{' '},num2str(proms(1))), strcat('Peak 2 prom = ',{' '},num2str(proms(2)))};
+    stra = str{1}{1};
+    strb = str{2}{1};
+    strc = strcat('Peak 1 area = ',num2str(Areamat(1)));
+    strd = strcat('Peak 1 hpb = ',num2str(hpbss(1)));
+    stre = strcat('Peak 2 area = ',num2str(Areamat(2)));
+    strf = strcat('Peak 2 hpb = ',num2str(hpbss(2)));
+    strreal = {stra, strd, strc};
+    text(.15,20,strreal, 'FontName', 'Times New Roman', 'FontSize', 12,'Color', 'red')
+    strreal2 ={strb, strf,stre};
+    text(.15,5,strreal2, 'FontName', 'Times New Roman', 'FontSize', 12, 'Color', 'blue')
+
+    % Now the arrow for freq and amp
+    freq = strcat('fn = ',num2str(matrix(2,1)));
+    amp = strcat('Amp = ',num2str(matrix(2,2)));
+    strreal2 = {freq, amp};
+    text(freqs(2)-5 ,amps(2) +1,strreal2,'FontName', 'Times New Roman', 'FontSize', 12, 'Color', 'blue' )
+
 
 end

@@ -50,29 +50,15 @@ sigma1 = sigma(lowbound: upbound);
 [peaks,locs,w,p] = findpeaks(ahatf1);
 counter = 0;
 % loop through the prominence vector
-o =0;
 for ii = 1:length(p)
     if peaks(ii) - p(ii) < peaks(ii)/sqrt(2) % if the peak minus the prominence is less than the peak/sqrt(2), this is a significant peak
         counter = counter+1;
         o(counter) = ii; %this peak is not a sig peak, so minus 1 to get rid of it
-    end
+    else
+        o 
+    end 
+    
 end 
-if o == 0
-    I2s = [];
-    I1s = [];
-    sigs = [];
-    hpb = [];
-    f1s = [];
-    f2s = [];
-    Areamat = [];
-    proms = [];
-    amps = [];
-    peakind2 = [];
-    freqs = [];
-    peakamps = [];
-    peakfreqs = []; 
-    disp('No peaks')
-else
 topprom = p(o)';
 A = peaks(o)'; peakind = locs(o)'; fn = newfaxhz1(peakind)';
 
@@ -119,7 +105,7 @@ for f = 1:length(peakind)
             if i == 1
                 Area(i) = ((peak_freqs(i+1) - peak_freqs(i)) * abs((peak_amps(i+1)-peak_amps(i))))/2;
             else
-                Area(i) = (((peak_freqs(i+1) - peak_freqs(i)) * abs((peak_amps(i)-peak_amps(1)))) + ((peak_freqs(i+1) - peak_freqs(i)) * abs((peak_amps(i+1) - peak_amps(i -1))))/2);
+                Area(i) = (((peak_freqs(i+1) - peak_freqs(i)) * abs((peak_amps(i)-peak_amps(1)))) + ((peak_freqs(i+1) - peak_freqs(i)) * abs((peak_amps(i+1) - peak_amps(i -1)))))/2;
             end          
         end
         
@@ -197,5 +183,4 @@ else
 % %     slope1(i) = (slope(i+1) - slope(i))/ (newnewfreq(i+1) - newnewfreq(i));
 % %     nnnfreq(i) = (newnewfreq(i+1) + newnewfreq(i))/2;
 % % end
-end
 end
