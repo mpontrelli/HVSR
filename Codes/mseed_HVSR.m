@@ -3,7 +3,7 @@ close all
 clear all
 %% necessary inputs
 % Station
-filename = 'C:\Users\mpontr01\Box\People\Marshall and Jeremy\NEHRP\DATA\weston_stations\NY_NJ\2020_001\bd_C53L_1577836800.msd';
+filename = 'C:\Users\mpontr01\Box\People\Marshall and Jeremy\NEHRP\DATA\weston_stations\NY_NJ\2020_001\bd_C30L_1577836800.msd';
 % Filter
 LowCorner = 0.1;
 HighCorner = 10;
@@ -474,17 +474,28 @@ set(gca, 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
 xlim([0.1 10])
 
 
+%% Now interpolate onto a vector. This makes the hpb measurement better
+% newfaxhz = linspace(0,10,100000);
+% ahatf = interp1(fax_HzN, ahatf, newfaxhz);
+% confinthigh = interp1(fax_HzN, confinthigh, newfaxhz);
+% confintlow = interp1(fax_HzN, confintlow, newfaxhz);
+% sigma = interp1(fax_HzN, sigma, newfaxhz);
+% fax_HzN = newfaxhz;
 %% Now quantify the shape of the peaks
 [peakfreqs, peakamps, hpb, f1s, f2s, Areamat, proms, amps, peakind2, freqs, sigs, I1s, I2s] = peakiden(ahatf, fax_HzN, sigma, lowbound, upbound);
 
 
 %% Now set some conditions to classify the peak
+[~, freq_class] = sort(freqs, 'descend');
 [~, amp_class] = sort(amps, 'descend');
 [~, prom_class] = sort(proms, 'descend');
 [~, hpb_class] = sort(hpb, 'descend');
 [~, area_class] = sort(Areamat, 'descend');
 [~, sig_class] = sort(sigs, 'descend');
-classmatrix = vertcat(amp_class, prom_class, hpb_class, area_class, sig_class);
+classmatrix = vertcat(freq_class, amp_class, prom_class, hpb_class, area_class, sig_class);
+
+%% Now save peak data
+datamat = vertcat(freqs,amps,proms,hpb,Areamat,sigs);
 
 %% now plot, make the figure and set the base
 figure
@@ -513,7 +524,19 @@ if length(amps) > 0
         hold on
         freq_ar = peakfreqs{i};
         amp_ar = peakamps{i};
-        fill(freq_ar, amp_ar, 'b', 'LineStyle','none')
+        if i == 1
+            col = 'b';
+        end
+        if i == 2
+            col = 'r';
+        end
+        if i == 3
+            col = 'g';
+        end
+        if i > 3
+            col = 'k'
+        end
+        fill(freq_ar, amp_ar, col, 'LineStyle','none','FaceAlpha',0.5)
         hold on
     end
 end
@@ -564,7 +587,7 @@ if length(amps) > 0
         ylim=get(gca,'ylim');
         xlim=get(gca,'xlim');
         q = find(ahatf == amps);
-        if fax_HzN(q) < 2
+        if fax_HzN(q) < 1
             text(xlim(2)-5,ylim(2)-25,str, 'FontName', 'Times New Roman', 'FontSize', 18,'Color', 'black', 'HorizontalAlignment', 'right', 'EdgeColor','k','BackgroundColor', 'w')
         else
             text(xlim(1)+0.3,ylim(2)-25,str, 'FontName', 'Times New Roman', 'FontSize', 18,'Color', 'black', 'HorizontalAlignment', 'right', 'EdgeColor','k','BackgroundColor', 'w')
@@ -581,7 +604,7 @@ if length(amps) > 0
         ylim=get(gca,'ylim');
         xlim=get(gca,'xlim');
         q = find(ahatf == amps(I));
-        if fax_HzN(q) < 2
+        if fax_HzN(q) < 1
             text(xlim(2)-5,ylim(2)-25,str, 'FontName', 'Times New Roman', 'FontSize', 18,'Color', 'black', 'HorizontalAlignment', 'right', 'EdgeColor','k','BackgroundColor', 'w')
         else
             text(xlim(1)+0.3,ylim(2)-25,str, 'FontName', 'Times New Roman', 'FontSize', 18,'Color', 'black', 'HorizontalAlignment', 'right', 'EdgeColor','k','BackgroundColor', 'w')
