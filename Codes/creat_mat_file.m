@@ -11,7 +11,7 @@ cd(datapath)
 stationlist = dir;
 stationlist = stationlist(3:length(stationlist));
 event_num = {};
-for i = 1% : length(stationlist)
+for i = 54 : length(stationlist)
     station = stationlist(i).name;
     cd(strcat(datapath, '\', station))
     eventlist = dir;
@@ -19,7 +19,7 @@ for i = 1% : length(stationlist)
     event_num{i,1} = station;
     event_num{ i,2} = length(eventlist);
     tic
-    for j = 1%1: length(eventlist)
+    parfor j = 1: length(eventlist)
         %disp(j)
         filename = eventlist(j);
         event_name = filename.name;

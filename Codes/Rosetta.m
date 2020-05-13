@@ -695,31 +695,31 @@ function [data] = Rosetta(filename, varargin)
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
     else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
-    for f = 1:length(peakind)
-        loc = peakind(f);
-        A = matrix(f,2);
-        [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
-        hpb1(f,1) = hpb;
-        hpb1(f,2) = f1;
-        hpb1(f,3) = f2;
-        hpb1(f,4) = I1;
-        hpb1(f,5) = I;
-    end
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = matrix;
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = peakind;
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = hpb1;
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = matrix1';
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.areafreqs = peakfreqs;
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.areaamps = peakamps;
-    data.processing.filtereddata.acceleration.complex.HVSR.smooth.Area = Areamat;
-    clear hpb1
-    clear matrix
-    clear matrix1
-    clear peakind
-    clear ahatf1
-    clear newfaxhz1
-    clear A
+%     [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
+%     for f = 1:length(peakind)
+%         loc = peakind(f);
+%         A = matrix(f,2);
+%         [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
+%         hpb1(f,1) = hpb;
+%         hpb1(f,2) = f1;
+%         hpb1(f,3) = f2;
+%         hpb1(f,4) = I1;
+%         hpb1(f,5) = I;
+%     end
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = matrix;
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = peakind;
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = hpb1;
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = matrix1';
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.areafreqs = peakfreqs;
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.areaamps = peakamps;
+%     data.processing.filtereddata.acceleration.complex.HVSR.smooth.Area = Areamat;
+%     clear hpb1
+%     clear matrix
+%     clear matrix1
+%     clear peakind
+%     clear ahatf1
+%     clear newfaxhz1
+%     clear A
     end
     %% NS
     [H_V] = HV(NS_mag_a,V_mag_a);
@@ -727,112 +727,112 @@ function [data] = Rosetta(filename, varargin)
     [H_V] = HV(NS_mag_smooth_a,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.NS.HVSR.smooth.HV = H_V;
     inf = isinf(H_V);
-    if inf(100) == 1
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
-    else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1,peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
-    for f = 1:length(peakind)
-        loc = peakind(f);
-        A = matrix(f,2);
-        [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
-        hpb1(f,1) = hpb;
-        hpb1(f,2) = f1;
-        hpb1(f,3) = f2;
-        hpb1(f,4) = I1;
-        hpb1(f,5) = I;
-    end
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.freq_amp = matrix;
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.freq_amp_ind = peakind;
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.hpb = hpb1;
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.prom = matrix1';
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.areafreqs = peakfreqs;
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.areaamps = peakamps;
-    data.processing.filtereddata.acceleration.NS.HVSR.smooth.Area = Areamat;
-    clear hpb1
-    clear matrix
-    clear matrix1
-    clear peakind
-    clear ahatf1
-    clear newfaxhz1
-    clear A
-    end
+%     if inf(100) == 1
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
+% %     else
+% %     [matrix, matrix1, peakind,ahatf1,newfaxhz1,peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
+% %     for f = 1:length(peakind)
+% %         loc = peakind(f);
+% %         A = matrix(f,2);
+% %         [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
+% %         hpb1(f,1) = hpb;
+% %         hpb1(f,2) = f1;
+% %         hpb1(f,3) = f2;
+% %         hpb1(f,4) = I1;
+% %         hpb1(f,5) = I;
+% %     end
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.freq_amp = matrix;
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.freq_amp_ind = peakind;
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.hpb = hpb1;
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.prom = matrix1';
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.areafreqs = peakfreqs;
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.areaamps = peakamps;
+% %     data.processing.filtereddata.acceleration.NS.HVSR.smooth.Area = Areamat;
+% %     clear hpb1
+% %     clear matrix
+% %     clear matrix1
+% %     clear peakind
+% %     clear ahatf1
+% %     clear newfaxhz1
+% %     clear A
+%     end
     %% EW
     [H_V] = HV(EW_mag_a,V_mag_a);
     data.processing.filtereddata.acceleration.EW.HVSR.unfilt = H_V;
     [H_V] = HV(EW_mag_smooth_a,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.EW.HVSR.smooth.HV = H_V;
     inf = isinf(H_V);
-    if inf(100) == 1
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
-    else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
-    for f = 1:length(peakind)
-        loc = peakind(f);
-        A = matrix(f,2);
-        [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
-        hpb1(f,1) = hpb;
-        hpb1(f,2) = f1;
-        hpb1(f,3) = f2;
-        hpb1(f,4) = I1;
-        hpb1(f,5) = I;
-    end
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.freq_amp = matrix;
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.freq_amp_ind = peakind;
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.hpb = hpb1;
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.prom = matrix1';
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.areafreqs = peakfreqs;
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.areaamps = peakamps;
-    data.processing.filtereddata.acceleration.EW.HVSR.smooth.Area = Areamat;
-    clear hpb1
-    clear matrix
-    clear matrix1
-    clear peakind
-    clear ahatf1
-    clear newfaxhz1
-    clear A
-    end
+%     if inf(100) == 1
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
+%     else
+%     [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
+%     for f = 1:length(peakind)
+%         loc = peakind(f);
+%         A = matrix(f,2);
+%         [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
+%         hpb1(f,1) = hpb;
+%         hpb1(f,2) = f1;
+%         hpb1(f,3) = f2;
+%         hpb1(f,4) = I1;
+%         hpb1(f,5) = I;
+%     end
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.freq_amp = matrix;
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.freq_amp_ind = peakind;
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.hpb = hpb1;
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.prom = matrix1';
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.areafreqs = peakfreqs;
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.areaamps = peakamps;
+%     data.processing.filtereddata.acceleration.EW.HVSR.smooth.Area = Areamat;
+%     clear hpb1
+%     clear matrix
+%     clear matrix1
+%     clear peakind
+%     clear ahatf1
+%     clear newfaxhz1
+%     clear A
+%     end
     %% rot
     [H_V] = HV(rot_mag_a,V_mag_a);
     data.processing.filtereddata.acceleration.rotated.HVSR.unfilt = H_V;
     [H_V] = HV(rot_mag_smooth_a,V_mag_smooth_a);
     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.HV = H_V;
     inf = isinf(H_V);
-    if inf(100) == 1
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
-        data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
-    else
-    [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
-    for f = 1:length(peakind)
-        loc = peakind(f);
-        A = matrix(f,2);
-        [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
-        hpb1(f,1) = hpb;
-        hpb1(f,2) = f1;
-        hpb1(f,3) = f2;
-        hpb1(f,4) = I1;
-        hpb1(f,5) = I;
-    end
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.freq_amp = matrix;
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.freq_amp_ind = peakind;
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.hpb = hpb1;
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.prom = matrix1';
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.areafreqs = peakfreqs;
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.areaamps = peakamps;
-    data.processing.filtereddata.acceleration.rotated.HVSR.smooth.Area = Areamat;
-    clear hpb1
-    clear matrix
-    clear matrix1
-    clear peakind
-    clear ahatf1
-    clear newfaxhz1
-    clear A
-    end
+%     if inf(100) == 1
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.freq_amp_ind = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.hpb = [];
+%         data.processing.filtereddata.acceleration.complex.HVSR.smooth.prom = []';
+%     else
+%     [matrix, matrix1, peakind,ahatf1,newfaxhz1, peakfreqs, peakamps, Areamat] = peakiden(H_V, fax_HzN', lowbound, upbound);
+%     for f = 1:length(peakind)
+%         loc = peakind(f);
+%         A = matrix(f,2);
+%         [I1, I, f1, f2, hpb] =  HalfPowerBand2(A, loc, newfaxhz1, ahatf1);
+%         hpb1(f,1) = hpb;
+%         hpb1(f,2) = f1;
+%         hpb1(f,3) = f2;
+%         hpb1(f,4) = I1;
+%         hpb1(f,5) = I;
+%     end
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.freq_amp = matrix;
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.freq_amp_ind = peakind;
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.hpb = hpb1;
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.prom = matrix1';
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.areafreqs = peakfreqs;
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.areaamps = peakamps;
+%     data.processing.filtereddata.acceleration.rotated.HVSR.smooth.Area = Areamat;
+%     clear hpb1
+%     clear matrix
+%     clear matrix1
+%     clear peakind
+%     clear ahatf1
+%     clear newfaxhz1
+%     clear A
+%     end
 end
