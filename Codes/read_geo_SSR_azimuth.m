@@ -2,18 +2,18 @@
 close all
 clear all
 
-sitelist = {'AE02','AL01','AO24', 'AP68','AR14','AU11','AU46','BA49','BL45','BO39',...
-    'CA20', 'CA59', 'CB43','CC55','CE18', 'CE23','CE32','CH84','CI05','CJ03',...
-    'CJ04','CO47', 'CO56','CP28','CS78','CT64', 'CU80', 'DM12','DR16', 'DX37','EO30','ES57','EX08','EX09','EX12','FJ74','GA62',...
-    'GC38','GR27','HA41','HJ72', 'IB22','IM40','JA43','JC54','LI33', 'LI58', 'LV17','ME52',...
-    'MI15', 'MY19', 'NZ20', 'NZ31','PA34', 'PD42','PE10', 'RI76', 'RM48',...
-    'SI53', 'SP51', 'TE07', 'TH35', 'TL08', 'TL55', 'TP13', 'UC44','UI21', 'VG09', 'VM29',...
+sitelist = { 'AE02','AL01','AO24', 'AP68','AR14','AU11','AU46','BA49','BL45','BO39',...
+     'CA20', 'CA59', 'CB43','CC55', 'CE23','CE32','CH84','CI05','CJ03',...
+     'CJ04','CO47', 'CO56', 'CU80', 'DM12','DR16', 'DX37','EO30','ES57','EX08','EX09','EX12','GA62',...
+     'GC38','GR27','HJ72', 'IB22','JA43','JC54','LI33', 'LI58', 'LV17','ME52',...
+    'MI15', 'MY19', 'NZ20', 'NZ31', 'PD42','PE10', 'RI76', 'RM48',...
+    'SI53', 'SP51', 'TH35', 'TL08', 'TL55', 'UC44', 'VG09', 'VM29',...
     'XP06'};
-ref = 'FJ74';
+% ref = 'FJ74';
 sheet = 8;
-outpath = strcat('C:\Users\mpontr01\Box\Geohazards Research Group\2020_5_6\SSRs\', ref,'\');
+outpath = strcat('C:\Users\mpontr01\Box\Pontrelli_et_al_2020\SSR_W\');
 load('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\Processed_data2\AE02\AE0219900511234349')
-filename = 'C:\Users\mpontr01\Box\Geohazards Research Group\2020_5_6\Maps\Station_shapes.xlsx';
+filename = 'C:\Users\mpontr01\Box\Pontrelli_et_al_2020\Final_tables.xlsx';
 fax_HzN = data.processing.filtereddata.freq_vec;
 upbound = 10;
 lowbound = 0.1;
@@ -21,20 +21,20 @@ lowbound = 0.1;
 [~, upbound] = min(abs(fax_HzN - upbound));
 for ii = 1:length(sitelist)
     statname = sitelist{ii};
-    if strcmp(statname,ref) ==0 %&& strcmp(statname,'CC55') ==0
+    %if strcmp(statname,ref) ==0 %&& strcmp(statname,'CC55') ==0
         rownum = num2str(ii + 1);
-        load(strcat('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\SSR_Shape_statistics\',...
-        statname,'\',statname,'-', ref))
+        load(strcat('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\geomean_SSR_W\',...
+        statname))
 
-        ahatf = data.complex.ahatf';
-        sigma = data.complex.sigma';
-        confinthigh = data.complex.confinthigh';
-        confintlow = data.complex.confintlow';
-
+        ahatf = data.ahatf';
+        sigma = data.sigma';
+        confinthigh = data.confinthigh';
+        confintlow = data.confintlow';
+        number_events = data.num;
 
         %% Now quantify the shape of the peaks
         [peakfreqs, peakamps, hpb, f1s, f2s, Areamat, proms, amps, peakind2, freqs, sigs, I1s, I2s] = peakiden(ahatf, fax_HzN, sigma, lowbound, upbound);
-
+        [~, I] = max(amps);
 
         %% Now set some conditions to classify the peak
         [~, freq_class] = sort(freqs, 'descend');
@@ -46,8 +46,8 @@ for ii = 1:length(sitelist)
         classmatrix = vertcat(freq_class, amp_class, prom_class, hpb_class, area_class, sig_class);
 
         %% Now save peak data
-        datamat = vertcat(freqs,amps,proms,hpb,Areamat,sigs);
-
+        datamat = vertcat(freqs(I),amps(I),proms(I),hpb(I),Areamat(I),sigs(I), number_events);
+        datamat = datamat';
         %% now plot, make the figure and set the base
         fin_fig = figure;
         xlim([0.1 10])
@@ -73,58 +73,37 @@ for ii = 1:length(sitelist)
         hold on
     
         %% Plot filled in peaks color coordinated based on their area
-        if length(amps) > 0
-            for i = 1:length(amps)
-                hold on
-                freq_ar = peakfreqs{i};
-                amp_ar = peakamps{i};
-                if i == 1
-                    col = 'b';
-                end
-                if i == 2
-                    col = 'r';
-                end
-                if i == 3
-                    col = 'g';
-                end
-                if i > 3
-                    col = 'k';
-                end
-                fill(freq_ar, amp_ar, col, 'LineStyle','none','FaceAlpha',0.5)
-                hold on
-            end
-        end
-        if length(amps) > 0
-            for i = 1:length(amps) 
-                freq_ar = peakfreqs{i};
-                amp_ar = peakamps{i};
-                ampd = amp_ar(I1s(i));
-                ampdd = amp_ar(I2s(i));
-                plot([f1s(i),f2s(i)],[ampd, ampdd], 'c', 'LineWidth', 2)
-                hold on
-            end
-        end
+        freq_ar = peakfreqs{I};
+        amp_ar = peakamps{I};
+
+        fill(freq_ar, amp_ar, 'b', 'LineStyle','none','FaceAlpha',0.5)
         hold on
 
 
-        %% now plot fundamental resonance
-        if length(amps) > 0
-            for i = 1:length(f1s)
-                line([freqs(i),freqs(i)],[0.1, 100],'LineStyle', '--', 'color','k')
+
+                freq_ar = peakfreqs{I};
+                amp_ar = peakamps{I};
+                ampd = amp_ar(I1s(I));
+                ampdd = amp_ar(I2s(I));
+                plot([f1s(I),f2s(I)],[ampd, ampdd], 'c', 'LineWidth', 2)
                 hold on
-            end
-        end
+
+
+
+        %% now plot fundamental resonance
+
+                line([freqs(I),freqs(I)],[0.1, 100],'LineStyle', '--', 'color','k')
+                hold on
+
 
 
 
         %% Now the hpb-prominence cross
         hold on
-        if length(amps) > 0
-            for i = 1:length(amps)
-                plot([freqs(i),freqs(i)],[amps(i), amps(i) - proms(i)], 'c', 'Linewidth', 2)
+
+                plot([freqs(I),freqs(I)],[amps(I), amps(I) - proms(I)], 'c', 'Linewidth', 2)
                 hold on
-            end
-        end
+
 
         %% Now plot ahatf
         plot(fax_HzN,ahatf, 'LineWidth', 2, 'Color', [0 0.5 0])
@@ -170,17 +149,17 @@ for ii = 1:length(sitelist)
             text(0.3,15,str, 'FontName', 'Times New Roman', 'FontSize', 24,'Color', 'black', 'HorizontalAlignment', 'right', 'EdgeColor','k','BackgroundColor', 'w')
     
         end
-
-        saveas(fin_fig, strcat(outpath,statname,'.jpg'))
-        datamat_fin = datamat(:,1)';
-
-    
-        writematrix(datamat_fin,filename,'Sheet',sheet,'Range',strcat('B',rownum,':G',rownum))
+% 
+         saveas(fin_fig, strcat(outpath,statname,'.jpg'))
+%         datamat_fin = datamat(:,1)';
+% 
+%     
+        writematrix(datamat,filename,'Sheet',sheet,'Range',strcat('D',rownum,':J',rownum))
         clear xlim
         clear ylim
         close all
     end
-end
+
 
 % str = {strcat('Peak 1 prom = ',{' '},num2str(proms(1))), strcat('Peak 2 prom = ',{' '},num2str(proms(2)))};
 % stra = str{1}{1};

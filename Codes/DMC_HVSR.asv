@@ -8,7 +8,7 @@ clear all
 network = 'TA';
 statname = 'I64A';
 starttime = '2015-02-11 15:18:00';
-endtime = '2015-02-12 16:19:05';
+endtime = '2015-11-12 16:19:05';
 
 [sampletimes,trace1,waveformfilt] = getDMCData(starttime,endtime ,statname,network,'HHZ');
 fs = trace1.sampleRate;
@@ -41,11 +41,11 @@ sampnum = windowlen*fs;
 windisnum = windis*fs;
 
 
-[~,trace1,waveformfilt] = getDMCData(starttime,endtime ,statname,network,'HHE');
+[~,trace1,waveformfilt] = getDMCData(starttime,endtime ,statname,'*','BHE');
 EW = trace1.data;
 %EW = EW(1:length(EW)-1);
 
-[~,trace1,waveformfilt] = getDMCData(starttime,endtime ,statname,network,'HHN');
+[~,trace1,waveformfilt] = getDMCData(starttime,endtime ,statname,'*','BHN');
 NS = trace1.data;
 %NS = NS(1:length(NS)-1);
 

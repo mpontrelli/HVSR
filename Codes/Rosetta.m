@@ -414,7 +414,7 @@ function [data] = Rosetta(filename, varargin)
     data.processing.filtereddata.displacement.NS.waveform = d;
     data.processing.filtereddata.displacement.NS.PGD = PGD1;
     
-        %% Now do Arias intensity
+    %% Now do Arias intensity
     [IaX, D5, D75, D95, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time_orig, NS_orig, fs);
     data.processing.filtereddata.acceleration.NS.arias.no_norm = IaX;
     data.processing.filtereddata.acceleration.NS.arias.intensity = Iaval;
