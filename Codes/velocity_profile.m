@@ -11,7 +11,7 @@
 % Date: 4/20/2020
 
 
-function velocity_profile(h, v)
+function [h_new] = velocity_profile(h, v)
     h_new = 0;
     for i = 1: length(h) % Sum up the thicknesses
         h_new(i+1) = h_new(i) + h(i);
