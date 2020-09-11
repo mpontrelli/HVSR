@@ -4,7 +4,7 @@
   % are available. This arose out of doing microtremor surveys in Boston, MA
   % and developed over time starting in the summer of 2019
   
-    % INPUTS 
+    % INPUTS
     % statname - Name of the station, used in plotting titles (string)
 
     % lowbound - lowcutoff value for the plots, can be any frequency. If a 

@@ -16,21 +16,21 @@ sitelist = {'AE02','AL01','AO24', 'AP68','AR14','AU11','AU46','BA49','BL45','BO3
     'XP06'};
 
 
-reflist = {'FJ74'};
-codepath = 'C:\Users\mpontr01\Desktop\HVSR\Codes';
-outpath = 'C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\SSR_Shape_statistics\';
+reflist = {'TP13'};
+codepath = 'C:\Users\Marshall\Desktop\HVSR\Codes';
+outpath = 'C:\Users\Marshall\Box\Data\Ground motion\Mexico CIty\SSR_Shape_statistics\';
 for a = 1:length(sitelist)
     currsite = sitelist{a};
     disp(currsite)
-    datapath = strcat('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\Processed_data2\', currsite, '\');
-    figpath = strcat('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\SSR_figures\',currsite);
+    datapath = strcat('C:\Users\Marshall\Box\Data\Ground motion\Mexico CIty\Processed_data2\', currsite, '\');
+    figpath = strcat('C:\Users\Marshall\Box\Data\Ground motion\Mexico CIty\SSR_figures\',currsite);
     cd(datapath)
     eventlist = dir;
     eventlist = eventlist(3:length(eventlist));
     for b = 1:length(reflist)
         currref = reflist{b};
         if strcmp(currsite,currref) ==0
-            datapath2 = strcat('C:\Users\mpontr01\Box\Data\Ground motion\Mexico CIty\Processed_data2\',currref,'\');
+            datapath2 = strcat('C:\Users\Marshall\Box\Data\Ground motion\Mexico CIty\Processed_data2\',currref,'\');
             cd(datapath2)
             refeventlist = dir;
             refeventlist = refeventlist(3:length(refeventlist));
@@ -93,7 +93,7 @@ for a = 1:length(sitelist)
         SR_EW(any(isinf(SR_EW),2),:) = [];
         SR_complex(any(isinf(SR_complex),2),:) = [];
 
-        cd(codepath)
+         cd(codepath)
         [ahatfEW, sigmaEW, confinthighEW, confintlowEW] =  wavav(SR_EW);
         shapedata.EW.ahatf = ahatfEW;
         shapedata.EW.sigma = sigmaEW;
