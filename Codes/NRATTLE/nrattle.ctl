@@ -15,8 +15,11 @@
 !Model information:
 !For each layer- thickness, Vs, density, 1/Q (if > 1.0, the program assumes
 !that the value represents Q; note that damping in percent = 100*0.5*1/Q):
-    1   50   250   1.8  0.05
-    1   10   600   1.8  0.05
+    1   10   125   1.5  0.05   
+    1   5    175   1.5  0.05
+    1   5    200   1.5  0.05
+    1   5    225   1.5  0.05
+    1   5    300   1.5  0.05
 !  Halfspace Vs and density (1/Q is automatically set to 0.0):
     1000  2.7 
 !Layer corresponding to halfspace (can be less than actual halfspace)          

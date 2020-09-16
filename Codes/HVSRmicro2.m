@@ -90,7 +90,7 @@
   % 8/26/2020 - Added detrending windows per advice of Jeremy Salerno
   
 %% Start
-function [ahatf, fax_HzN, datamat, datamatmax] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
+function [ahatf, fax_HzN, datamat, datamatmax, confinthigh, confintlow] = HVSRmicro2(Vfname, NSfname, EWfname, fs, statname, varargin)
     %% parse inputs
     
     % create Input Parser object
