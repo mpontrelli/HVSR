@@ -55,7 +55,7 @@ function simple_gui2
     hpopup3.Units = 'normalized';
 
     % Pull Weston data
-    datapath = 'C:\Users\mpontr01\Desktop\Data_pull\';
+    datapath = strcat('C:\Users\',getenv('username'),'\Desktop\Data_pull\');
     load(strcat(datapath,'WES.mat'),'V_broad','NS_broad','EW_broad',...
         'NS_broad','EW_broad', 'V_broad',...
         'NS_short','EW_short','V_short','NS_long','EW_long','V_long','samplerate','sensitivity', 'sensunits');

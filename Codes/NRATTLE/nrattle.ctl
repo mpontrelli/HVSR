@@ -25,4 +25,4 @@
 !Layer corresponding to halfspace (can be less than actual halfspace)          
 ! (a large number means the source is in the halfspace) and                     
 ! angle of incidence (< 0.0 means obtain theta from site_amp file):             
-   81  0
+   90 0
