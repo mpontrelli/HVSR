@@ -13,7 +13,7 @@ while i > 2
     t_now = datestr(t_now);
     hour_min = t_now(13:16);
     if strcmp(hour_min, '00:0')
-        disp('Day Change')
+        disp(t_now)
     else
         
     % Pull Weston data
