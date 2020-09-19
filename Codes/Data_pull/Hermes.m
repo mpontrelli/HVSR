@@ -119,8 +119,8 @@ function simple_gui2
         % Determine the selected data set.
         str = get(source, 'String');
         val = get(source,'Value');
-        r = get(handles.hpopup2, 'Value');
-        disp(r)
+%         r = get(handles.hpopup2, 'Value');
+%         disp(r)
         switch str{val}
         case 'EW' % User selects EW.
             cla
