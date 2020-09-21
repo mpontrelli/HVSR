@@ -134,7 +134,7 @@ function simple_gui2
                 hold on
                 plot(time_vec, a, 'color', color);
                 hold on
-            end
+              end
             % plot last window
             color = color_vec(num_win,:);
             st = (num_win-1)*length_hour+1;
