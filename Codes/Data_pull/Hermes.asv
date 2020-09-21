@@ -26,7 +26,8 @@ function simple_gui2
         'Position',[10,875,100,30]);
     hpopup2 = uicontrol('Style','popupmenu',...
         'String',{'Broadband','Short-Period', 'Long-Period'},'Fontsize', 12,'FontName', 'Times New Roman',...
-        'Position',[10,850,100,25]);
+        'Position',[10,850,100,25],...
+        'Callback',@filterbutton_Callback);
     htext3 = uicontrol('Style','text','String','Channel','Fontsize', 12,'FontName', 'Times New Roman',...
         'Position',[10,800,100,30]);
     hpopup3 = uicontrol('Style','popupmenu',...
@@ -54,10 +55,11 @@ function simple_gui2
     hpopup3.Units = 'normalized';
 
     % Pull Weston data
-    datapath = 'C:\Users\mpontr01\Desktop\Data_pull\';
-    load(strcat(datapath,'WES_broad.mat'),'V','NS','EW','samplerate','sensitivity', 'sensunits');
+    datapath = strcat('C:\Users\',getenv('username'),'\Desktop\Data_pull\');
+    load(strcat(datapath,'WES.mat'),'V','NS','EW',...
+       'samplerate','sensitivity', 'sensunits');
     length_hour = samplerate*3600;
-    num_win = ceil(length(V)/length_hour);
+    num_win = ceil(length(V{1})/length_hour);
     time_vec = linspace(0,60,length_hour);
     color_vec = [0 0 0; 1 0 0; 0 0 1; 0 0.4 0;0 0 0; 1 0 0; 0 0 1; 0 0.4 0;...
         0 0 0; 1 0 0; 0 0 1; 0 0.4 0;0 0 0; 1 0 0; 0 0 1; 0 0.4 0;0 0 0; 1 0 0; 0 0 1; 0 0.4 0;...
@@ -69,21 +71,21 @@ function simple_gui2
         st = (q-1)*length_hour+1;
         se = q*length_hour;
         horz_pos = 1500 + (q-1)*2000;
-        a = NS(st:se)+horz_pos;
+        a = NS{1}(st:se)+horz_pos;
         hold on
-        plot(time_vec, a, 'color', color)
+        plot(time_vec, a, 'color', color);
         hold on
     end
     % plot last window
     color = color_vec(num_win,:);
     st = (num_win-1)*length_hour+1;
     horz_pos = 1500 + (num_win-1)*2000;
-    a = NS(st:end) + horz_pos;
-    end_t = length(NS) - ((num_win-1)*length_hour+1);
+    a = NS{1}(st:end) + horz_pos;
+    end_t = length(NS{1}) - ((num_win-1)*length_hour+1);
     samps = end_t/3600;
     time_end = linspace(0,samps,end_t +1);
     hold on
-    plot(time_end, a, 'color', color)
+    plot(time_end, a, 'color', color);
     hold on
     xlim([0 60])
     ylim([0 24*2060])
@@ -107,7 +109,17 @@ function simple_gui2
 
     % Make the window visible.
     f.Visible = 'on';
-
+    
+    %make filt
+    
+    
+    % Pop-up menu callback for filter parameters
+    function filt_val = filterbutton_Callback(source,eventdata) 
+            % Determine the selected data set.
+            str = get(source, 'String');
+            filt_val = get(source,'Value');   
+        end % End component callback switch
+    
     %  Pop-up menu callback. Read the pop-up menu Value property to
     %  determine which item is currently displayed and make it the
     %  current data. This callback automatically has access to 
@@ -116,29 +128,35 @@ function simple_gui2
         % Determine the selected data set.
         str = get(source, 'String');
         val = get(source,'Value');
-        switch str{val};
+        
+        
+        
+        
+        switch str{val}
         case 'EW' % User selects EW.
+            cla
+            filt_val = filterbutton_Callback(source,eventdata) ;
         % Display plot.
             for q = 1:num_win - 1
                 color = color_vec(q,:);
                 st = (q-1)*length_hour+1;
                 se = q*length_hour;
                  horz_pos = 1500 + (q-1)*2000;
-                a = EW(st:se)+horz_pos;
+                a = EW{filt_val}(st:se)+horz_pos;
                 hold on
-                plot(time_vec, a, 'color', color)
+                plot(time_vec, a, 'color', color);
                 hold on
-            end
+              end
             % plot last window
             color = color_vec(num_win,:);
             st = (num_win-1)*length_hour+1;
             horz_pos = 1500 + (num_win-1)*2000;
-            a = EW(st:end) + horz_pos;
-            end_t = length(EW) - ((num_win-1)*length_hour+1);
+            a = EW{filt_val}(st:end) + horz_pos;
+            end_t = length(EW{filt_val}) - ((num_win-1)*length_hour+1);
             samps = end_t/3600;
             time_end = linspace(0,samps,end_t +1);
             hold on
-            plot(time_end, a, 'color', color)
+            plot(time_end, a, 'color', color);
             hold on
             xlim([0 60])
             ylim([0 24*2060])
@@ -154,28 +172,30 @@ function simple_gui2
             set(gca, 'YDir','reverse','Fontsize', 12,'FontName', 'Times New Roman')
             grid on
             hold off
-       case 'NS' % User selects NS.
+        case 'NS' % User selects NS.
+            cla 
+            filt_val = filterbutton_Callback(source,eventdata) ;
             % Display plot.
             for q = 1:num_win - 1
                 color = color_vec(q,:);
                 st = (q-1)*length_hour+1;
                 se = q*length_hour;
                 horz_pos = 1500 + (q-1)*2000;
-                a = NS(st:se)+horz_pos;
+                a = NS{filt_val}(st:se)+horz_pos;
                 hold on
-                plot(time_vec, a, 'color', color)
+                plot(time_vec, a, 'color', color);
                 hold on
             end
             % plot last window
             color = color_vec(num_win,:);
             st = (num_win-1)*length_hour+1;
             horz_pos = 1500 + (num_win-1)*2000;
-            a = NS(st:end) + horz_pos;
-            end_t = length(NS) - ((num_win-1)*length_hour+1);
+            a = NS{filt_val}(st:end) + horz_pos;
+            end_t = length(NS{filt_val}) - ((num_win-1)*length_hour+1);
             samps = end_t/3600;
             time_end = linspace(0,samps,end_t +1);
             hold on
-            plot(time_end, a, 'color', color)
+            plot(time_end, a, 'color', color);
             hold on
             xlim([0 60])
             ylim([0 24*2060])
@@ -192,27 +212,29 @@ function simple_gui2
             grid on
             hold off
        case 'V' % User selects V.
+           cla
+           filt_val = filterbutton_Callback(source,eventdata) ;
            % Display plot.
             for q = 1:num_win - 1
                 color = color_vec(q,:);
                 st = (q-1)*length_hour+1;
                 se = q*length_hour;
                 horz_pos = 1500 + (q-1)*2000;
-                a = V(st:se)+horz_pos;
+                a = V{filt_val}(st:se)+horz_pos;
                 hold on
-                plot(time_vec, a, 'color', color)
+                plot(time_vec, a, 'color', color);
                 hold on
             end
             % plot last window
             color = color_vec(num_win,:);
             st = (num_win-1)*length_hour+1;
             horz_pos = 1500 + (num_win-1)*2000;
-            a = V(st:end) + horz_pos;
-            end_t = length(V) - ((num_win-1)*length_hour+1);
+            a = V{filt_val}(st:end) + horz_pos;
+            end_t = length(V{filt_val}) - ((num_win-1)*length_hour+1);
             samps = end_t/3600;
             time_end = linspace(0,samps,end_t +1);
             hold on
-            plot(time_end, a, 'color', color)
+            plot(time_end, a, 'color', color);
             hold on 
             xlim([0 60])
             ylim([0 24*2060])
@@ -228,6 +250,6 @@ function simple_gui2
             set(gca, 'YDir','reverse','Fontsize', 12,'FontName', 'Times New Roman')
             grid on
             hold off
-        end
-    end
-end
+        end % End Switch
+    end % End component callback switch
+end % End GUI function
