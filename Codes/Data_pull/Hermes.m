@@ -13,7 +13,7 @@ function simple_gui2
 % plots the selected data in the axes.
 
     %  Create and then hide the UI as it is being constructed.
-    f = figure('Visible','off','Units', 'Normalized', 'OuterPosition', [0, 0, 1, 0.9]);
+    f = figure('Visible','off', 'OuterPosition', [0, 0, 1000, 1000]);
     %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0, 1, 0.8]);
     
     % Create filt_val
