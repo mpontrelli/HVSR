@@ -102,7 +102,6 @@ function simple_gui2
         '08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00',...
         '17:00','18:00','19:00','20:00','21:00','22:00','23:00'})
     ylabel('(UTC)','Fontsize', 18,'FontName', 'Times New Roman','Color','k')
-    ylabel('(ET)','Fontsize', 18,'FontName', 'Times New Roman','Color','k')
     xlabel('Time (Minutes)', 'Fontsize', 18,'FontName', 'Times New Roman','Color','k')
     set(gca, 'YDir','reverse','Fontsize', 12,'FontName', 'Times New Roman')
     grid on
