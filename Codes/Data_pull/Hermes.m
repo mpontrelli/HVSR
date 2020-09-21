@@ -95,15 +95,18 @@ function simple_gui2
     ylim([0 24*2060])
     xticks([0 5 10 15 20 25 30 35 40 45 50 55 60])
     xticklabels({'0','5','10','15','20','25','30','35','40','45','50','55','60'})
+    %ax2 = axes('YAxisLocation','right');
     yticks([1500 3500 5500 7500 9500 11500 13500 15500 17500 19500 21500 23500,...
         25500 27500 29500 31500 33500 35500 37500 39500 41500 43500 45500 47500])
     yticklabels({'00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00',...
         '08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00',...
         '17:00','18:00','19:00','20:00','21:00','22:00','23:00'})
     ylabel('(UTC)','Fontsize', 18,'FontName', 'Times New Roman','Color','k')
+    ylabel('(ET)','Fontsize', 18,'FontName', 'Times New Roman','Color','k')
     xlabel('Time (Minutes)', 'Fontsize', 18,'FontName', 'Times New Roman','Color','k')
     set(gca, 'YDir','reverse','Fontsize', 12,'FontName', 'Times New Roman')
     grid on
+    box on
     hold off
     % Assign the a name to appear in the window title.
     f.Name = 'Simple GUI';
@@ -165,6 +168,7 @@ function simple_gui2
         xlabel('Time (Minutes)', 'Fontsize', 18,'FontName', 'Times New Roman','Color','k')
         set(gca, 'YDir','reverse','Fontsize', 12,'FontName', 'Times New Roman')
         grid on
+        box on
         hold off
     end % End component callback switch
     
@@ -219,6 +223,7 @@ function simple_gui2
         xlabel('Time (Minutes)', 'Fontsize', 18,'FontName', 'Times New Roman','Color','k')
         set(gca, 'YDir','reverse','Fontsize', 12,'FontName', 'Times New Roman')
         grid on
+        box on
         hold off
     end % End component callback switch
 end % End GUI function
