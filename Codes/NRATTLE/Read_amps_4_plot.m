@@ -22,11 +22,11 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
 subplot(1,2,1)
 TTF = plot(freq,amps);
 hold on
-ETF = plot(fax_HzN, HV_NEW , 'Linewidth', 1.5);
-SSR_p = plot(fax_HzN, SSR , 'Linewidth', 1.5);
-xlim([0.2 10])
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
+ETF = plot(fax_HzN, HV_sm(II,:), 'Linewidth', 1.5);
+% SSR_p = plot(fax_HzN, SSR , 'Linewidth', 1.5);
+xlim([0.1 10])
+% xlabel('Frequency (Hz)','FontSize', 18)
+% ylabel('Amplification','FontSize', 18)
 % 
 ylim([0.1 100])
 xticks([.1 1 10])
@@ -34,7 +34,7 @@ xticklabels({'0.1', '1', '10'})
 yticks([0.1 1 10 100])
 yticklabels({'0.1', '1','10', '100'})
 % title('NP 8040 TTF-HVSR comparison')
-legend([TTF,ETF, SSR_p], 'TTF', 'HVSR', 'SSR', 'FontName', 'Times New Roman', 'FontSize', 18, 'location','northeast')
+% legend([TTF,ETF, SSR_p], 'TTF', 'HVSR', 'SSR', 'FontName', 'Times New Roman', 'FontSize', 18, 'location','northeast')
 % 
 set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
 grid on 

@@ -15,13 +15,13 @@
 !Model information:
 !For each layer- thickness, Vs, density, 1/Q (if > 1.0, the program assumes
 !that the value represents Q; note that damping in percent = 100*0.5*1/Q):
-    1   10   125   1.5  0.05   
-    1   5    175   1.5  0.05
-    1   5    200   1.5  0.05
-    1   5    225   1.5  0.05
-    1   5    300   1.5  0.05
+    1   13   150   1.5  0.05   
+    1   10   175   1.5  0.05
+    1   10   200   1.5  0.05
+    1   10   225   1.5  0.05
+    1   10   250   1.5  0.05
 !  Halfspace Vs and density (1/Q is automatically set to 0.0):
-    1000  2.7 
+    2700  2.7 
 !Layer corresponding to halfspace (can be less than actual halfspace)          
 ! (a large number means the source is in the halfspace) and                     
 ! angle of incidence (< 0.0 means obtain theta from site_amp file):             

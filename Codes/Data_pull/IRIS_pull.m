@@ -9,6 +9,14 @@
 % filter code: Broadband = 1, Short-period = 2, Long-period = 3
 close all
 clear all
+
+%% filter inputs (Hz)
+broad_low = 0.1;
+broad_high = 49;
+short_low = 5;
+short_high = 49;
+long_low = 0.1;
+long_high = 5;
 %% start infinite loop
 i = 3;
 while i > 2
@@ -18,8 +26,11 @@ while i > 2
     if strcmp(hour_min, '00:0')
         disp(t_now)
     else
-        
-    % Pull Weston data
+        data = cell(1,2);
+    parfor j = 1:2
+    %% Pull Weston data
+    disp(j)
+    if j ==1
     Station = 'WES';
     Network = 'NE';
    
@@ -29,39 +40,85 @@ while i > 2
     time2 = datetime('now') + hours(3) + minutes(50);
 
     % Broadband
-    LowCorner = 0.1;
-    HighCorner = 49;
-    [sampletimes,trace1,data{3,1}, samplerate, sensitivity, sensunits] ...
+    LowCorner = broad_low;
+    HighCorner = broad_high;
+    [sampletimes,trace1,data{j}{3,1}, samplerate, sensitivity, sensunits] ...
         = getDMCData(time1,time2,Station,Network,'HHZ', LowCorner, HighCorner);
-    [~,~,data{1,1}, ~, ~, ~] ...
+    [~,~,data{j}{1,1}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HH1', LowCorner, HighCorner);
-    [~,~,data{2,1}, ~, ~, ~] ...
+    [~,~,data{j}{2,1}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HH2', LowCorner, HighCorner);
    
     
     % Short-period
-    LowCorner = 5;
-    HighCorner = 49;
-    [~,~,data{3,2}, ~, ~, ~] ...
+    LowCorner = short_low;
+    HighCorner = short_high;
+    [~,~,data{j}{3,2}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HHZ', LowCorner, HighCorner);
-    [~,~,data{1,2}, ~, ~, ~] ...
+    [~,~,data{j}{1,2}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HH1', LowCorner, HighCorner);
-    [~,~,data{2,2}, ~, ~, ~] ...
+    [~,~,data{j}{2,2}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HH2', LowCorner, HighCorner);
        
     % Long-period
-    LowCorner = 0.1;
-    HighCorner = 5;
-    [~,~,data{3, 3}, ~, ~, ~] ...
+    LowCorner = long_low;
+    HighCorner = long_high;
+    [~,~,data{j}{3, 3}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HHZ', LowCorner, HighCorner);
-    [~,~,data{1,3}, ~, ~, ~] ...
+    [~,~,data{j}{1,3}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HH1', LowCorner, HighCorner);
-    [sampletimes,trace1,data{2,3}, samplerate, sensitivity, sensunits] ...
+    [sampletimes,trace1,data{j}{2,3}, samplerate, sensitivity, sensunits] ...
+        = getDMCData(time1,time2,Station,Network,'HH2', LowCorner, HighCorner);
+   data1 = data{j};
+    parsave(strcat('C:\Users\',getenv('username'),'\Desktop\Data_pull\',Network,'_',Station,'.mat'),data1,...
+        samplerate, sensitivity, sensunits)
+    end
+    %% Pull F64A
+    if j==2
+    Station = 'F64A';
+    Network = 'N4';
+   
+    d = date;
+    time1 = strcat(d,{' '}, '00:00:00');
+    time1 = time1{1};
+    time2 = datetime('now') + hours(3) + minutes(50);
+
+    % Broadband
+    LowCorner = broad_low;
+    HighCorner = broad_high;
+    [sampletimes,trace1,data{j}{3,1}, samplerate, sensitivity, sensunits] ...
+        = getDMCData(time1,time2,Station,Network,'HHZ', LowCorner, HighCorner);
+    [~,~,data{j}{1,1}, ~, ~, ~] ...
+        = getDMCData(time1,time2,Station,Network,'HH1', LowCorner, HighCorner);
+    [~,~,data{j}{2,1}, ~, ~, ~] ...
         = getDMCData(time1,time2,Station,Network,'HH2', LowCorner, HighCorner);
    
-    save(strcat('C:\Users\',getenv('username'),'\Desktop\Data_pull\','WES.mat'),'data',...
-        'samplerate', 'sensitivity', 'sensunits')
     
+    % Short-period
+    LowCorner = short_low;
+    HighCorner = short_high;
+    [~,~,data{j}{3,2}, ~, ~, ~] ...
+        = getDMCData(time1,time2,Station,Network,'HHZ', LowCorner, HighCorner);
+    [~,~,data{j}{1,2}, ~, ~, ~] ...
+        = getDMCData(time1,time2,Station,Network,'HH1', LowCorner, HighCorner);
+    [~,~,data{j}{2,2}, ~, ~, ~] ...
+        = getDMCData(time1,time2,Station,Network,'HH2', LowCorner, HighCorner);
+       
+    % Long-period
+    LowCorner = long_low;
+    HighCorner = long_high;
+    [~,~,data{j}{3, 3}, ~, ~, ~] ...
+        = getDMCData(time1,time2,Station,Network,'HHZ', LowCorner, HighCorner);
+    [~,~,data{j}{1,3}, ~, ~, ~] ...
+        = getDMCData(time1,time2,Station,Network,'HH1', LowCorner, HighCorner);
+    [sampletimes,trace1,data{j}{2,3}, samplerate, sensitivity, sensunits] ...
+        = getDMCData(time1,time2,Station,Network,'HH2', LowCorner, HighCorner);
+   data1 = data{j};
+    parsave(strcat('C:\Users\',getenv('username'),'\Desktop\Data_pull\',Network,'_',Station,'.mat'),data1,...
+        samplerate, sensitivity, sensunits)
+    end
     end
     pause(300)
+    end
+    
 end
