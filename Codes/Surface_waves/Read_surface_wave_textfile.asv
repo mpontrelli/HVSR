@@ -5,14 +5,12 @@
 
 %% Author: Marshall Pontrelli
 % Date: 9/11/2020
-%close all
+close all
 clear all
 
 %% inputs
-min_offset = 2;
-max_offset = 24;
 fs = 500;
-datapath = 'C:\Users\mpontr01\Box\Projects\Surface_wave\9_14\';
+datapath = 'C:\Users\mpontr01\Box\Projects\New_England_field_work\Springfield\L62A\';
 %% import the data
 % ACCESSING THE DATA
 % go into the data folder and get a list of stations
@@ -68,10 +66,7 @@ box on
 xlabel('Time (ms)','FontName', 'Times New Roman', 'FontSize', 18,'rotation', 270, 'VerticalAlignment','middle');
 
 yticks([1 a])
-yticklabels({num2str(min_offset),num2str(max_offset)})
-ax = gca;
-ax.YAxisLocation = 'right';
-
+yticklabels({'2','24'})
 
 set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);    
 xlim([0,500])
@@ -117,7 +112,7 @@ waterlevel=0; % Dispersion Image waterlevel expressed as a percent for display/p
 ct=50:1:1200; % A vector for the velocity of interest in m/s.
                % This is the velocity "scanning" range
                
-freqlimits=[5 80]; % For plotting purposes only. Sets the frequency (Hz)
+freqlimits=[15 80]; % For plotting purposes only. Sets the frequency (Hz)
                     % plotting range for the dispersion images. Enter ['none']
                     % if you desire the natural limits based on time sampling
 
