@@ -12,7 +12,7 @@ clear all
 min_offset = 2;
 max_offset = 24;
 fs = 500;
-datapath = 'C:\Users\mpontr01\Box\Projects\Surface_wave\9_14\';
+datapath = 'C:\Users\mpontr01\Box\Projects\New_England_field_work\Springfield\L62A\';
 %% import the data
 % ACCESSING THE DATA
 % go into the data folder and get a list of stations
@@ -79,8 +79,25 @@ ylim([-0.5, i+1])
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 0.5, 0.96]);
 title('Offset (m)','FontName', 'Times New Roman', 'FontSize', 18);
 
-
-
+%% Now fft
+figure
+for i = 1:a
+    sta = B_norm(:,i);
+    X = abs(fft(sta));
+    X_phase = unwrap(angle(fft(sta)));
+    %Computing the frequency -axis
+    N = length(X);
+    fax_binsN = (0 : N-1); %samples in NS component
+    fax_HzN1 = fax_binsN*fs/N; %frequency axis NS (Hz)
+    N_2 = ceil(N/2); %half magnitude spectrum
+    fax_HzN = fax_HzN1(1 : N_2);
+    X_mag = X(1 : N_2);
+    X_phase = X_phase(1 : N_2);
+    
+    hold on
+    plot(fax_HzN,X_mag)
+end
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 
 
 %% now make a dispersion curve
