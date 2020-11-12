@@ -65,7 +65,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     title('NS')
     ylabel(yaxis)
     xlim([0 length(xNS)/fs])
-    ylim([-0.47 0.47])
+    ylim([-d d])
     grid on 
     box on
     set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
@@ -76,7 +76,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     title('EW')
     ylabel(yaxis)
     xlim([0 length(xV)/fs])
-    ylim([-0.47 0.47])
+    ylim([-d d])
     grid on 
     box on
     set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);
@@ -88,7 +88,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     xlabel('Time (secs)')
     ylabel(yaxis)
     xlim([0 length(xV)/fs])
-    ylim([-0.47 0.47])
+    ylim([-d d])
     grid on 
     box on
     set(gca, 'FontName', 'Times New Roman', 'FontSize', 18);

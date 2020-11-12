@@ -13,7 +13,7 @@ ETF = plot(fax_HzN(1 :length(fax_HzN)), ahatf(1:length(fax_HzN)), 'Color', [0 0.
 xlabel('Frequency (Hz)','FontSize', 18)
 ylabel('Amplification','FontSize', 18)
 title(strcat(statname), 'FontSize', 18)
-set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 18)
+set(gca,'YScale', 'log','XScale','log','FontName', 'Times New Roman', 'FontSize', 18)
 xlim([fax_HzN(lowbound) fax_HzN(upbound)])
 %xlim([fax_HzN(1) 40])
 ylim([0.1 100])
