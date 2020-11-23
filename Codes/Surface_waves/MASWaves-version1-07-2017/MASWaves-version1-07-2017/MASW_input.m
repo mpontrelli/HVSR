@@ -18,7 +18,7 @@ cT_min = 40;
 cT_max = 400;
 delta_cT = 1;
 fs = 500;
-datapath = 'C:\Users\mpontr01\Box\Projects\New_England_field_work\Springfield\L62A\';
+datapath = 'C:\Users\mpontr01\Box\Projects\New_England_field_work\Springfield\Memorial_bridge_MASW\N_2_1\';
 %% import the data
 % ACCESSING THE DATA
 % go into the data folder and get a list of stations
@@ -44,7 +44,7 @@ end
 %% Now plot dispersion curve
 resolution = 100;
 fmin = 0; % Hz
-fmax = 50; % Hz
+fmax = 100; % Hz
 FigWidth = 7; % cm
 FigHeight = 7; % cm
 FigFontSize = 8; % pt
@@ -87,7 +87,7 @@ c_test = c_test_min:delta_c_test:c_test_max; % m/s
 n = 6;
 
 h = [2 2 2 2 2 2 Inf]; % m
-beta = [150 165 170 175 190 200 210]; % m/s
+beta = [170 220 230 240 210 210 180]; % m/s
 alpha = beta*1.87; % m/s
 rho = [1850 1850 1850 1850 1850 1850 1850]; % kg/m^3
 up_low_boundary = 'yes';
