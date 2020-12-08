@@ -1,5 +1,4 @@
 !Control file for nrattle (data lines are free format)
-! (note that text lines preceded by "!" are ignored)
 !Revision of program involving a change in the control file on this date:
    09/09/11
 !Stem name for output files (the file containing model information and complex spectra will be named 
@@ -9,20 +8,16 @@
 !  nrattle_bj97_vs30_1100_ai_45
   test_nrattle_02mar11
 !Number of frequencies (including f = 0.0) and highest freq. (nfreq, fhigh):   
-   9500   100
-!Depth at which response is computed (0.0 for free surface):                   
+   1000    10
+!Depth at which response is computed (0.0 for free surface):   
     0
 !Model information:
 !For each layer- thickness, Vs, density, 1/Q (if > 1.0, the program assumes
 !that the value represents Q; note that damping in percent = 100*0.5*1/Q):
-    1   13   150   1.5  0.05   
-    1   10   175   1.5  0.05
-    1   10   200   1.5  0.05
-    1   10   225   1.5  0.05
-    1   10   250   1.5  0.05
+    1   100   100   1.7   0.05
 !  Halfspace Vs and density (1/Q is automatically set to 0.0):
-    2700  2.7 
-!Layer corresponding to halfspace (can be less than actual halfspace)          
-! (a large number means the source is in the halfspace) and                     
-! angle of incidence (< 0.0 means obtain theta from site_amp file):             
-   90 0
+    1000   2.7
+!Layer corresponding to halfspace (can be less than actual halfspace)   
+! (a large number means the source is in the halfspace) and 
+! angle of incidence (< 0.0 means obtain theta from site_amp file):    
+   100  0

@@ -9,10 +9,10 @@ close all
 clear all
 
 %% inputs
-min_offset = 6;
-max_offset = 28;
+min_offset = 2;
+max_offset = 24;
 fs = 500;
-datapath = 'C:\Users\mpontr01\Box\Projects\New_England_field_work\Springfield\Memorial_bridge_MASW\N_2_1\';
+datapath = 'C:\Users\mpontr01\Box\Projects\Surface_wave\9_14\';
 %% import the data
 % ACCESSING THE DATA
 % go into the data folder and get a list of stations
