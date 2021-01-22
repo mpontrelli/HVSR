@@ -101,4 +101,19 @@ function [freqs,amps] =  TTF(d,v,rho,Q, v_base,rho_base, num_freq,...
     amps=M(:,3);
     % change back to normal directory
     cd(strcat('C:\Users\',getenv('username'),'\Desktop\HVSR\Codes'));
+    figure
+    plot(freqs,amps)
+    title('Theoretical Transfer Function')
+    xlabel('Frequency (Hz)','FontSize', 18)
+    ylabel('Amplification','FontSize', 18)
+    set(gca,'FontSize',20,'YScale', 'log')
+    xlim([0 10])
+    ylim([0.1 100])
+    grid on
+    set(gca,'YScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+
+    [maxamp,I]=max(amps);
+    disp(strcat('maximum amplitude = ', num2str(maxamp)))
+    FSF=freqs(I);
+    disp(strcat('fundamental frequency = ', num2str(FSF)))
 end
