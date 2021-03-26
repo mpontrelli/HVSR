@@ -32,6 +32,8 @@
 
 % 4/27/2020 - update to output IaX, D5, D75 and D95
 
+% 3/26/2021 - Learning github with Alex
+
 
 function [IaX, D5, D75, D95, Iaval, D5D95, D5D75, rate_arias, Ianorm] =  Arias(time, X, fs)
     dt = 1/fs;
