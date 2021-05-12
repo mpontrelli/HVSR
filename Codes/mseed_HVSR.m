@@ -3,7 +3,7 @@ close all
 clear all
 %% necessary inputs
 % Station
-filename = 'C:\Users\mpontr01\Box\People\Marshall and Jeremy\NEHRP\DATA\weston_stations\NY_NJ\2020_001\bd_C30L_1577836800.msd';
+filename = 'C:\Users\mpontr01\Box\2019_2_summer\Projects\Boston\Data\bd\East Boston\bd_data_A20L_1559606400\bd_mseed_A20L_1559606400';
 % Filter
 LowCorner = 0.1;
 HighCorner = 10;
@@ -17,7 +17,7 @@ x = rdmseed(filename);
 %%
 fs = x(1).SampleRate;
 statname = x.StationIdentifierCode;
-
+statname = 'East Boston';
 
 %% make all vectors the same length
 a = length(NS);
