@@ -6,7 +6,7 @@ clear all
 Station = 'DC23';
 Network = 'ZN';
 time = '2015-06-07 06:07:00';
-time2 = '2015-06-07 07:07:00';
+time2 = '2015-06-08 06:07:00';
 
 % Filter
 LowCorner = 0.1;

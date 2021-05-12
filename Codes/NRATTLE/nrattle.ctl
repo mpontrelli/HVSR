@@ -9,6 +9,8 @@
   test_nrattle_02mar11
 !Number of frequencies (including f = 0.0) and highest freq. (nfreq, fhigh):   
    8688    10
+=======
+   6088    10
 !Depth at which response is computed (0.0 for free surface):   
     0
 !Model information:
