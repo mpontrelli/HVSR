@@ -10,10 +10,10 @@ hold on
 confidenceinterval=shadedplot(fax_HzN(1:length(fax_HzN)), confinthigh(1:length(fax_HzN)), confintlow(1:length(fax_HzN)),[.9,.9,.9],[1,1,1]);
 hold on
 ETF = plot(fax_HzN(1 :length(fax_HzN)), ahatf(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-title(strcat(statname), 'FontSize', 18)
-set(gca,'YScale', 'log','XScale','log','FontName', 'Times New Roman', 'FontSize', 18)
+xlabel('Frequency (Hz)','FontSize', 14)
+ylabel('Amplification','FontSize', 14)
+title(strcat(statname), 'FontSize', 14)
+set(gca,'YScale', 'log','XScale','log','FontName', 'Times New Roman', 'FontSize', 14)
 xlim([fax_HzN(lowbound) fax_HzN(upbound)])
 %xlim([fax_HzN(1) 40])
 ylim([0.1 100])

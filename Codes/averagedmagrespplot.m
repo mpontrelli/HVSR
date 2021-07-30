@@ -4,18 +4,18 @@
 % Date: 10/30/2019  
 
 %% Start
-function averagedmagrespplot(x, h, v, fs, confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, lowbound, outpath, sav)
+function averagedmagrespplot(fax_HzN, h, v, fs, confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, left_lab,right_lab, lowbound,upbound, outpath, sav)
 averageunfiltered = figure;
 subplot(1,2,1)
 hold on
-confidenceinterval=shadedplot(x, confinthighhorz, confintlowhorz,[.9,.9,.9],'k');
+confidenceinterval=shadedplot(fax_HzN, confinthighhorz, confintlowhorz,[.9,.9,.9],[1,1,1]);
 hold on
-plot(x, h, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-title('Horizontal', 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log', 'Xscale', 'log')
-xlim([x(1) (fs/2)])
+plot(fax_HzN, h, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title(left_lab, 'FontSize', 14)
+xlabel('Frequency (Hz)','FontSize', 14)
+ylabel('Amplification','FontSize', 14)
+set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([fax_HzN(lowbound) fax_HzN(upbound)])
 ylim([0.1 1000])
 xticks([0.1 1 10 fs/2])
 xticklabels({'0.1','1','10', num2str(fs/2)})
@@ -27,14 +27,14 @@ box on
 
 subplot(1,2,2)
 hold on
-confidenceinterval=shadedplot(x, confinthighvert, confintlowvert,[.9,.9,.9],'k');
+confidenceinterval=shadedplot(fax_HzN, confinthighvert, confintlowvert,[.9,.9,.9],[1,1,1]);
 hold on
-plot(x, v, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-title('Vertical', 'FontSize', 20)
-xlabel('Frequency (Hz)','FontSize', 18)
-ylabel('Amplification','FontSize', 18)
-set(gca,'FontSize',20,'YScale', 'log', 'Xscale', 'log')
-xlim([x(1) (fs/2)])
+plot(fax_HzN, v, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+title(right_lab, 'FontSize', 14)
+xlabel('Frequency (Hz)','FontSize', 14)
+ylabel('Amplification','FontSize', 14)
+set(gca,'YScale', 'log', 'XScale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
+xlim([fax_HzN(lowbound) fax_HzN(upbound)])
 ylim([0.1 1000])
 xticks([0.1 1 10 fs/2])
 xticklabels({'0.1','1','10', num2str(fs/2)})

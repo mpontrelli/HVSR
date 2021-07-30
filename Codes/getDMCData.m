@@ -32,7 +32,7 @@ if Check == 1
     return
 end
 
-trace1 = mytrace(1);
+trace1 = mytrace(1); 
 sensitivity = trace1.sensitivity;
 sensunits = trace1.sensitivityUnits;
 samplerate = trace1.sampleRate;
