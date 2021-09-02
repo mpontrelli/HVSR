@@ -41,6 +41,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     addParameter(p, 'yaxislabel', '', @ischar);
     addParameter(p, 'sav', 'no', @ischar);
     addParameter(p, 'outpath', 'no', @ischar);
+    addParameter(p, 'out_name', 'timeseriesplot')
     
     % parse the inputs
     parse(p, xNS, xEW, xV,fs, varargin{:})
@@ -48,6 +49,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     yaxis = p.Results.yaxislabel;
     sav = p.Results.sav;
     outpath = p.Results.outpath;
+    out_name = p.Results.out_name;
     
     %% find the maximum value to make bounds for plotting
     a = max(abs(xV));
@@ -99,7 +101,7 @@ function timeseriesplot(xNS,xEW, xV, fs, varargin)
     
     %save
     if strcmp(sav, 'yes') == 1
-        saveas(timeseries, strcat(outpath, '\', 'timeseries.jpg'), 'jpg');
-        saveas(timeseries, strcat(outpath, '\', 'timeseries.fig'), 'fig');
+        saveas(timeseries, strcat(outpath, '\', strcat(out_name,'.jpg')), 'jpg');
+        saveas(timeseries, strcat(outpath, '\', strcat(out_name,'.fig')), 'fig');
     end
 end

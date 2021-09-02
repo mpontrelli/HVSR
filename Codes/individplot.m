@@ -1,4 +1,4 @@
-function individplot(HV_final_matrix, newfaxhz, statname, sav,lowbound,upbound,outpath)
+function individplot(HV_final_matrix, newfaxhz, statname, sav,lowbound,upbound,outpath,out_name)
 individualfiltered = figure;
 plot(newfaxhz, HV_final_matrix, 'Color',  'k' , 'Linewidth', .5);
 title(strcat(statname), 'FontSize', 20)
@@ -16,6 +16,6 @@ yticks([0.1 1 10 100])
 yticklabels({'0.1','1','10', '100'})
 
 if strcmp(sav, 'yes') == 1
-    saveas(individualfiltered, strcat(outpath, '\', 'individualfiltered.jpg'));
+    saveas(individualfiltered, strcat(outpath, '\',out_name,'.jpg'));
 end
 end

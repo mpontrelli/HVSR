@@ -140,85 +140,6 @@ else % else there are some hpb peaks, let's take a look
         peak_freqs = newfaxhz1(l_min:r_min)';
         peak_amps = ahatf1(l_min:r_min)';
         peak_sigs = sigma1(l_min:r_min)';
-   
-        %% Now take the peak that is constrained between the left and right
-        % intervals and see if it has any peaks within it that make the hpb
-        % criteria
-%         [peaks2,locs2,~,p2] = findpeaks(peak_amps);
-%         o =0;
-%         counter2 = 0;
-%         for ii = 1:length(p2)
-%             if peaks2(ii) - p2(ii) < peaks2(ii)/sqrt(2) % if the peak minus the prominence is less than the peak/sqrt(2), this is a significant peak
-%                 counter2 = counter2+1;
-%                 o(counter2) = ii; %this peak is not a sig peak, so minus 1 to get rid of it
-%             end
-%         end 
-%         
-%         % now find all the statistics from the peaks within the peak
-%         topprom2 = p2(o)';
-%         A2 = peaks2(o)'; peakind2 = locs2(o)'; fn2 = peak_freqs(peakind2)';
-% 
-%         %% Step 2: Find the interval minima and make the peak shape, then figure out how many peaks 
-%         % there are across that peak
-%         for ff = 1:length(peakind2)
-%             loc = peakind2(ff); % peak the peak we're on
-%             cur_amp = A2(ff); % and the current amp
-%             % Now find the right interval minima
-%             for i = 1:(length(peak_freqs) - loc - 5)
-%             ii = loc + i +5;
-%             k = peak_amps(ii);
-%             if k >= cur_amp
-%                 I1 = ii;
-%                 break
-%             else
-%                 I1 = length(peak_freqs);
-%             end
-%         end
-%         right_int = peak_amps(loc:I1);
-%         [r_min, ~] = min(right_int);
-%         r_min = find(peak_amps == r_min);
-%         %move down signal to the left
-%         % Now find the left interval minima
-%         for i = 1:(loc - 5)
-%             ii = loc - i + 5;
-%             k = peak_amps(ii);
-%             if k >= cur_amp
-%                 I1 = ii;
-%                 break
-%             else
-%                 I1 = 1;
-%             end
-%         end
-%         left_int = peak_amps(I1:loc);
-%         [l_min, ~] = min(left_int);
-%         l_min = find(peak_amps == l_min);
-%         
-%         % now find the highest minimum 
-%         [~, I] = max([peak_amps(l_min), peak_amps(r_min)]);
-%         if I == 1 % that means the left interval min is the highest
-%             for i = 1: length(peak_amps)
-%                 q = loc + i +5;
-%                 gg = peak_amps(q);
-%                 if gg <= peak_amps(l_min)
-%                     r_min = q;
-%                     break
-%                 end
-%             end
-%         end
-%         if I == 2 % that means the right interval min is the highest
-%             for i = 1: length(peak_amps)
-%                 q = loc - i - 5;
-%                 gg = peak_amps(q);
-%                 if gg <= peak_amps(r_min)
-%                     l_min = q;
-%                     break
-%                 end
-%             end
-%         end
-%         % Now make the vectors
-%         peak_freqs2 = peak_freqs(l_min:r_min)';
-%         peak_amps2 = peak_amps(l_min:r_min)';
-%         peak_sigs2 = peak_sigs(l_min:r_min)';
     
         %% Now compute areas using trapezoids
             for i = 1:length(peak_freqs) - 1
@@ -271,9 +192,6 @@ else % else there are some hpb peaks, let's take a look
             freqs(counter) = fn(f);
             peakamps{counter} = peak_amps;
             peakfreqs{counter} = peak_freqs; 
-%           clear peak_freqs
-%           clear peak_amps
-%           clear Area
         end
     end
     if counter == 0
@@ -292,19 +210,6 @@ else % else there are some hpb peaks, let's take a look
         peakfreqs = []; 
         disp('No peaks')
     else
-% now compute slopes
-% % for i = 1:length(ahatf1) - 1
-% %     slope(i) = (ahatf1(i+1) - ahatf1(i))/ (newfaxhz1(i+1) - newfaxhz1(i));
-% %     newnewfreq(i) = (newfaxhz1(i+1) + newfaxhz1(i))/2;
-% % end
-% % slope = smooth(slope);
-% % slope = smooth(slope);
-% % 
-% % % Now compute slopes of slope
-% % for i = 1:length(slope) - 1
-% %     slope1(i) = (slope(i+1) - slope(i))/ (newnewfreq(i+1) - newnewfreq(i));
-% %     nnnfreq(i) = (newnewfreq(i+1) + newnewfreq(i))/2;
-% % end
     end
 end % loop across all peaks with hpbs
 

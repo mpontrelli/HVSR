@@ -3,11 +3,18 @@ close all
 clear all
 %% necessary inputs
 % Station
+
 Network = 'TA';
 Station = 'N63A';
 time = '2014-07-29 06:07:00';
 time2 = '2014-07-29 08:07:00';
 fig_outpath = strcat('C:\Users\',getenv('username'),'\Box\2021_1_spring\Research\Proposals\USGS_Proposals\Taxonomy\Figures');
+
+Station = 'NQUSE';
+Network = 'AY';
+time = '2021-08-14 12:01:00';
+time2 = '2021-08-14 12:50:00';
+
 
 % Filter
 LowCorner = 0.1;
@@ -17,21 +24,18 @@ Filterplot = 'no';
 
 %% NS
 Component = 'BHE';
-
 [sampletimes1,trace1,NS, fs, sensitivity1, sensunits1] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [NS] = Butter2(NS, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 NS = NS/sensitivity1;
 NS = NS(1:length(NS)-1);
 %% EW
 Component = 'BHN';
-
 [sampletimes2,trace2,EW, fs, sensitivity2, sensunits2] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [EW] = Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 EW = EW/sensitivity2;
 
 %% V
 Component = 'BHZ';
-
 [sampletimes3,trace3,V, fs, sensitivity3, sensunits3] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [V] = Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 V = V/sensitivity3;
@@ -56,9 +60,7 @@ d = max(cc);
 
 %% create a time vector and plot time series
 time = ((1:length(NS))/fs)/3600;
-
 figure;
-    
 % NS
 subplot(3,1,1)
 plot(time,NS)
@@ -204,7 +206,7 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 % inputs
 numwin = 40;
 windowlen = 60;
-windis = 20;
+windis = 1;
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
 
@@ -333,8 +335,6 @@ box on
 
 %makes figure full screen
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
-
-
 subplot(1,3,2)
 hold on
 confidenceinterval=shadedplot(fax_HzN, confinthighEW, confintlowEW,[.9,.9,.9],'k');
