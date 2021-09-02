@@ -3,10 +3,11 @@ close all
 clear all
 %% necessary inputs
 % Station
-Station = 'DC23';
-Network = 'ZN';
-time = '2015-06-07 06:07:00';
-time2 = '2015-06-08 06:07:00';
+Network = 'TA';
+Station = 'V55A';
+time = '2015-07-29 06:07:00';
+time2 = '2015-07-29 08:07:00';
+fig_outpath = strcat('C:\Users\',getenv('username'),'\Box\2021_1_spring\Research\Proposals\USGS_Proposals\Taxonomy\Figures');
 
 % Filter
 LowCorner = 0.1;
@@ -15,21 +16,21 @@ Npoles = 4;
 Filterplot = 'no';
 
 %% NS
-Component = 'EHN';
+Component = 'BHE';
 
 [sampletimes1,trace1,NS, fs, sensitivity1, sensunits1] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [NS] = Butter2(NS, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 NS = NS/sensitivity1;
 NS = NS(1:length(NS)-1);
 %% EW
-Component = 'EHE';
+Component = 'BHN';
 
 [sampletimes2,trace2,EW, fs, sensitivity2, sensunits2] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [EW] = Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 EW = EW/sensitivity2;
 
 %% V
-Component = 'EHZ';
+Component = 'BHZ';
 
 [sampletimes3,trace3,V, fs, sensitivity3, sensunits3] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [V] = Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
@@ -201,7 +202,7 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 %% Now do magnitude responses and compare
 % inputs
-numwin = 100;
+numwin = 40;
 windowlen = 60;
 windis = 20;
 sampnum = windowlen*fs; 
@@ -449,12 +450,12 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 [ahatf, sigma, confinthigh, confintlow] =  wavav(HV);
 
 %% Now plot
-figure
+HV_plot = figure;
 hold on
 confidenceinterval=shadedplot(fax_HzN, confinthigh, confintlow,[.9,.9,.9],'k');
 hold on
 plot(fax_HzN, ahatf, 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
-title('HVSR')
+title(Station)
 xlabel('Frequency (Hz)')
 ylabel('Amplification')
 set(gca,'YScale', 'log', 'Xscale', 'log','FontName', 'Times New Roman', 'FontSize', 14)
@@ -466,7 +467,12 @@ yticks([0.1 1 10 100])
 yticklabels({'0.1','1','10', '100'})
 grid on 
 box on
+saveas(HV_plot, strcat(fig_outpath, '\', Station,'.jpg'), 'jpg');
 
+%% compute peak info
+[peakfreqs, peakamps, hpb, f1s, f2s, Areamat, proms, amps, peakind2, freqs, sigs, I1s, I2s] = peakiden(ahatf, fax_HzN, sigma, lowbound, upbound);
+[M,I] = max(amps);
+shape = [freqs(I),amps(I),proms(I),hpb(I),sigs(I)];
 %% Now plot sigma
 figure
 plot(fax_HzN, sigma)
