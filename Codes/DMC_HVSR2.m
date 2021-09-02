@@ -3,10 +3,10 @@ close all
 clear all
 %% necessary inputs
 % Station
-Station = 'DC23';
-Network = 'ZN';
-time = '2015-06-07 06:07:00';
-time2 = '2015-06-07 07:07:00';
+Station = 'NQUSE';
+Network = 'AY';
+time = '2021-08-14 12:01:00';
+time2 = '2021-08-14 12:50:00';
 
 % Filter
 LowCorner = 0.1;
@@ -15,21 +15,21 @@ Npoles = 4;
 Filterplot = 'no';
 
 %% NS
-Component = 'EHN';
+Component = 'HNN';
 
 [sampletimes1,trace1,NS, fs, sensitivity1, sensunits1] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [NS] = Butter2(NS, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 NS = NS/sensitivity1;
 NS = NS(1:length(NS)-1);
 %% EW
-Component = 'EHE';
+Component = 'HNE';
 
 [sampletimes2,trace2,EW, fs, sensitivity2, sensunits2] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [EW] = Butter2(EW, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
 EW = EW/sensitivity2;
 
 %% V
-Component = 'EHZ';
+Component = 'HNZ';
 
 [sampletimes3,trace3,V, fs, sensitivity3, sensunits3] = getDMCData(time,time2,Station,Network,Component, LowCorner, HighCorner);
 [V] = Butter2(V, fs, 'LowCorner', LowCorner, 'HighCorner', HighCorner, 'Npoles', Npoles , 'Filterplot', Filterplot);
@@ -201,9 +201,9 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 %set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 1, 0.96]);
 %% Now do magnitude responses and compare
 % inputs
-numwin = 100;
+numwin = 5;
 windowlen = 60;
-windis = 20;
+windis = 1;
 sampnum = windowlen*fs; 
 windisnum = windis*fs;
 

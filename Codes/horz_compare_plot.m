@@ -1,7 +1,7 @@
 %% horz_compare_plot
 
 %% Author: Marshall Pontrelli
-% Date: 10/30/2019  
+% Date: 7/30/2021
 
 %% Start
 
@@ -11,7 +11,7 @@ hold on
 
 NS = plot(fax_HzN(1 :length(fax_HzN)), NS_horz(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
 hold on
-EW = plot(fax_HzN(1 :length(fax_HzN)), EW_horz(1:length(fax_HzN)), 'Color', [0 0.30196 0.6588] , 'Linewidth', 1.5);
+EW = plot(fax_HzN(1 :length(fax_HzN)), EW_horz(1:length(fax_HzN)), 'Color', [0.6588 0.3412 0] , 'Linewidth', 1.5);
 xlabel('Frequency (Hz)','FontSize', 14)
 ylabel('Amplification','FontSize', 14)
 title(strcat(statname), 'FontSize', 14)

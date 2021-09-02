@@ -4,7 +4,7 @@
 % Date: 10/30/2019  
 
 %% Start
-function averagedmagrespplot(fax_HzN, h, v, fs, confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, left_lab,right_lab, lowbound,upbound, outpath, sav)
+function averagedmagrespplot(fax_HzN, h, v, fs, confinthighhorz, confintlowhorz, confinthighvert, confintlowvert, left_lab,right_lab, lowbound,upbound, outpath, sav, out_name)
 averageunfiltered = figure;
 subplot(1,2,1)
 hold on
@@ -48,6 +48,6 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
 
 %save
 if strcmp(sav, 'yes') == 1
-    saveas(averageunfiltered, strcat(outpath, '\', 'averageunfiltered.jpg'));
-    saveas(averageunfiltered, strcat(outpath, '\', 'averageunfiltered.fig'));
+    saveas(averageunfiltered, strcat(outpath, '\', strcat(out_name,'averageunfiltered.jpg')));
+    saveas(averageunfiltered, strcat(outpath, '\', strcat(out_name,'averageunfiltered.fig')));
 end

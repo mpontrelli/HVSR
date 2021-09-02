@@ -6,7 +6,7 @@
 % Date: 10/30/2019 
 
 %% Start
-function individmagrespplot(fax_HzN, h, v, fs, left_lab,right_lab, lowbound, upbound, outpath, sav)
+function individmagrespplot(fax_HzN, h, v, fs, left_lab,right_lab, lowbound, upbound, outpath, sav, out_name)
 individualunfiltered = figure;
 subplot(1,2,1)
 plot(fax_HzN, h, 'Color',  'k' , 'Linewidth', .5);
@@ -43,6 +43,6 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [1, 0.5, 1, 0.5]);
 
 %save
 if strcmp(sav, 'yes') == 1
-    saveas(individualunfiltered, strcat(outpath, '\', 'individualunfiltered.jpg'));
-    saveas(individualunfiltered, strcat(outpath, '\', 'individualunfiltered.fig'));
+    saveas(individualunfiltered, strcat(outpath, '\', strcat(out_name,'individualunfiltered.jpg')));
+    saveas(individualunfiltered, strcat(outpath, '\', strcat(out_name,'individualunfiltered.fig')));
 end
