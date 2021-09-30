@@ -29,7 +29,7 @@ function [vs_30, class] =  Vs_30(d,v)
         end
         den(counter) = (30 - sum(d(1:counter-1)))/v(counter);
         vs_30 = 30/sum(den);
-       a = strcat('Vs30 =',{' '},num2str(vs_30));
+       a = strcat('Vs30 =',{' '},num2str(vs_30),{' '},'m/s');
        a = a{1};
        disp(a)
        if vs_30 > 1500
