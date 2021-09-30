@@ -46,6 +46,7 @@ c = size(B);
 a = c(2);
 b = c(1);
 time = 1000*(0:b-1)/(fs);
+data.trace = B;
 
 %% Now normalize B
 for i = 1:a
@@ -54,7 +55,7 @@ for i = 1:a
     col = sta/max_sta;
     B_norm(:,i) = col;
 end
-
+data.trace_norm = B_norm;
 
 %% now plot
 traces = figure;
@@ -144,9 +145,12 @@ c_test = c_test_min:delta_c_test:c_test_max; % m/s
 % Layer parameters
 n = 7;
 h = [5,5,5,5,5,5, 40]; % m
+data.thicknesses = h;
 beta = [200,220,230,240,250,250, 250]; % m/s
+data.velocities = beta;
 alpha = beta*1.87; % m/s
 rho = [1250 1250 1250 1850 1850 1850 1850]; % kg/m^3
+data.rhos = rho;
 
 % Now model
 [c_t,lambda_t] = MASWaves_theoretical_dispersion_curve...
@@ -184,11 +188,14 @@ saveas(Velocity_profile, strcat(path, '\','Figures','\', strcat(out_name,'.fig')
 d = h(1:n);
 v = beta(1:n);
 [v_avg] =  S_wave_avg(d,v);
+data.v_avg = v_avg;
 [vs_30] =  Vs_30(h, beta);
+data.vs_30 = vs_30;
 Vs_disp = strcat('Vs average = ', {' '},num2str(v_avg), {' '},'m/s');
 Vs_disp = Vs_disp{1};
 disp(Vs_disp)
 depth = sum(d);
+data.depth = depth;
 depth_disp = strcat('Depth = ', {' '},num2str(depth), {' '},'m');
 depth_disp = depth_disp{1};
 disp(depth_disp)
@@ -196,3 +203,8 @@ fn = v_avg/(4*depth);
 fn_disp = strcat('f0 = ', {' '},num2str(fn), {' '},'Hz');
 fn_disp = fn_disp{1};
 disp(fn_disp)
+data.f0 = fn;
+
+%% save data structure
+%% Now save data
+save(strcat(path, '\','Figures','\','data.mat'),'data')
