@@ -31,7 +31,7 @@ q = log(SR_matrix);
 ahatf = exp(nansum(q)/len);
 
 for i = 1:len
-    q(i,:) = (log(SR_matrix(i,:))- log(ahatf)).^2;
+    q(i,:) = (log(SR_matrix(i,:))- log(ahatf)).^2; 
 end
 sigma = sqrt(nansum(q)/len);
 
