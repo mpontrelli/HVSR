@@ -20,7 +20,7 @@ function [h_new] = velocity_profile(h, v)
     h_new(1) = []; 
     h_new(end) = [];
     v_new = repelem(v,2); 
-    plot(v_new, h_new, 'linewidth', 2, 'color','k')
+    plot(v_new, h_new, 'linewidth', 1, 'color','k')
     set(gca, 'FontName', 'Times New Roman', 'FontSize', 18, 'Ydir','reverse');
     xlabel('Velocity (m/s)')
     ylabel('Depth (m)')
