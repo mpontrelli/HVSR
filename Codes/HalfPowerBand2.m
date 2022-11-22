@@ -1,4 +1,4 @@
-function [I1, I2, f1, f2, hpb]=  HalfPowerBand2(A, amploc2, newfaxhz1, ahatf1)
+ function [I1, I2, f1, f2, hpb]=  HalfPowerBand2(A, amploc2, newfaxhz1, ahatf1)
     %Half power bandwidth
     
     amp = A/sqrt(2);
@@ -23,5 +23,5 @@ function [I1, I2, f1, f2, hpb]=  HalfPowerBand2(A, amploc2, newfaxhz1, ahatf1)
             break
         end
     end
-    hpb = f2-f1;
+    hpb = f2-f1; 
 end

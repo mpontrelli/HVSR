@@ -31,7 +31,7 @@ function [vs_30, class] =  Vs_30(d,v)
         vs_30 = 30/sum(den);
        a = strcat('Vs30 =',{' '},num2str(vs_30),{' '},'m/s');
        a = a{1};
-       disp(a)
+       %disp(a)
        if vs_30 > 1500
            class = 'A';
        end
@@ -49,11 +49,11 @@ function [vs_30, class] =  Vs_30(d,v)
        end
        b = strcat('class =',{' '},class);
        b = b{1};
-       disp(b)
+       %disp(b)
        
        
     else
         vs_30 = [];
-        disp('Profile is less than 30 meters')
+        disp('Profile is less than 30 meters')%
     end
 end
