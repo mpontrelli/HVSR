@@ -15,7 +15,7 @@ xticklabels({'0.1','1','10', num2str(upbound)})
 yticks([0.1 1 10 100])
 yticklabels({'0.1','1','10', '100'})
 
-if strcmp(sav, 'yes') == 1
-    saveas(individualfiltered, strcat(outpath, '\',out_name,'.jpg'));
-end
+%if strcmp(sav, 'yes') == 1
+    %saveas(individualfiltered, strcat(outpath, '\',out_name,'.jpg'));
+%end
 end

@@ -9,7 +9,7 @@ close all
 clear all
 
 %% Start
-f0 = 0.896638;
+f0 = 4.545455;
 v1 = 180;
 d = v1/(4*f0);
 
