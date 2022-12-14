@@ -5,15 +5,15 @@ clear all
 % Station
 
 Network = 'TA';
-Station = 'N63A';
+Station = 'L62A';
 time = '2014-07-29 06:07:00';
 time2 = '2014-07-29 08:07:00';
 fig_outpath = strcat('C:\Users\',getenv('username'),'\Box\2021_1_spring\Research\Proposals\USGS_Proposals\Taxonomy\Figures');
 
-Station = 'NQUSE';
-Network = 'AY';
-time = '2021-08-14 12:01:00';
-time2 = '2021-08-14 12:50:00';
+% Station = 'NQUSE';
+% Network = 'AY';
+% time = '2021-08-14 12:01:00';
+% time2 = '2021-08-14 12:50:00';
 
 
 % Filter

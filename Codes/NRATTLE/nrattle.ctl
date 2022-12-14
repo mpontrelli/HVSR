@@ -9,14 +9,16 @@
   test_nrattle_02mar11
 !Number of frequencies (including f = 0.0) and highest freq. (nfreq, fhigh):   
    100000    10
+   10000    40
 !Depth at which response is computed (0.0 for free surface):   
     0
 !Model information:
 !For each layer- thickness, Vs, density, 1/Q (if > 1.0, the program assumes
 !that the value represents Q; note that damping in percent = 100*0.5*1/Q):
     1   20   200   2   0.05
+    1   40   180   2   18
 !  Halfspace Vs and density (1/Q is automatically set to 0.0):
-    2000   2.7
+    2500   2.7
 !Layer corresponding to halfspace (can be less than actual halfspace)   
 ! (a large number means the source is in the halfspace) and 
 ! angle of incidence (< 0.0 means obtain theta from site_amp file):    

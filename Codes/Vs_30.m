@@ -55,5 +55,7 @@ function [vs_30, class] =  Vs_30(d,v)
     else
         vs_30 = [];
         disp('Profile is less than 30 meters')%
+        %disp('Profile is less than 30 meters')
+
     end
 end
